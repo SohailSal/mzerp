@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\AccountGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,31 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
+
+Route::get('accountgroups', [AccountGroupController::class, 'index'])
+    ->name('accountgroups')
+    ->middleware('auth');
+
+Route::get('accountgroups/create', [AccountGroupController::class, 'create'])
+    ->name('accountgroups.create')
+    ->middleware('auth');
+
+Route::get('accountgroups/{accountgroup}', [AccountGroupController::class, 'show'])
+    ->name('accountgroups.show')
+    ->middleware('auth');
+
+Route::post('accountgroups', [AccountGroupController::class, 'store'])
+    ->name('accountgroups.store')
+    ->middleware('auth');
+
+Route::get('accountgroups/{accountgroup}/edit', [AccountGroupController::class, 'edit'])
+    ->name('accountgroups.edit')
+    ->middleware('auth');
+
+Route::put('accountgroups/{accountgroup}', [AccountGroupController::class, 'update'])
+    ->name('accountgroups.update')
+    ->middleware('auth');
+
+Route::delete('accountgroups/{accountgroup}', [AccountGroupController::class, 'destroy'])
+    ->name('accountgroups.destroy')
+    ->middleware('auth');
