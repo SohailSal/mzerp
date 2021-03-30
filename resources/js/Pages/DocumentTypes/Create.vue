@@ -1,9 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Account Groups
-      </h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Voucher</h2>
     </template>
     <div class="">
       <form @submit.prevent="submit">
@@ -16,19 +14,16 @@
           />
           <div v-if="errors.name">{{ errors.name }}</div>
         </div>
-        <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
-          <select
-            v-model="form.type"
+        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <input
+            type="text"
+            v-model="form.prefix"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-            label="type"
-            placeholder="Enter type"
-          >
-            <option v-for="type in types" :key="type.id" :value="type.id">
-              {{ type.name }}
-            </option>
-          </select>
-          <div v-if="errors.type">{{ errors.type }}</div>
+            label="prefix"
+          />
+          <div v-if="errors.prefix">{{ errors.prefix }}</div>
         </div>
+
         <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
           <select
             v-model="form.company"
@@ -49,7 +44,7 @@
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
             type="submit"
           >
-            Create Account Group
+            Create Voucher
           </button>
         </div>
       </form>
@@ -67,8 +62,6 @@ export default {
 
   props: {
     errors: Object,
-    types: Object,
-    first: Object,
 
     companies: Object,
     comp_first: Object,
@@ -78,7 +71,7 @@ export default {
     return {
       form: this.$inertia.form({
         name: null,
-        type: this.first.id,
+        prefix: null,
         company: this.comp_first.id,
       }),
     };
@@ -86,7 +79,7 @@ export default {
 
   methods: {
     submit() {
-      this.$inertia.post(route("accountgroups.store"), this.form);
+      this.$inertia.post(route("documenttypes.store"), this.form);
     },
   },
 };

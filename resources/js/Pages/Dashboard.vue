@@ -11,6 +11,7 @@
                 <div class="bg-gray-700 text-white text-3xl p-2 overflow-hidden shadow-xl sm:rounded-lg">
                     Welcome to MZ ERP
                 </div>
+                    <welcome />
             </div>
         </div>
     </app-layout>

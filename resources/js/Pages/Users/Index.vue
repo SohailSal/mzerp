@@ -1,9 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Account Groups
-      </h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Users</h2>
     </template>
     <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
       {{ $page.props.flash.success }}
@@ -20,8 +18,7 @@
         </thead>
         <tbody>
           <tr v-for="item in data" :key="item.id">
-            <!-- <td class="py-1 px-4 border">{{ item.type_id }}</td> -->
-            <td class="py-1 px-4 border">{{ item.type_name }}</td>
+            <td class="py-1 px-4 border">{{ item.type_id }}</td>
             <td class="py-1 px-4 border w-2/5">{{ item.name }}</td>
             <td class="py-1 px-4 border">
               <button

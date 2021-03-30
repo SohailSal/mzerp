@@ -2,7 +2,7 @@
   <app-layout>
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Account Groups
+        Transactions
       </h2>
     </template>
     <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
@@ -13,16 +13,18 @@
       <table class="shadow-lg border mt-4 ml-8 rounded-xl">
         <thead>
           <tr class="bg-indigo-100">
-            <th class="py-2 px-4 border">Account Type</th>
-            <th class="py-2 px-4 border w-2/5">Group Name</th>
+            <th class="py-2 px-4 border">Reference</th>
+            <th class="py-2 px-4 border">Date</th>
+            <th class="py-2 px-4 border w-2/5">Description</th>
             <th class="py-2 px-4 border">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in data" :key="item.id">
             <!-- <td class="py-1 px-4 border">{{ item.type_id }}</td> -->
-            <td class="py-1 px-4 border">{{ item.type_name }}</td>
-            <td class="py-1 px-4 border w-2/5">{{ item.name }}</td>
+            <td class="py-1 px-4 border">{{ item.ref }}</td>
+            <!-- <td class="py-1 px-4 border w-2/5">{{ item.date }}</td> -->
+            <td class="py-1 px-4 border w-2/5">{{ item.description }}</td>
             <td class="py-1 px-4 border">
               <button
                 class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
@@ -62,15 +64,15 @@ export default {
 
   methods: {
     create() {
-      this.$inertia.get(route("accountgroups.create"));
+      this.$inertia.get(route("documents.create"));
     },
 
     edit(id) {
-      this.$inertia.get(route("accountgroups.edit", id));
+      this.$inertia.get(route("documents.edit", id));
     },
 
     destroy(id) {
-      this.$inertia.delete(route("accountgroups.destroy", id));
+      this.$inertia.delete(route("documents.destroy", id));
     },
   },
 };

@@ -2,7 +2,7 @@
   <app-layout>
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Account Groups
+        Accounts
       </h2>
     </template>
     <div class="">
@@ -16,20 +16,16 @@
           />
           <div v-if="errors.name">{{ errors.name }}</div>
         </div>
-        <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
-          <select
-            v-model="form.type"
+        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <input
+            type="text"
+            v-model="form.number"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-            label="type"
-            placeholder="Enter type"
-          >
-            <option v-for="type in types" :key="type.id" :value="type.id">
-              {{ type.name }}
-            </option>
-          </select>
-          <div v-if="errors.type">{{ errors.type }}</div>
+            label="number"
+          />
+          <div v-if="errors.number">{{ errors.number }}</div>
         </div>
-        <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <select
             v-model="form.company"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
@@ -40,7 +36,20 @@
               {{ type.name }}
             </option>
           </select>
-          <div v-if="errors.type">{{ errors.type }}</div>
+          <div v-if="errors.company">{{ errors.company }}</div>
+        </div>
+        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <select
+            v-model="form.group"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            label="group"
+            placeholder="Enter Group"
+          >
+            <option v-for="type in groups" :key="type.id" :value="type.id">
+              {{ type.name }}
+            </option>
+          </select>
+          <div v-if="errors.group">{{ errors.group }}</div>
         </div>
         <div
           class="px-4 py-2 bg-gray-100 border-t border-gray-200 flex justify-start items-center"
@@ -49,7 +58,7 @@
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
             type="submit"
           >
-            Create Account Group
+            Update Account
           </button>
         </div>
       </form>
@@ -67,26 +76,25 @@ export default {
 
   props: {
     errors: Object,
-    types: Object,
-    first: Object,
-
+    account: Object,
     companies: Object,
-    comp_first: Object,
+    groups: Object,
   },
 
   data() {
     return {
       form: this.$inertia.form({
-        name: null,
-        type: this.first.id,
-        company: this.comp_first.id,
+        name: this.account.name,
+        number: this.account.number,
+        group: this.account.group_id,
+        company: this.account.company_id,
       }),
     };
   },
 
   methods: {
     submit() {
-      this.$inertia.post(route("accountgroups.store"), this.form);
+      this.$inertia.put(route("accounts.update", this.account.id), this.form);
     },
   },
 };

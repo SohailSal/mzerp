@@ -1,9 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Account Groups
-      </h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Voucher</h2>
     </template>
     <div class="">
       <form @submit.prevent="submit">
@@ -16,7 +14,16 @@
           />
           <div v-if="errors.name">{{ errors.name }}</div>
         </div>
-        <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <input
+            type="text"
+            v-model="form.prefix"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            label="prefix"
+          />
+          <div v-if="errors.prefix">{{ errors.prefix }}</div>
+        </div>
+        <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <select
             v-model="form.type"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
@@ -28,8 +35,8 @@
             </option>
           </select>
           <div v-if="errors.type">{{ errors.type }}</div>
-        </div>
-        <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+        </div> -->
+        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <select
             v-model="form.company"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
@@ -49,7 +56,7 @@
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
             type="submit"
           >
-            Create Account Group
+            Update Voucher
           </button>
         </div>
       </form>
@@ -67,26 +74,28 @@ export default {
 
   props: {
     errors: Object,
-    types: Object,
-    first: Object,
-
+    documenttype: Object,
+    // types: Object,
     companies: Object,
-    comp_first: Object,
   },
 
   data() {
     return {
       form: this.$inertia.form({
-        name: null,
-        type: this.first.id,
-        company: this.comp_first.id,
+        name: this.documenttype.name,
+        prefix: this.documenttype.prefix,
+        // type: this.accountgroup.type_id,
+        company: this.documenttype.company_id,
       }),
     };
   },
 
   methods: {
     submit() {
-      this.$inertia.post(route("accountgroups.store"), this.form);
+      this.$inertia.put(
+        route("documenttypes.update", this.documenttype.id),
+        this.form
+      );
     },
   },
 };
