@@ -38,7 +38,7 @@ class AccountController extends Controller
         return Inertia::render('Accounts/Create',[
             'companies' => $companies, 'comp_first' => $comp_first,
             'groups' => $groups, 'group_first' => $group_first,
-            'group_names' => $group_names
+ //           'group_names' => $group_names
          ]);
     }
 
