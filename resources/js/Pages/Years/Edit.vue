@@ -5,26 +5,12 @@
     </template>
     <div class="">
       <form @submit.prevent="submit">
-        <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"> -->
-        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-          <select
-            v-model="form.company_id"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-            label="company"
-            placeholder="Enter Company"
-          >
-            <option v-for="type in companies" :key="type.id" :value="type.id">
-              {{ type.name }}
-            </option>
-          </select>
-          <div v-if="errors.type">{{ errors.type }}</div>
-        </div>
-
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <datepicker
             v-model="form.begin"
-            class="pr-2 pb-2 w-full rounded-md"
+            class="pr-2 pb-2 w-full rounded-md placeholder-indigo-300"
             label="date"
+            placeholder="Begin year:"
           />
           <div v-if="errors.begin">{{ errors.begin }}</div>
         </div>
@@ -32,8 +18,9 @@
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <datepicker
             v-model="form.end"
-            class="pr-2 pb-2 w-full rounded-md"
+            class="pr-2 pb-2 w-full rounded-md placeholder-indigo-300"
             label="date"
+            placeholder="End year:"
           />
           <div v-if="errors.end">{{ errors.end }}</div>
         </div>
@@ -61,15 +48,11 @@ export default {
   components: {
     AppLayout,
     Datepicker,
-    // format,
   },
 
   props: {
     errors: Object,
-    // documenttype: Object,
-    // types: Object,
     year: Object,
-    companies: Object,
   },
 
   data() {
@@ -77,15 +60,12 @@ export default {
       form: {
         begin: this.year.begin == null ? null : new Date(this.year.begin),
         end: this.year.begin == null ? null : new Date(this.year.end),
-        company_id: this.year.company_id,
       },
     };
   },
 
   methods: {
     submit() {
-      this.form.begin = format(this.form.begin, "yyyy-MM-dd");
-      this.form.end = format(this.form.end, "yyyy-MM-dd");
       this.$inertia.put(route("years.update", this.year.id), this.form);
     },
   },

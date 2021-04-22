@@ -9,30 +9,19 @@
           <input
             type="text"
             v-model="form.name"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="name"
+            placeholder="Enter name:"
           />
           <div v-if="errors.name">{{ errors.name }}</div>
-        </div>
-        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-          <select
-            v-model="form.type"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-            label="type"
-            placeholder="Enter type"
-          >
-            <option v-for="type in types" :key="type.id" :value="type.id">
-              {{ type.fiscal }}
-            </option>
-          </select>
-          <div v-if="errors.type">{{ errors.type }}</div>
         </div>
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
             type="text"
             v-model="form.address"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="address"
+            placeholder="Enter address:"
           />
           <div v-if="errors.address">{{ errors.address }}</div>
         </div>
@@ -41,8 +30,9 @@
           <input
             type="text"
             v-model="form.email"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="email"
+            placeholder="Enter Email:"
           />
           <div v-if="errors.email">{{ errors.email }}</div>
         </div>
@@ -51,8 +41,9 @@
           <input
             type="text"
             v-model="form.website"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="website"
+            placeholder="Enter Web Address:"
           />
           <div v-if="errors.website">{{ errors.website }}</div>
         </div>
@@ -61,8 +52,9 @@
           <input
             type="text"
             v-model="form.phone"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="phone"
+            placeholder="Enter Phone no:"
           />
           <div v-if="errors.phone">{{ errors.phone }}</div>
         </div>
@@ -76,25 +68,13 @@
           />
           <div v-if="errors.fiscal">{{ errors.fiscal }}</div>
         </div>
-        <!-- <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
-          <select
-            v-model="form.type"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-            label="type"
-            placeholder="Enter type"
-          >
-            <option v-for="type in types" :key="type.id" :value="type.id">
-              {{ type.fiscal }}
-            </option>
-          </select>
-          <div v-if="errors.type">{{ errors.type }}</div>
-        </div> -->
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
             type="text"
             v-model="form.incorp"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 placeholder-indigo-300 rounded-md"
             label="incorp"
+            placeholder="Enter Incorp:"
           />
           <div v-if="errors.incorp">{{ errors.incorp }}</div>
         </div>
@@ -116,6 +96,7 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
+import Label from "../../Jetstream/Label.vue";
 
 export default {
   components: {
@@ -124,7 +105,6 @@ export default {
 
   props: {
     errors: Object,
-    company: Object,
     types: Object,
   },
 
@@ -138,8 +118,6 @@ export default {
         phone: this.company.phone,
         fiscal: this.company.fiscal,
         incrop: this.company.incorp,
-
-        // type: this.company.id,
       }),
     };
   },

@@ -8,7 +8,33 @@
     <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
       {{ $page.props.flash.success }}
     </div>
-    <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>
+
+    <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap">
+      <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>
+
+      <select
+        v-model="co_id"
+        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
+        label="company"
+        @change="coch"
+      >
+        <option v-for="type in companies" :key="type.id" :value="type.id">
+          {{ type.name }}
+        </option>
+      </select>
+      <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
+      <select
+        v-model="yr_id"
+        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
+        label="year"
+        @change="yrch"
+      >
+        <option v-for="type in years" :key="type.id" :value="type.id">
+          {{ type.name }}
+        </option>
+      </select>
+      <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
+    </div>
     <div class="">
       <table class="shadow-lg border mt-4 ml-8 rounded-xl">
         <thead>
@@ -21,9 +47,8 @@
         </thead>
         <tbody>
           <tr v-for="item in data" :key="item.id">
-            <!-- <td class="py-1 px-4 border">{{ item.type_id }}</td> -->
             <td class="py-1 px-4 border">{{ item.ref }}</td>
-            <!-- <td class="py-1 px-4 border w-2/5">{{ item.date }}</td> -->
+            <td class="py-1 px-4 border">{{ item.date }}</td>
             <td class="py-1 px-4 border w-2/5">{{ item.description }}</td>
             <td class="py-1 px-4 border">
               <button
@@ -49,17 +74,26 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
+import moment from "moment";
 
 export default {
   components: {
     AppLayout,
     JetButton,
+    moment,
   },
 
-  props: ["data"],
+  props: {
+    data: Object,
+    companies: Object,
+    years: Object,
+  },
 
   data() {
-    return {};
+    return {
+      co_id: this.$page.props.co_id,
+      yr_id: this.$page.props.yr_id,
+    };
   },
 
   methods: {
@@ -73,6 +107,16 @@ export default {
 
     destroy(id) {
       this.$inertia.delete(route("documents.destroy", id));
+    },
+
+    coch() {
+      this.$inertia.get(route("companies.coch", this.co_id));
+    },
+    // yrch() {
+    //   this.$inertia.get(route("companies.yrch", this.yr_id));
+    // },
+    yrch() {
+      this.$inertia.get(route("years.yrch", this.yr_id));
     },
   },
 };

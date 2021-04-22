@@ -11,8 +11,9 @@
           <input
             type="text"
             v-model="form.name"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="name"
+            placeholder="Enter name:"
           />
           <div v-if="errors.name">{{ errors.name }}</div>
         </div>
@@ -20,23 +21,11 @@
           <input
             type="text"
             v-model="form.number"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="number"
+            placeholder="Enter number:"
           />
           <div v-if="errors.number">{{ errors.number }}</div>
-        </div>
-        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-          <select
-            v-model="form.company"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-            label="company"
-            placeholder="Enter Company"
-          >
-            <option v-for="type in companies" :key="type.id" :value="type.id">
-              {{ type.name }}
-            </option>
-          </select>
-          <div v-if="errors.company">{{ errors.company }}</div>
         </div>
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <select
@@ -77,7 +66,6 @@ export default {
   props: {
     errors: Object,
     account: Object,
-    companies: Object,
     groups: Object,
   },
 
@@ -87,7 +75,6 @@ export default {
         name: this.account.name,
         number: this.account.number,
         group: this.account.group_id,
-        company: this.account.company_id,
       }),
     };
   },

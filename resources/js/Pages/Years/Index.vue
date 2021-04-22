@@ -7,6 +7,17 @@
       {{ $page.props.flash.success }}
     </div>
     <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>
+    <select
+      v-model="co_id"
+      class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
+      label="company"
+      @change="coch"
+    >
+      <option v-for="type in companies" :key="type.id" :value="type.id">
+        {{ type.name }}
+      </option>
+    </select>
+    <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
     <div class="">
       <table class="shadow-lg border mt-4 ml-8 rounded-xl">
         <thead>
@@ -19,7 +30,6 @@
         </thead>
         <tbody>
           <tr v-for="item in data" :key="item.id">
-            <!-- <td class="py-1 px-4 border w-2/5">{{ item.company_id }}</td> -->
             <td class="py-1 px-4 border w-2/5">{{ item.company_name }}</td>
             <td class="py-1 px-4 border">{{ item.begin }}</td>
             <td class="py-1 px-4 border">{{ item.end }}</td>
@@ -54,10 +64,12 @@ export default {
     JetButton,
   },
 
-  props: ["data"],
+  props: ["data", "companies"],
 
   data() {
-    return {};
+    return {
+      co_id: this.$page.props.co_id,
+    };
   },
 
   methods: {
@@ -71,6 +83,9 @@ export default {
 
     destroy(id) {
       this.$inertia.delete(route("years.destroy", id));
+    },
+    coch() {
+      this.$inertia.get(route("companies.coch", this.co_id));
     },
   },
 };

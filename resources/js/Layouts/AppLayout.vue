@@ -24,16 +24,11 @@
                   Dashboard
                 </jet-nav-link>
                 <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('accountgroups')"
                   :active="route().current('accountgroups')"
                 >
                   Account Groups
-                </jet-nav-link>
-                <jet-nav-link
-                  :href="route('users')"
-                  :active="route().current('users')"
-                >
-                  Users
                 </jet-nav-link>
 
                 <jet-nav-link
@@ -44,6 +39,7 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('accounts')"
                   :active="route().current('accounts')"
                 >
@@ -51,6 +47,7 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('documenttypes')"
                   :active="route().current('documenttypes')"
                 >
@@ -58,6 +55,7 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('documents')"
                   :active="route().current('documents')"
                 >
@@ -65,6 +63,7 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  v-if="this.$page.props.co_id"
                   :href="route('years')"
                   :active="route().current('years')"
                 >

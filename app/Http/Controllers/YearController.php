@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Request as Req;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Year;
+use App\Models\Setting;
+use App\Models\Company;
 use App\Models\DocumentType;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class YearController extends Controller
 {
@@ -14,7 +19,8 @@ class YearController extends Controller
     {
         return Inertia::render('Years/Index', [
             'data' => Year::all()
-                ->map(function ($year){
+                ->where('company_id', session('company_id'))
+                ->map(function ($year) {
                     return [
                         'id' => $year->id,
                         'begin' => $year->begin,
@@ -22,49 +28,62 @@ class YearController extends Controller
                         'company_name' => $year->company->name,
                         'company_id' => $year->company_id,
                     ];
-                }), 
-                ]);
+                }),
+
+            'companies' => Company::all()
+                ->map(function ($com) {
+                    return [
+                        'id' => $com->id,
+                        'name' => $com->name,
+                    ];
+                }),
+        ]);
     }
 
     public function create()
     {
-        $companies = \App\Models\Company::all()->map->only('id','name');
-        $comp_first = \App\Models\Company::all('id','name')->first();
-
-        return Inertia::render('Years/Create',[
-        'companies' => $companies, 'comp_first' => $comp_first]);
+        return Inertia::render('Years/Create');
     }
 
-    public function store()
+    public function store(Req $request)
     {
         Request::validate([
             'begin' => ['required', 'date'],
             'end' => ['required', 'date'],
-            'company_id' => ['required'],
         ]);
-        Year::create([
-            'begin' => Request::input('begin'),
-            'end' => Request::input('end'),
-            'company_id' => Request::input('company_id'),
+
+        $begin = new Carbon($request->begin);
+        $end = new Carbon($request->end);
+
+        $year = Year::create([
+            'begin' => $begin->format('Y-m-d'),
+            'end' => $end->format('Y-m-d'),
+            'company_id' => session('company_id'),
         ]);
+
+        Setting::create([
+            'key' => 'active_year',
+            'value' => $year->id,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        session(['year_id' => $year->id]);
         return Redirect::route('years')->with('success', 'Year created.');
     }
 
-    public function show(AccountGroup $accountgroup)
-    {
-    }
+    // public function show(Year $year)
+    // {
+    // }
 
     public function edit(Year $year)
     {
-        $companies = \App\Models\Company::all()->map->only('id','name');
         return Inertia::render('Years/Edit', [
             'year' => [
                 'id' => $year->id,
                 'begin' => $year->begin,
                 'end' => $year->end,
-                'company_id' => $year->company_id,
+                'company_id' => session('company_id'),
             ],
-            'companies' => $companies,
         ]);
     }
 
@@ -73,11 +92,14 @@ class YearController extends Controller
         Request::validate([
             'begin' => ['required', 'date'],
             'end' => ['required', 'date'],
-            'company_id' => ['required'],
         ]);
-        $year->begin = Request::input('begin');
-        $year->end = Request::input('end');
-        $year->company_id = Request::input('company_id');
+
+        $begin = new carbon($year->begin);
+        $end = new carbon($year->end);
+
+        $year->begin = $begin->format('Y-m-d');
+        $year->end = $end->format('Y-m-d');
+        $year->company_id = session('company_id');
         $year->save();
 
         return Redirect::route('years')->with('success', 'Year updated.');
@@ -87,5 +109,16 @@ class YearController extends Controller
     {
         $year->delete();
         return Redirect::back()->with('success', 'Year deleted.');
+    }
+
+    public function yrch($id)
+    {
+        $active_yr = Setting::where('user_id', Auth::user()->id)->where('key', 'active_year')->first();
+
+        $active_yr->value = $id;
+        $active_yr->save();
+        session(['year_id' => $id]);
+
+        return Redirect::back();
     }
 }

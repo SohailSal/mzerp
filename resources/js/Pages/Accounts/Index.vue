@@ -9,33 +9,31 @@
       {{ $page.props.flash.success }}
     </div>
     <jet-button @click="create" class="mt-4 ml-8">Create Account</jet-button>
+    <select
+      v-model="co_id"
+      class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
+      label="company"
+      @change="coch"
+    >
+      <option v-for="type in companies" :key="type.id" :value="type.id">
+        {{ type.name }}
+      </option>
+    </select>
     <div class="">
       <table class="shadow-lg border mt-4 ml-8 rounded-xl">
         <thead>
           <tr class="bg-indigo-100">
             <th class="py-2 px-4 border">ID</th>
             <th class="py-2 px-4 border">Name of Account</th>
-            <!-- <th class="py-2 px-4 border w-2/5">Address</th> -->
             <th class="py-2 px-4 border">Group of Account</th>
-            <!-- <th class="py-2 px-4 border">Email</th>
-            <th class="py-2 px-4 border">Website</th>
-            <th class="py-2 px-4 border">Phone</th>
-            <th class="py-2 px-4 border">fic</th>
-            <th class="py-2 px-4 border">Phone</th> -->
             <th class="py-2 px-4 border">Action</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in data" :key="item.id">
-            <!-- <td class="py-1 px-4 border">{{ item.type_id }}</td> -->
-            <!-- <td class="py-1 px-4 border w-2/5">{{ item.name }}</td> -->
             <td class="py-1 px-4 border">{{ item.id }}</td>
             <td class="py-1 px-4 border">{{ item.name }}</td>
             <td class="py-1 px-4 border">{{ item.group_name }}</td>
-            <!-- <td class="py-1 px-4 border">{{ item.group_id }}</td> -->
-            <!-- <td class="py-1 px-4 border">{{ item.email }}</td>
-            <td class="py-1 px-4 border">{{ item.website }}</td>
-            <td class="py-1 px-4 border">{{ item.phone }}</td> -->
             <td class="py-1 px-4 border">
               <button
                 class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
@@ -67,10 +65,12 @@ export default {
     JetButton,
   },
 
-  props: ["data", "group_names"],
+  props: ["data", "companies"],
 
   data() {
-    return {};
+    return {
+      co_id: this.$page.props.co_id,
+    };
   },
 
   methods: {
@@ -84,6 +84,9 @@ export default {
 
     destroy(id) {
       this.$inertia.delete(route("accounts.destroy", id));
+    },
+    coch() {
+      this.$inertia.get(route("companies.coch", this.co_id));
     },
   },
 };

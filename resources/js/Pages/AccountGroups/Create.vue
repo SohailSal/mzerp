@@ -11,8 +11,9 @@
           <input
             type="text"
             v-model="form.name"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="name"
+            placeholder="Enter name:"
           />
           <div v-if="errors.name">{{ errors.name }}</div>
         </div>
@@ -29,19 +30,7 @@
           </select>
           <div v-if="errors.type">{{ errors.type }}</div>
         </div>
-        <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
-          <select
-            v-model="form.company"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-            label="company"
-            placeholder="Enter Company"
-          >
-            <option v-for="type in companies" :key="type.id" :value="type.id">
-              {{ type.name }}
-            </option>
-          </select>
-          <div v-if="errors.type">{{ errors.type }}</div>
-        </div>
+
         <div
           class="px-4 py-2 bg-gray-100 border-t border-gray-200 flex justify-start items-center"
         >
@@ -69,9 +58,6 @@ export default {
     errors: Object,
     types: Object,
     first: Object,
-
-    companies: Object,
-    comp_first: Object,
   },
 
   data() {
@@ -79,7 +65,6 @@ export default {
       form: this.$inertia.form({
         name: null,
         type: this.first.id,
-        company: this.comp_first.id,
       }),
     };
   },
