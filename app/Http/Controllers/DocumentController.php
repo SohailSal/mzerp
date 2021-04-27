@@ -134,10 +134,6 @@ class DocumentController extends Controller
         return Redirect::route('documents')->with('success', 'Transaction created.');
     }
 
-    // public function show(Document $document)
-    // {
-    // }
-
     public function edit(Document $document)
     {
         $accounts = \App\Models\Account::all()->map->only('id', 'name');
@@ -160,23 +156,6 @@ class DocumentController extends Controller
             ]
         );
     }
-
-    // public function update(Document $document)
-    // {
-    // Request::validate([
-    //     'type' => ['required'],
-    //     'name' => ['required'],
-    //     'company' => ['required'],
-
-    // ]);
-
-    // $accountgroup->type_id = Request::input('type');
-    // $accountgroup->name = Request::input('name');
-    // $accountgroup->company_id = Request::input('company');
-    // $accountgroup->save();
-
-    // return Redirect::route('accountgroups')->with('success', 'Account Group updated.');
-    // }
 
     public function destroy(Document $document)
     {

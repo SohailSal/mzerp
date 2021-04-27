@@ -3,6 +3,9 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Years</h2>
     </template>
+    <div v-if="$page.props.flash.success" class="bg-yellow-300 text-white">
+      {{ $page.props.flash.success }}
+    </div>
     <div class="">
       <form @submit.prevent="submit">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
@@ -12,6 +15,7 @@
             label="date"
             placeholder="Enter Begin date:"
           />
+          <div v-if="errors.begin">{{ errors.begin }}</div>
         </div>
 
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
@@ -21,6 +25,7 @@
             label="date"
             placeholder="Enter End date:"
           />
+          <div v-if="errors.end">{{ errors.end }}</div>
         </div>
 
         <div
@@ -58,13 +63,16 @@ export default {
   data() {
     return {
       form: this.$inertia.form({
-        date: "",
+        begin: "",
+        end: "",
       }),
     };
   },
 
   methods: {
     submit() {
+      this.form.begin = format(this.form.begin, "yyyy-MM-dd");
+      this.form.end = format(this.form.end, "yyyy-MM-dd");
       this.$inertia.post(route("years.store"), this.form);
     },
   },

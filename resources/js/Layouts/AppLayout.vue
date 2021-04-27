@@ -23,19 +23,13 @@
                 >
                   Dashboard
                 </jet-nav-link>
+
                 <jet-nav-link
                   v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('accountgroups')"
                   :active="route().current('accountgroups')"
                 >
                   Account Groups
-                </jet-nav-link>
-
-                <jet-nav-link
-                  :href="route('companies')"
-                  :active="route().current('companies')"
-                >
-                  Companies
                 </jet-nav-link>
 
                 <jet-nav-link
@@ -60,6 +54,13 @@
                   :active="route().current('documents')"
                 >
                   Transactions
+                </jet-nav-link>
+
+                <jet-nav-link
+                  :href="route('companies')"
+                  :active="route().current('companies')"
+                >
+                  Companies
                 </jet-nav-link>
 
                 <jet-nav-link

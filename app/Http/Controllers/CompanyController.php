@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Company;
 use App\Models\Year;
 use App\Models\Setting;
-
+use Egulias\EmailValidator\Warning\Warning;
 use Inertia\Inertia;
 
 class CompanyController extends Controller
@@ -59,12 +59,8 @@ class CompanyController extends Controller
         ]);
 
         session(['company_id' => $comp->id]);
-        return Redirect::route('companies')->with('success', 'Company created.');
+        return Redirect::route('years.create')->with('success', 'Company created. Please create Year for your to Company.');
     }
-
-    // public function show(Company $company)
-    // {
-    // }
 
     public function edit(Company $company)
     {

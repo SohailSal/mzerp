@@ -17897,7 +17897,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: {
     errors: Object,
-    types: Object
+    types: Object,
+    company: Object
   },
   data: function data() {
     return {
@@ -19119,12 +19120,15 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       form: this.$inertia.form({
-        date: ""
+        begin: "",
+        end: ""
       })
     };
   },
   methods: {
     submit: function submit() {
+      this.form.begin = date_fns_format__WEBPACK_IMPORTED_MODULE_3___default()(this.form.begin, "yyyy-MM-dd");
+      this.form.end = date_fns_format__WEBPACK_IMPORTED_MODULE_3___default()(this.form.end, "yyyy-MM-dd");
       this.$inertia.post(route("years.store"), this.form);
     }
   }
@@ -19145,6 +19149,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Layouts_AppLayout__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/Layouts/AppLayout */ "./resources/js/Layouts/AppLayout.vue");
 /* harmony import */ var vue3_datepicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue3-datepicker */ "./node_modules/vue3-datepicker/dist/vue3-datepicker.esm.js");
+/* harmony import */ var date_fns_format__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! date-fns/format */ "./node_modules/date-fns/format/index.js");
+/* harmony import */ var date_fns_format__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(date_fns_format__WEBPACK_IMPORTED_MODULE_2__);
 
 
 
@@ -19161,12 +19167,14 @@ __webpack_require__.r(__webpack_exports__);
     return {
       form: {
         begin: this.year.begin == null ? null : new Date(this.year.begin),
-        end: this.year.begin == null ? null : new Date(this.year.end)
+        end: this.year.end == null ? null : new Date(this.year.end)
       }
     };
   },
   methods: {
     submit: function submit() {
+      this.form.begin = date_fns_format__WEBPACK_IMPORTED_MODULE_2___default()(this.form.begin, "yyyy-MM-dd");
+      this.form.end = date_fns_format__WEBPACK_IMPORTED_MODULE_2___default()(this.form.end, "yyyy-MM-dd");
       this.$inertia.put(route("years.update", this.year.id), this.form);
     }
   }
@@ -20580,13 +20588,13 @@ var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNod
 
 var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Account Groups ");
 
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Companies ");
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Accounts ");
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Accounts ");
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Vouchers ");
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Vouchers ");
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Transactions ");
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Transactions ");
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Companies ");
 
 var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Years ");
 
@@ -20861,25 +20869,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   }, 8
   /* PROPS */
-  , ["href", "active"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_jet_nav_link, {
-    href: _ctx.route('companies'),
-    active: _ctx.route().current('companies')
-  }, {
-    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_10];
-    }),
-    _: 1
-    /* STABLE */
-
-  }, 8
-  /* PROPS */
-  , ["href", "active"]), this.$page.props.co_id && this.$page.props.yr_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_jet_nav_link, {
+  , ["href", "active"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), this.$page.props.co_id && this.$page.props.yr_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_jet_nav_link, {
     key: 1,
     href: _ctx.route('accounts'),
     active: _ctx.route().current('accounts')
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_11];
+      return [_hoisted_10];
     }),
     _: 1
     /* STABLE */
@@ -20892,7 +20888,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     active: _ctx.route().current('documenttypes')
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_12];
+      return [_hoisted_11];
     }),
     _: 1
     /* STABLE */
@@ -20905,6 +20901,18 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     active: _ctx.route().current('documents')
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [_hoisted_12];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
+  /* PROPS */
+  , ["href", "active"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_jet_nav_link, {
+    href: _ctx.route('companies'),
+    active: _ctx.route().current('companies')
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [_hoisted_13];
     }),
     _: 1
@@ -20912,7 +20920,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   }, 8
   /* PROPS */
-  , ["href", "active"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), this.$page.props.co_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_jet_nav_link, {
+  , ["href", "active"]), this.$page.props.co_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_jet_nav_link, {
     key: 4,
     href: _ctx.route('years'),
     active: _ctx.route().current('years')
@@ -26532,16 +26540,26 @@ var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 );
 
 var _hoisted_2 = {
-  "class": ""
+  key: 0,
+  "class": "bg-yellow-300 text-white"
 };
 var _hoisted_3 = {
-  "class": "p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"
+  "class": ""
 };
 var _hoisted_4 = {
   "class": "p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"
 };
+var _hoisted_5 = {
+  key: 0
+};
+var _hoisted_6 = {
+  "class": "p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"
+};
+var _hoisted_7 = {
+  key: 0
+};
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
   "class": "px-4 py-2 bg-gray-100 border-t border-gray-200 flex justify-start items-center"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
   "class": "border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4",
@@ -26560,11 +26578,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return [_hoisted_1];
     }),
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
+      return [_ctx.$page.props.flash.success ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.$page.props.flash.success), 1
+      /* TEXT */
+      )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
         onSubmit: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
           return $options.submit && $options.submit.apply($options, arguments);
         }, ["prevent"]))
-      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_datepicker, {
+      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_datepicker, {
         modelValue: $data.form.begin,
         "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
           return $data.form.begin = $event;
@@ -26574,7 +26594,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         placeholder: "Enter Begin date:"
       }, null, 8
       /* PROPS */
-      , ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_datepicker, {
+      , ["modelValue"]), $props.errors.begin ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.errors.begin), 1
+      /* TEXT */
+      )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_datepicker, {
         modelValue: $data.form.end,
         "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
           return $data.form.end = $event;
@@ -26584,7 +26606,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         placeholder: "Enter End date:"
       }, null, 8
       /* PROPS */
-      , ["modelValue"])]), _hoisted_5], 32
+      , ["modelValue"]), $props.errors.end ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.errors.end), 1
+      /* TEXT */
+      )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), _hoisted_8], 32
       /* HYDRATE_EVENTS */
       )])];
     }),

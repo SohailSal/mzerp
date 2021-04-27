@@ -32,11 +32,11 @@ Route::get('/', function () {
 });
 
 //TO CHANGE COMPANY THE FROM DROPDOWN
-Route::get('companies/coch/{id}', [CompanyController::cLass, 'coch'])
+Route::get('companies/coch/{id}', [CompanyController::class, 'coch'])
     ->name('companies.coch');
 
 //TO CHANGE YEAR THE FROM DROPDOWN
-Route::get('years/yrch/{id}', [YearController::cLass, 'yrch'])
+Route::get('years/yrch/{id}', [YearController::class, 'yrch'])
     ->name('years.yrch');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
@@ -73,7 +73,7 @@ Route::delete('accountgroups/{accountgroup}', [AccountGroupController::class, 'd
 
 
 //USER
-    Route::get('users', [UserController::class, 'index'])
+Route::get('users', [UserController::class, 'index'])
     ->name('users')
     ->middleware('auth');
 
@@ -158,7 +158,7 @@ Route::delete('documenttypes/{documenttype}', [DocumentTypeController::class, 'd
     ->middleware('auth');
 //DOCUMENT TYPES / VOUCHER ----------- END ------------------------------
 
-    
+
 //DOCUMENT ....TRANSACTION + ENTRIES--------------------- STARTS ----------------------
 Route::get('documents', [DocumentController::class, 'index'])
     ->name('documents')

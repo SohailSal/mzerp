@@ -106,6 +106,7 @@ export default {
   props: {
     errors: Object,
     types: Object,
+    company: Object,
   },
 
   data() {

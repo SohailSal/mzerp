@@ -52,6 +52,7 @@ class YearController extends Controller
             'end' => ['required', 'date'],
         ]);
 
+
         $begin = new Carbon($request->begin);
         $end = new Carbon($request->end);
 
@@ -70,10 +71,6 @@ class YearController extends Controller
         session(['year_id' => $year->id]);
         return Redirect::route('years')->with('success', 'Year created.');
     }
-
-    // public function show(Year $year)
-    // {
-    // }
 
     public function edit(Year $year)
     {
@@ -94,8 +91,8 @@ class YearController extends Controller
             'end' => ['required', 'date'],
         ]);
 
-        $begin = new carbon($year->begin);
-        $end = new carbon($year->end);
+        $begin = new carbon(Request::input('begin'));
+        $end = new carbon(Request::input('end'));
 
         $year->begin = $begin->format('Y-m-d');
         $year->end = $end->format('Y-m-d');

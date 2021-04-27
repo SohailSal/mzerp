@@ -59,13 +59,15 @@ export default {
     return {
       form: {
         begin: this.year.begin == null ? null : new Date(this.year.begin),
-        end: this.year.begin == null ? null : new Date(this.year.end),
+        end: this.year.end == null ? null : new Date(this.year.end),
       },
     };
   },
 
   methods: {
     submit() {
+      this.form.begin = format(this.form.begin, "yyyy-MM-dd");
+      this.form.end = format(this.form.end, "yyyy-MM-dd");
       this.$inertia.put(route("years.update", this.year.id), this.form);
     },
   },
