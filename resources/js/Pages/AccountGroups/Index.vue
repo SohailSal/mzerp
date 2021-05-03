@@ -10,6 +10,19 @@
     </div>
     <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>
 
+    <!-- disabled="false" -->
+    <!-- <button
+      class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+      @click="check();
+        this.disable = true;
+        (_) => {
+          setTimeout(() => {}, 1000);
+        };
+      "
+    >
+      <span>Check</span>
+    </button> -->
+
     <select
       v-model="co_id"
       class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
@@ -92,6 +105,21 @@ export default {
     coch() {
       this.$inertia.get(route("companies.coch", this.co_id));
     },
+
+    check() {
+      console.log("click");
+
+      setTimeout(() => {
+        console.log("timer");
+        // this.postRecordSolo('clientStore/UPDATE_RECORDS_NO_TAB', this.endPoint, true)
+      }, 1000);
+    },
+
+    // addRecord () {
+    //   setTimeout(() => {
+    //     this.postRecordSolo('clientStore/UPDATE_RECORDS_NO_TAB', this.endPoint, true)
+    //   }, 1000)
+    // }
   },
 };
 </script>
