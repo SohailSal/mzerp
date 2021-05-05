@@ -4,7 +4,7 @@
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Voucher</h2>
     </template>
     <div class="">
-      <form @submit.prevent="submit">
+      <form @submit.prevent="form.post(route('documenttypes.store'))">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
             type="text"
@@ -22,6 +22,7 @@
           <button
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
             type="submit"
+            :disabled="form.processing"
           >
             Create Voucher
           </button>
@@ -33,6 +34,7 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 export default {
   components: {
@@ -43,18 +45,25 @@ export default {
     errors: Object,
   },
 
-  data() {
-    return {
-      form: this.$inertia.form({
-        name: null,
-      }),
-    };
+  setup() {
+    const form = useForm({
+      name: null,
+    });
+    return { form };
   },
 
-  methods: {
-    submit() {
-      this.$inertia.post(route("documenttypes.store"), this.form);
-    },
-  },
+  //   data() {
+  //     return {
+  //       form: this.$inertia.form({
+  //         name: null,
+  //       }),
+  //     };
+  //   },
+
+  //   methods: {
+  //     submit() {
+  //       this.$inertia.post(route("documenttypes.store"), this.form);
+  //     },
+  //   },
 };
 </script>

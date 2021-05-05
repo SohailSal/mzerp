@@ -4,7 +4,7 @@
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Company</h2>
     </template>
     <div class="">
-      <form @submit.prevent="submit">
+      <form @submit.prevent="form.post(route('companies.store'))">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
             type="text"
@@ -88,6 +88,7 @@
           <button
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
             type="submit"
+            :disabled="form.processing"
           >
             Create Company
           </button>
@@ -99,6 +100,7 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 export default {
   components: {
@@ -111,24 +113,37 @@ export default {
     fiscal_first: Object,
   },
 
-  data() {
-    return {
-      form: this.$inertia.form({
-        name: null,
-        address: null,
-        email: null,
-        website: null,
-        phone: null,
-        fiscal: this.fiscal_first,
-        incorp: null,
-      }),
-    };
+  setup(props) {
+    const form = useForm({
+      name: null,
+      address: null,
+      email: null,
+      website: null,
+      phone: null,
+      fiscal: props.fiscal_first,
+      incorp: null,
+    });
+    return { form };
   },
 
-  methods: {
-    submit() {
-      this.$inertia.post(route("companies.store"), this.form);
-    },
-  },
+  //   data() {
+  //     return {
+  //       form: this.$inertia.form({
+  //         name: null,
+  //         address: null,
+  //         email: null,
+  //         website: null,
+  //         phone: null,
+  //         fiscal: this.fiscal_first,
+  //         incorp: null,
+  //       }),
+  //     };
+  //   },
+
+  //   methods: {
+  //     submit() {
+  //       this.$inertia.post(route("companies.store"), this.form);
+  //     },
+  //   },
 };
 </script>

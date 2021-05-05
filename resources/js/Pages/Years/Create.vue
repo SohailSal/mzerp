@@ -7,7 +7,7 @@
       {{ $page.props.flash.success }}
     </div>
     <div class="">
-      <form @submit.prevent="submit">
+      <form @submit.prevent="form.post(route('years.store'))">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <datepicker
             v-model="form.begin"
@@ -34,6 +34,7 @@
           <button
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
             type="submit"
+            :disabled="form.processing"
           >
             Create Year
           </button>
@@ -45,6 +46,7 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
+import { useForm } from "@inertiajs/inertia-vue3";
 import Label from "../../Jetstream/Label.vue";
 import Datepicker from "vue3-datepicker";
 import format from "date-fns/format";
@@ -60,21 +62,29 @@ export default {
     errors: Object,
   },
 
-  data() {
-    return {
-      form: this.$inertia.form({
-        begin: "",
-        end: "",
-      }),
-    };
+  setup() {
+    const form = useForm({
+      begin: "",
+      end: "",
+    });
+    return { form };
   },
 
-  methods: {
-    submit() {
-      this.form.begin = format(this.form.begin, "yyyy-MM-dd");
-      this.form.end = format(this.form.end, "yyyy-MM-dd");
-      this.$inertia.post(route("years.store"), this.form);
-    },
-  },
+  //   data() {
+  //     return {
+  //       form: this.$inertia.form({
+  //         begin: "",
+  //         end: "",
+  //       }),
+  //     };
+  //   },
+
+  //   methods: {
+  //     submit() {
+  //       this.form.begin = format(this.form.begin, "yyyy-MM-dd");
+  //       this.form.end = format(this.form.end, "yyyy-MM-dd");
+  //       this.$inertia.post(route("years.store"), this.form);
+  //     },
+  //   },
 };
 </script>

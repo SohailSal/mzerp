@@ -6,7 +6,7 @@
       </h2>
     </template>
     <div class="">
-      <form @submit.prevent="submit">
+      <form @submit.prevent="form.post(route('accounts.store'))">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
             type="text"
@@ -47,6 +47,7 @@
         >
           <button
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
+            :disabled="form.processing"
             type="submit"
           >
             Create Account
@@ -59,6 +60,7 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 export default {
   components: {
@@ -72,20 +74,30 @@ export default {
     group_first: Object,
   },
 
-  data() {
-    return {
-      form: this.$inertia.form({
-        name: null,
-        number: null,
-        group: this.group_first.id,
-      }),
-    };
+  setup(props) {
+    const form = useForm({
+      name: null,
+      number: null,
+      group: props.group_first.id,
+    });
+
+    return { form };
   },
 
-  methods: {
-    submit() {
-      this.$inertia.post(route("accounts.store"), this.form);
-    },
-  },
+  //   data() {
+  //     return {
+  //       form: this.$inertia.form({
+  //         name: null,
+  //         number: null,
+  //         group: this.group_first.id,
+  //       }),
+  //     };
+  //   },
+
+  //   methods: {
+  //     submit() {
+  //       this.$inertia.post(route("accounts.store"), this.form);
+  //     },
+  //   },
 };
 </script>

@@ -6,7 +6,11 @@
       </h2>
     </template>
     <div class="">
-      <form @submit.prevent="submit">
+      <form
+        @submit.prevent="
+          this.difference == 0 ? form.post(route('documents.store')) : ''
+        "
+      >
         <!-- DOCUMENT TYPE ID -->
         <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
           <select
@@ -142,6 +146,7 @@
           <button
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
             type="submit"
+            :disabled="form.processing"
           >
             Create Transaction
           </button>
@@ -153,6 +158,7 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
+import { useForm } from "@inertiajs/inertia-vue3";
 // import Label from "../../Jetstream/Label.vue";
 import Datepicker from "vue3-datepicker";
 import format from "date-fns/format";
@@ -174,6 +180,29 @@ export default {
     account_first: Object,
   },
 
+  setup(props) {
+    const form = useForm({
+      type_id: props.doc_type_first.id,
+      date: null,
+      description: null,
+
+      entries: [
+        {
+          account_id: props.accounts[0].id,
+          debit: 0,
+          credit: 0,
+        },
+        {
+          account_id: props.accounts[1].id,
+          debit: 0,
+          credit: 0,
+        },
+      ],
+    });
+
+    return { form };
+  },
+
   data() {
     return {
       difference: null,
@@ -181,34 +210,35 @@ export default {
       debit: 0,
       total: 0,
       isError: null,
-      form: this.$inertia.form({
-        type_id: this.doc_type_first.id,
-        date: null,
+      //   form: this.$inertia.form({
+      //     type_id: this.doc_type_first.id,
+      //     date: null,
+      //   description: null,
 
-        entries: [
-          {
-            account_id: this.accounts[0].id,
-            debit: 0,
-            credit: 0,
-          },
-          {
-            account_id: this.accounts[1].id,
-            debit: 0,
-            credit: 0,
-          },
-        ],
-      }),
+      //     entries: [
+      //       {
+      //         account_id: this.accounts[0].id,
+      //         debit: 0,
+      //         credit: 0,
+      //       },
+      //       {
+      //         account_id: this.accounts[1].id,
+      //         debit: 0,
+      //         credit: 0,
+      //       },
+      //     ],
+      //   }),
     };
   },
 
   methods: {
-    submit() {
-      if (this.difference === 0) {
-        this.$inertia.post(route("documents.store"), this.form);
-      } else {
-        alert("Entry is not equal");
-      }
-    },
+    // submit() {
+    //   if (this.difference === 0) {
+    //     this.$inertia.post(route("documents.store"), this.form);
+    //   } else {
+    //     alert("Entry is not equal");
+    //   }
+    // },
     //ON CHANGE FUNCTION ON DEBIT CREDIT TO NULL THE PARALLEL VALUES ---START ----
     debitchange(index) {
       let a = this.form.entries[index];
