@@ -59,6 +59,8 @@ class CompanyController extends Controller
         ]);
 
         session(['company_id' => $comp->id]);
+        session(['year_id' => null]);
+
         return Redirect::route('years.create')->with('success', 'Company created. Please create Year for your to Company.');
     }
 
@@ -119,10 +121,14 @@ class CompanyController extends Controller
             $active_yr->value = Year::where('company_id', $id)->latest()->first()->id;
             $active_yr->save();
             session(['year_id' => $active_yr->value]);
+            $active_co->save();
+            session(['company_id' => $id]);
+            return Redirect::back();
+        } else {
+            session(['year_id' => null]);
+            $active_co->save();
+            session(['company_id' => $id]);
+            return Redirect::route('years.create')->with('success', 'YEAR NOT FOUND. Please create an Year for selected Company.');
         }
-        $active_co->save();
-        session(['company_id' => $id]);
-
-        return Redirect::back();
     }
 }

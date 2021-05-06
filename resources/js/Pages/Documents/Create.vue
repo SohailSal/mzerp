@@ -193,7 +193,7 @@ export default {
           credit: 0,
         },
         {
-          account_id: props.accounts[1].id,
+          account_id: props.accounts[0].id,
           debit: 0,
           credit: 0,
         },

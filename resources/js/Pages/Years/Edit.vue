@@ -6,9 +6,10 @@
     <div class="">
       <form @submit.prevent="submit">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-          <datepicker
+          <input
+            type="date"
             v-model="form.begin"
-            class="pr-2 pb-2 w-full rounded-md placeholder-indigo-300"
+            class="pr-2 pb-2 rounded-md placeholder-indigo-300"
             label="date"
             placeholder="Begin year:"
           />
@@ -16,9 +17,10 @@
         </div>
 
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-          <datepicker
+          <input
+            type="date"
             v-model="form.end"
-            class="pr-2 pb-2 w-full rounded-md placeholder-indigo-300"
+            class="pr-2 pb-2 rounded-md placeholder-indigo-300"
             label="date"
             placeholder="End year:"
           />
@@ -41,13 +43,15 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
-import Datepicker from "vue3-datepicker";
+// import Datepicker from "vue3-datepicker";
 import format from "date-fns/format";
+import Input from "../../Jetstream/Input.vue";
 
 export default {
   components: {
     AppLayout,
-    Datepicker,
+    // Datepicker,
+    Input,
   },
 
   props: {
@@ -58,16 +62,14 @@ export default {
   data() {
     return {
       form: {
-        begin: this.year.begin == null ? null : new Date(this.year.begin),
-        end: this.year.end == null ? null : new Date(this.year.end),
+        begin: this.year.begin,
+        end: this.year.end,
       },
     };
   },
 
   methods: {
     submit() {
-      this.form.begin = format(this.form.begin, "yyyy-MM-dd");
-      this.form.end = format(this.form.end, "yyyy-MM-dd");
       this.$inertia.put(route("years.update", this.year.id), this.form);
     },
   },

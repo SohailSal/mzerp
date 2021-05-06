@@ -5,6 +5,9 @@
         Accounts
       </h2>
     </template>
+    <div v-if="$page.props.flash.success" class="bg-yellow-600 text-white">
+      {{ $page.props.flash.success }}
+    </div>
     <div class="">
       <form @submit.prevent="form.post(route('accounts.store'))">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">

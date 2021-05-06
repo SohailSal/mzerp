@@ -17,8 +17,8 @@ class AccountController extends Controller
     {
         return Inertia::render('Accounts/Index', [
             'data' => Account::all()
-            ->where('company_id', session('company_id'))
-                ->map(function ($account){
+                ->where('company_id', session('company_id'))
+                ->map(function ($account) {
                     return [
                         'id' => $account->id,
                         'name' => $account->name,
@@ -28,24 +28,29 @@ class AccountController extends Controller
                 }),
 
             'companies' => Company::all()
-            ->map(function ($com){
-                return[
-                    'id' => $com->id,
-                    'name' => $com->name,
-                ];
-            }),
+                ->map(function ($com) {
+                    return [
+                        'id' => $com->id,
+                        'name' => $com->name,
+                    ];
+                }),
 
         ]);
-   }
+    }
 
     public function create()
     {
-        $groups = \App\Models\AccountGroup::all()->map->only('id','name');
-        $group_first = \App\Models\AccountGroup::all('id','name')->first();
-        
-        return Inertia::render('Accounts/Create',[
-            'groups' => $groups, 'group_first' => $group_first,
-         ]);
+        $groups = \App\Models\AccountGroup::all()->map->only('id', 'name');
+        $group_first = \App\Models\AccountGroup::all('id', 'name')->first();
+
+        if ($group_first) {
+
+            return Inertia::render('Accounts/Create', [
+                'groups' => $groups, 'group_first' => $group_first,
+            ]);
+        } else {
+            return Redirect::route('accountgroups.create')->with('success', 'ACCOUNTGROUP NOT FOUND, Please create account group first.');
+        }
     }
 
     public function store()
@@ -61,7 +66,7 @@ class AccountController extends Controller
             'number' => Request::input('number'),
             'group_id' => Request::input('group'),
             'company_id' => session('company_id'),
-            ]);
+        ]);
 
         return Redirect::route('accounts')->with('success', 'Account created.');
     }
@@ -72,7 +77,7 @@ class AccountController extends Controller
 
     public function edit(Account $account)
     {
-        $groups = \App\Models\AccountGroup::all()->map->only('id','name');
+        $groups = \App\Models\AccountGroup::all()->map->only('id', 'name');
         return Inertia::render('Accounts/Edit', [
             'account' => [
                 'id' => $account->id,

@@ -22,9 +22,12 @@ class YearController extends Controller
                 ->where('company_id', session('company_id'))
                 ->map(function ($year) {
                     return [
+
+                        $begin = new Carbon($year->begin),
+                        $end = new Carbon($year->end),
                         'id' => $year->id,
-                        'begin' => $year->begin,
-                        'end' => $year->end,
+                        'begin' => $begin->format('F,j Y'),
+                        'end' => $end->format('F,j Y'),
                         'company_name' => $year->company->name,
                         'company_id' => $year->company_id,
                     ];
@@ -52,13 +55,9 @@ class YearController extends Controller
             'end' => ['required', 'date'],
         ]);
 
-
-        $begin = new Carbon($request->begin);
-        $end = new Carbon($request->end);
-
         $year = Year::create([
-            'begin' => $begin->format('Y-m-d'),
-            'end' => $end->format('Y-m-d'),
+            'begin' => $request->begin,
+            'end' => $request->end,
             'company_id' => session('company_id'),
         ]);
 

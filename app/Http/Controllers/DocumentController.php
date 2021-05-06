@@ -70,18 +70,26 @@ class DocumentController extends Controller
 
         $doc_type_first = \App\Models\DocumentType::all('id', 'name')->first();
 
-        return Inertia::render('Documents/Create', [
-            'accounts' => $accounts, 'account_first' => $account_first,
-            'doc_type_first' => $doc_type_first,
-            'doc_types' => DocumentType::all()
-                ->map(function ($doc_type) {
-                    return [
-                        'id' => $doc_type->id,
-                        'name' => $doc_type->name,
-                        'ref' => $doc_type->prefix . "/" . $doc_type->timestamps,
-                    ];
-                }),
-        ]);
+        if ($doc_type_first && $account_first) {
+            return Inertia::render('Documents/Create', [
+                'accounts' => $accounts, 'account_first' => $account_first,
+                'doc_type_first' => $doc_type_first,
+                'doc_types' => DocumentType::all()
+                    ->map(function ($doc_type) {
+                        return [
+                            'id' => $doc_type->id,
+                            'name' => $doc_type->name,
+                            'ref' => $doc_type->prefix . "/" . $doc_type->timestamps,
+                        ];
+                    }),
+            ]);
+        } else {
+            if ($doc_type_first) {
+                return Redirect::route('accounts.create')->with('success', 'ACCOUNTS NOT FOUND, Please create an account first');
+            } else {
+                return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
+            }
+        }
     }
 
 
