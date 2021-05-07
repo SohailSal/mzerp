@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use App\Models\AccountGroup;
@@ -23,6 +24,7 @@ class AccountGroupController extends Controller
                         'type_name' => $accountgroup->accountType->name,
                         'company_id' => $accountgroup->company_id,
                         'company_name' => $accountgroup->company->name,
+                        'delete' => Account::where('group_id', $accountgroup->id)->first() ? false : true,
                     ];
                 }),
 

@@ -6,16 +6,31 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use App\Models\DocumentType;
 use App\Models\Company;
+use App\Models\Document;
 use Inertia\Inertia;
 
 class DocumentTypeController extends Controller
 {
     public function index()
     {
-        $data = DocumentType::all()
-            ->where('company_id', session('company_id'));
+        // $data = DocumentType::all()
+        //     ->where('company_id', session('company_id'));
+        // 'data' => $data,
+
         return Inertia::render('DocumentTypes/Index', [
-            'data' => $data,
+
+            'data' => DocumentType::all()
+                ->where('company_id', session('company_id'))
+                ->map(function ($doc_type) {
+                    return [
+                        'id' => $doc_type->id,
+                        'name' => $doc_type->name,
+                        'prefix' => $doc_type->prefix,
+                        'delete' => Document::where('type_id', $doc_type->id)->first() ? false : true,
+
+                    ];
+                }),
+
 
             'companies' => Company::all()
                 ->map(

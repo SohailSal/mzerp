@@ -37,6 +37,7 @@ class DocumentController extends Controller
                             'type_id' => $document->type_id,
                             'company_id' => session('company_id'),
                             'year_id' => session('year_id'),
+                            'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
                         ];
                     }),
 

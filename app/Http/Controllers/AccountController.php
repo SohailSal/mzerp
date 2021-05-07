@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use App\Models\Account;
 use App\Models\Company;
+use App\Models\Entry;
 use App\Models\AccountGroup;
 use Inertia\Inertia;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,8 @@ class AccountController extends Controller
                         'name' => $account->name,
                         'group_id' => $account->group_id,
                         'group_name' => $account->accountGroup->name,
+                        'delete' => Entry::where('account_id', $account->id)->first() ? false : true,
+
                     ];
                 }),
 

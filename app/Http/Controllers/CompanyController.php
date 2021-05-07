@@ -17,8 +17,22 @@ class CompanyController extends Controller
 {
     public function index()
     {
-        $data = Company::all();
-        return Inertia::render('Company/Index', ['data' => $data]);
+        return Inertia::render('Company/Index', [
+            'data' => Company::all()
+                ->map(function ($comp) {
+                    return [
+                        'id' => $comp->id,
+                        'name' => $comp->name,
+                        'address' => $comp->address,
+                        'email' => $comp->email,
+                        'website' => $comp->web,
+                        'phone' => $comp->phone,
+                        'fiscal' => $comp->fiscal,
+                        'incorp' => $comp->incorp,
+                        'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
+                    ];
+                }),
+        ]);
     }
 
     public function create()
@@ -37,7 +51,7 @@ class CompanyController extends Controller
             'name' => ['required'],
             'address' => ['nullable'],
             'email' => ['nullable'],
-            'website' => ['nullable'],
+            'web' => ['nullable'],
             'phone' => ['nullable'],
             'fiscal' => ['required'],
             'incorp' => ['nullable'],
@@ -46,7 +60,7 @@ class CompanyController extends Controller
             'name' => Request::input('name'),
             'address' => Request::input('address'),
             'email' => Request::input('email'),
-            'website' => Request::input('website'),
+            'web' => Request::input('website'),
             'phone' => Request::input('phone'),
             'fiscal' => Request::input('fiscal'),
             'incorp' => Request::input('incorp'),
@@ -86,7 +100,7 @@ class CompanyController extends Controller
             'name' => ['required'],
             'address' => ['nullable'],
             'email' => ['nullable'],
-            'website' => ['nullable'],
+            'web' => ['nullable'],
             'phone' => ['nullable'],
             'fiscal' => ['required'],
             'incorp' => ['nullable'],
@@ -95,7 +109,7 @@ class CompanyController extends Controller
         $company->name = Request::input('name');
         $company->address = Request::input('address');
         $company->email = Request::input('email');
-        $company->web = Request::input('web');
+        $company->web = Request::input('website');
         $company->phone = Request::input('phone');
         $company->fiscal = Request::input('fiscal');
         $company->incorp = Request::input('incorp');

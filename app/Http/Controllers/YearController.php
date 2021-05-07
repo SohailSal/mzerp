@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Year;
 use App\Models\Setting;
 use App\Models\Company;
+use App\Models\Document;
 use App\Models\DocumentType;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -22,7 +23,6 @@ class YearController extends Controller
                 ->where('company_id', session('company_id'))
                 ->map(function ($year) {
                     return [
-
                         $begin = new Carbon($year->begin),
                         $end = new Carbon($year->end),
                         'id' => $year->id,
@@ -30,6 +30,7 @@ class YearController extends Controller
                         'end' => $end->format('F,j Y'),
                         'company_name' => $year->company->name,
                         'company_id' => $year->company_id,
+                        'delete' => Document::where('year_id', $year->id)->first() ? false : true,
                     ];
                 }),
 
@@ -103,12 +104,22 @@ class YearController extends Controller
 
     public function destroy(Year $year)
     {
+        // if (Document::where('year_id', $year->id)->first()) {
+        //     return Redirect::back()->with('success', 'Can\'t DELETE this Year.');
+        // } else {
         $year->delete();
-        return Redirect::back()->with('success', 'Year deleted.');
+        if (Year::where('company_id', session('company_id'))->first()) {
+            return Redirect::back()->with('success', 'Year deleted.');
+        } else {
+            session(['year_id' => null]);
+            return Redirect::route('years.create')->with('success', 'YEAR NOT FOUND. Please create an Year for selected Company.');
+        }
+        // }
     }
 
     public function yrch($id)
     {
+
         $active_yr = Setting::where('user_id', Auth::user()->id)->where('key', 'active_year')->first();
 
         $active_yr->value = $id;

@@ -39,7 +39,7 @@
           <tr class="bg-indigo-100">
             <th class="py-2 px-4 border">Account Type</th>
             <th class="py-2 px-4 border w-2/5">Group Name</th>
-            <th class="py-2 px-4 border w-2/5">Company Name</th>
+            <th class="py-2 px-4 border">Company Name</th>
             <th class="py-2 px-4 border">Actions</th>
           </tr>
         </thead>
@@ -56,8 +56,9 @@
                 <span>Edit</span>
               </button>
               <button
-                class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                class="border bg-red-500 rounded-xl px-4 py-1 m-1"
                 @click="destroy(item.id)"
+                v-if="item.delete"
               >
                 <span>Delete</span>
               </button>
