@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,6 +22,22 @@ use App\Http\Controllers\YearController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//PDF -------------------- STARTS ---------------------------
+// Route::get('/user/invoice/{invoice}', function (Request $request, $invoiceId) {
+//     return $request->user()->downloadInvoice($invoiceId, [
+//         'vendor' => 'Your Company',
+//         'product' => 'Your Product',
+//     ], 'practice');
+// });
+
+//mzAudit --------------- -----
+Route::get('pd', [CompanyController::class, 'pd'])
+    ->name('pd')
+    ->middleware('auth');
+//PDF -------------------- ENDS ---------------------------
+
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

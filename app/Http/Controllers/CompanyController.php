@@ -13,8 +13,21 @@ use App\Models\Setting;
 use Egulias\EmailValidator\Warning\Warning;
 use Inertia\Inertia;
 
+use App;
+
 class CompanyController extends Controller
 {
+
+    // FOR PDF FROM MZAUDIT --------
+    public function pd()
+    {
+        $a = "hello world";
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('pdf', compact('a'));
+        return $pdf->stream('v.pdf');
+    }
+    // FOR PDF FROM MZAUDIT --------
+
     public function index()
     {
         return Inertia::render('Company/Index', [
@@ -130,18 +143,20 @@ class CompanyController extends Controller
         $active_co = Setting::where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
 
         $active_co->value = $id;
+
+        $active_co->save();
+        session(['company_id' => $id]);
+
         if (Year::where('company_id', $id)->latest()->first()) {
             $active_yr = Setting::where('user_id', Auth::user()->id)->where('key', 'active_year')->first();
             $active_yr->value = Year::where('company_id', $id)->latest()->first()->id;
             $active_yr->save();
             session(['year_id' => $active_yr->value]);
-            $active_co->save();
-            session(['company_id' => $id]);
+            // $active_co->save();
+            // session(['company_id' => $id]);
             return Redirect::back();
         } else {
             session(['year_id' => null]);
-            $active_co->save();
-            session(['company_id' => $id]);
             return Redirect::route('years.create')->with('success', 'YEAR NOT FOUND. Please create an Year for selected Company.');
         }
     }

@@ -64,6 +64,13 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  :href="route('pd')"
+                  :active="route().current('pd')"
+                >
+                  PDF
+                </jet-nav-link>
+
+                <jet-nav-link
                   v-if="this.$page.props.co_id"
                   :href="route('years')"
                   :active="route().current('years')"
