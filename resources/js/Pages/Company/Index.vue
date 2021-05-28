@@ -26,7 +26,7 @@
             <td class="py-1 px-4 border">{{ item.name }}</td>
             <td class="py-1 px-4 border">{{ item.address }}</td>
             <td class="py-1 px-4 border">{{ item.email }}</td>
-            <td class="py-1 px-4 border">{{ item.website }}</td>
+            <td class="py-1 px-4 border">{{ item.web }}</td>
             <td class="py-1 px-4 border">{{ item.phone }}</td>
             <td class="py-1 px-4 border">
               <button

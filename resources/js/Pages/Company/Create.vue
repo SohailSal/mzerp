@@ -46,7 +46,7 @@
             label="website"
             placeholder="Enter web address:"
           />
-          <div v-if="errors.website">{{ errors.website }}</div>
+          <div v-if="errors.web">{{ errors.website }}</div>
         </div>
 
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
@@ -74,7 +74,7 @@
         </div>
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
-            type="text"
+            type="date"
             v-model="form.incorp"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="incorp"
@@ -118,7 +118,7 @@ export default {
       name: null,
       address: null,
       email: null,
-      website: null,
+      web: null,
       phone: null,
       fiscal: props.fiscal_first,
       incorp: null,

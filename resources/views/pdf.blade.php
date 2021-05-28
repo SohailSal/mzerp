@@ -1,119 +1,117 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voucher -
+        {{-- {{ $voucher->ref}} --}}
+        {{ $doc->ref }}
+    </title>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <style type="text/css">
+        @page {margin: 20px;}
+        body {margin: 40px;}
+        * {font-family: Verdana, Arial, sans-serif;}
+        a {text-decoration: none;}
+        table {font-size: medium; margin: 15px;}
+        .pv table {margin: 15px; border: 2px solid;}
+        .pv td {margin:10px;padding:2px; border-bottom: 2px solid; border-right:2px solid;border-top:2px solid;}
+        .information {background-color: #fff;}
+        .information table {padding: 0px;}
+    </style>
+</head>
+<body>
+    <?php
+            $fmt = new NumberFormatter( 'en_GB', NumberFormatter::CURRENCY );
+            $amt = new NumberFormatter( 'en_GB', NumberFormatter::SPELLOUT );
+            $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
+            $fmt->setSymbol(NumberFormatter::CURRENCY_SYMBOL, '');
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ public_path('css/app.css') }}">
+            // $debits = $voucher->entries->sum('debit');
+            // $credits = $voucher->entries->sum('credit');
 
-    </head>
-    <body class="font-sans antialiased">
-    {{-- <div class="border rounded-lg m-5 p-5 inline-block" style="color:white;background-color:gray;">
-        @for ($i = 0; $i < 10; $i++)
-        This is:  {{ $a }} <br>
-        @endfor
-    </div> --}}
+            // $debits = 52894;
+            // $credits = 648585;
 
-    <div class="row invoice-wrapper">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table">
-                        <tr>
-                            <td>
-                                <h4>
-                                    <span class="">StackCoder</span>
-                                </h4>
-                            </td>
-                            <td class="text-right">
-                                <strong>Date: 28 April 2020</strong>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <br><br>
-            <div class="row invoice-info">
-                <div class="col-md-12">
-                    <table class="table">
-                        <tr>
-                            <td>
-                                <div class="">
-                                    From
-                                    <address>
-                                        <strong>StackCoder</strong><br>
-                                        HSR Layout Sector 6, Bnagalore<br>
-                                        Email: stackcoder.in@gmail.com
-                                    </address>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="">
-                                    To
-                                    <address>
-                                        <strong class="billing_name">Balaji Hakari</strong><br>
-                                        <span class="billing_address">#32, Madhura Chetana Colony, Hubli</span><br>
-                                        <span class="billing_gst">#TAXNUMBER</span><br>
-                                        Phone: +91-7019101234<br>
-                                        Email: customer@gmail.com
-                                    </address>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="text-right">
-                                    <b>Invoice #1001</b><br>
-                                    Paid for REASON
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <br><br>
-            <div class="row">
-                <div class="col-md-12 table-responsive">
-                    <table class="table table-condensed table-hover">
-                        <thead>
-                            <tr>
-                                <th>Qty</th>
-                                <th>Product</th>
-                                <th>Description</th>
-                                <th>Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Product Name</td>
-                                <td>Amount paid for Product Name</td>
-                                <td class="text-right">&#8377; 1000</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-right">Sub Total</td>
-                                <td class="text-right"><strong>&#8377; 1000</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-right">TAX (18%)</td>
-                                <td class="text-right"><strong>&#8377; 180</strong></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-right">Total Payable</td>
-                                <td class="text-right"><strong>&#8377; 1180</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.col -->
-            </div>
-            <br><br><br>
-            <div>
-                <small><small>NOTE: This is system generate invoice no need of signature</small></small>
-            </div>
-        </div>
-    </div>
+            $debits = $entry_obj->sum('debit');
+            $credits = $entry_obj->sum('credit');
+
+    ?>
+
+<div class="information">
+                <h1 align="center">
+                    {{-- {{$voucher->documentType->name}} --}}
+                    {{ $doc_type->name }}
+                </h1>
+    <table width="100%">
+        <tr>
+            <td align="left" >
+                Reference: <strong>
+                    {{-- {{$voucher->ref}} --}}
+                    {{ $doc->ref }}
+                </strong>
+            </td>
+            <td align="center">
+            </td>
+            <td align="right">
+                Dated: <strong>
+                    {{ \Carbon\Carbon::parse($doc->date)->format('F d, Y')}}
+                    {{-- {{ \Carbon\Carbon::parse($voucher->date)->format('F d, Y')}} --}}
+                </strong>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="pv">
+<div style="padding-left:18px"> Description:
+    {{-- {{$voucher->description}} --}}
+    {{ $doc->description }}
+</div>
+    <table width="100%" style="border-collapse: collapse;">
+        <tr>
+            <th style="width: 70%">Description</th>
+            <th style="width: 15%">Debit</th>
+            <th style="width: 15%">Credit</th>
+        </tr>
+        <tbody>
+        {{-- @foreach ($voucher->entries as $entry) --}}
+        @foreach ($entries as $entry)
+        <tr>
+            <td style="width: 70%">{{$entry->account->name}} - {{$entry->account->accountGroup->name}}</td>
+            <td style="width: 15%" align="right">{{ str_replace(['Rs.','.00'],'',$fmt->formatCurrency($entry->debit,'Rs.')) }}</td>
+            <td style="width: 15%" align="right">{{ str_replace(['Rs.','.00'],'',$fmt->formatCurrency($entry->credit,'Rs.')) }}</td>
+        </tr>
+        @endforeach
+        <tr>
+            <td><strong>Total</strong></td>
+            <td align="right"><strong>{{ str_replace(['Rs.','.00'],'',$fmt->formatCurrency($debits,'Rs.')) }}</strong></td>
+            <td align="right"><strong>{{ str_replace(['Rs.','.00'],'',$fmt->formatCurrency($credits,'Rs.')) }}</strong></td>
+        </tr>
+        </tbody>
+   </table>
+<div style="padding-left:18px"> Amount in words: Rupees {{$amt->format($debits) }} only.</div>
+ </div>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+<div>
+<table width="100%">
+    <tr>
+        <td style="border-bottom: 2px solid; width: 20%"></td>
+        <td style="width: 20%"></td>
+        <td style="border-bottom: 2px solid; width: 20%"></td>
+        <td style="width: 20%"></td>
+        <td style="border-bottom: 2px solid; width: 20%"></td>
+    </tr>
+    <tr>
+        <td align="centre">Prepared by</td>
+        <td></td>
+        <td align="centre">Checked by</td>
+        <td></td>
+        <td align="centre">Approved by</td>
+    </tr>
+</table>
+</div>
 </body>
 </html>

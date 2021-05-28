@@ -14,6 +14,12 @@ use Egulias\EmailValidator\Warning\Warning;
 use Inertia\Inertia;
 
 use App;
+use App\Models\AccountType;
+use App\Models\Document;
+use App\Models\Entry;
+use App\Models\DocumentType;
+use Carbon\Carbon;
+
 
 class CompanyController extends Controller
 {
@@ -21,9 +27,65 @@ class CompanyController extends Controller
     // FOR PDF FROM MZAUDIT --------
     public function pd()
     {
-        $a = "hello world";
+        // $a = "hello world";
+        // dd(AccountType::where('company_id', session('company_id'))->first());
+        $voucher = Entry::all()
+            ->where('id', 2)
+            // ->where('company_id', session('company_id'))
+            //     ->where('year_id', session('year_id'))
+
+            ->map(function ($comp) {
+                return [
+                    'id' => $comp->id,
+                    'debit' => $comp->debit,
+                    'credit' => $comp->credit,
+                    'description' => 'description',
+                    'ref' => 'ref',
+                    'name' => 'name',
+                    // 'ref' => $comp->document->ref,
+                    // 'description' => $comp->document->description,
+                    // 'name' => $comp->document->documentType->name,
+                ];
+            })
+            ->first();
+        // ->toArray()
+        // dd($voucher);
+        // $voucher = DocumentType::all()
+        //     ->where('company_id', session('company_id'))
+        //     ->map(function ($comp) {
+        //         return [
+        //             'id' => $comp->id,
+        //             'name' => $comp->name,
+        //             'ref' => $comp->id->hasMany(),
+        //             // 'email' => $comp->email,
+        //             // 'website' => $comp->web,
+        //             // 'phone' => $comp->phone,
+        //             // 'fiscal' => $comp->fiscal,
+        //             // 'incorp' => $comp->incorp,
+        //             // 'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
+        //         ];
+        //     });
+        // $voucher = Document::where('company_id', session('company_id'))->first();
+        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'))->where('year_id', session('year_id'));
+
+        $i = 0;
+        foreach ($data['entry_obj'] as $entry) {
+            if ($entry) {
+                $data['entries'][$i] = $entry;
+                $i++;
+            }
+        }
+        // dd($doc_id);
+        // dd($data['entries']);
+        // dd($entri->document_id);
+        // dd(($data['entries'][0])->document_id);
+        $data['doc'] = Document::all()->where('id', $data['entries'][0]->document_id)->first();
+        $data['doc_type'] = DocumentType::all()->where('id', $data['doc']->type_id)->first();
+        // dd($data['doc_type']);
+        $a = Company::where('id', session('company_id'))->first();
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadView('pdf', compact('a'));
+        // $pdf->loadView('pdf', compact('a'));
+        $pdf->loadView('pdf', $data);
         return $pdf->stream('v.pdf');
     }
     // FOR PDF FROM MZAUDIT --------
@@ -38,7 +100,7 @@ class CompanyController extends Controller
                         'name' => $comp->name,
                         'address' => $comp->address,
                         'email' => $comp->email,
-                        'website' => $comp->web,
+                        'web' => $comp->web,
                         'phone' => $comp->phone,
                         'fiscal' => $comp->fiscal,
                         'incorp' => $comp->incorp,
@@ -67,13 +129,13 @@ class CompanyController extends Controller
             'web' => ['nullable'],
             'phone' => ['nullable'],
             'fiscal' => ['required'],
-            'incorp' => ['nullable'],
+            'incorp' => ['nullable', 'date'],
         ]);
         $comp = Company::create([
             'name' => Request::input('name'),
             'address' => Request::input('address'),
             'email' => Request::input('email'),
-            'web' => Request::input('website'),
+            'web' => Request::input('web'),
             'phone' => Request::input('phone'),
             'fiscal' => Request::input('fiscal'),
             'incorp' => Request::input('incorp'),
@@ -99,7 +161,7 @@ class CompanyController extends Controller
                 'name' => $company->name,
                 'address' => $company->address,
                 'email' => $company->email,
-                'website' => $company->website,
+                'web' => $company->web,
                 'phone' => $company->phone,
                 'fiscal' => $company->fiscal,
                 'incorp' => $company->incorp,
@@ -122,10 +184,13 @@ class CompanyController extends Controller
         $company->name = Request::input('name');
         $company->address = Request::input('address');
         $company->email = Request::input('email');
-        $company->web = Request::input('website');
+        $company->web = Request::input('web');
         $company->phone = Request::input('phone');
         $company->fiscal = Request::input('fiscal');
-        $company->incorp = Request::input('incorp');
+
+        $incorp = new carbon(Request::input('incorp'));
+        $company->incorp = $incorp->format('Y-m-d');
+
         $company->save();
 
         return Redirect::route('companies')->with('success', 'Company updated.');

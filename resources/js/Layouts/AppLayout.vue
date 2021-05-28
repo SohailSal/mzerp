@@ -26,10 +26,10 @@
 
                 <jet-nav-link
                   v-if="this.$page.props.co_id && this.$page.props.yr_id"
-                  :href="route('accountgroups')"
-                  :active="route().current('accountgroups')"
+                  :href="route('documents')"
+                  :active="route().current('documents')"
                 >
-                  Account Groups
+                  Transactions
                 </jet-nav-link>
 
                 <jet-nav-link
@@ -42,18 +42,18 @@
 
                 <jet-nav-link
                   v-if="this.$page.props.co_id && this.$page.props.yr_id"
-                  :href="route('documenttypes')"
-                  :active="route().current('documenttypes')"
+                  :href="route('accountgroups')"
+                  :active="route().current('accountgroups')"
                 >
-                  Vouchers
+                  Account Groups
                 </jet-nav-link>
 
                 <jet-nav-link
                   v-if="this.$page.props.co_id && this.$page.props.yr_id"
-                  :href="route('documents')"
-                  :active="route().current('documents')"
+                  :href="route('documenttypes')"
+                  :active="route().current('documenttypes')"
                 >
-                  Transactions
+                  Vouchers
                 </jet-nav-link>
 
                 <jet-nav-link
@@ -64,18 +64,18 @@
                 </jet-nav-link>
 
                 <jet-nav-link
-                  :href="route('pd')"
-                  :active="route().current('pd')"
-                >
-                  PDF
-                </jet-nav-link>
-
-                <jet-nav-link
                   v-if="this.$page.props.co_id"
                   :href="route('years')"
                   :active="route().current('years')"
                 >
                   Years
+                </jet-nav-link>
+
+                <jet-nav-link
+                  :href="route('pd')"
+                  :active="route().current('pd')"
+                >
+                  PDF
                 </jet-nav-link>
               </div>
             </div>

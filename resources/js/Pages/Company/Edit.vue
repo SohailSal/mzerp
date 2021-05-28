@@ -40,7 +40,7 @@
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
             type="text"
-            v-model="form.website"
+            v-model="form.web"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="website"
             placeholder="Enter Web Address:"
@@ -70,10 +70,10 @@
         </div>
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <input
-            type="text"
+            type="date"
             v-model="form.incorp"
-            class="pr-2 pb-2 w-full lg:w-1/4 placeholder-indigo-300 rounded-md"
-            label="incorp"
+            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
+            label="date"
             placeholder="Enter Incorp:"
           />
           <div v-if="errors.incorp">{{ errors.incorp }}</div>
@@ -115,10 +115,10 @@ export default {
         name: this.company.name,
         address: this.company.address,
         email: this.company.email,
-        website: this.company.website,
+        web: this.company.web,
         phone: this.company.phone,
         fiscal: this.company.fiscal,
-        incrop: this.company.incorp,
+        incorp: this.company.incorp,
       }),
     };
   },

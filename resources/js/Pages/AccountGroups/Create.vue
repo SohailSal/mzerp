@@ -16,7 +16,7 @@
             v-model="form.name"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
             label="name"
-            placeholder="Enter name:"
+            placeholder="Group name:"
           />
           <div v-if="errors.name">{{ errors.name }}</div>
         </div>
