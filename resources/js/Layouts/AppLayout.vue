@@ -72,10 +72,10 @@
                 </jet-nav-link>
 
                 <jet-nav-link
-                  :href="route('pd')"
-                  :active="route().current('pd')"
+                  :href="route('reports')"
+                  :active="route().current('reports')"
                 >
-                  PDF
+                  Reports
                 </jet-nav-link>
               </div>
             </div>

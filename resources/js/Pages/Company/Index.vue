@@ -7,21 +7,33 @@
       {{ $page.props.flash.success }}
     </div>
     <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>
+    <input
+      type="search"
+      v-model="params.search"
+      aria-label="Search"
+      placeholder="Search..."
+      class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
+    />
     <div class="">
+      <!-- class="w-full ml-10" -->
       <table class="shadow-lg border mt-4 ml-8 rounded-xl">
         <thead>
           <tr class="bg-indigo-100">
             <th class="py-2 px-4 border">ID</th>
-            <th class="py-2 px-4 border">Name</th>
+            <th class="py-2 px-4 border">
+              <span @click="sort('name')">Name</span>
+            </th>
             <th class="py-2 px-4 border">Address</th>
-            <th class="py-2 px-4 border">Email</th>
+            <th class="py-2 px-4 border">
+              <span @click="sort('email')">Email</span>
+            </th>
             <th class="py-2 px-4 border">Website</th>
             <th class="py-2 px-4 border">Phone</th>
             <th class="py-2 px-4 border">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id">
+          <tr v-for="item in data.data" :key="item.id">
             <td class="py-1 px-4 border">{{ item.id }}</td>
             <td class="py-1 px-4 border">{{ item.name }}</td>
             <td class="py-1 px-4 border">{{ item.address }}</td>
@@ -47,6 +59,7 @@
         </tbody>
       </table>
     </div>
+    <pagination class="mt-10" :links="data.links" />
   </app-layout>
 </template>
 
@@ -60,10 +73,19 @@ export default {
     JetButton,
   },
 
-  props: ["data"],
+  //   props: ["data"],
+  props: {
+    data: Object,
+  },
 
   data() {
-    return {};
+    return {
+      params: {
+        search: null,
+        field: null,
+        direction: null,
+      },
+    };
   },
 
   methods: {
@@ -77,6 +99,22 @@ export default {
 
     destroy(id) {
       this.$inertia.delete(route("companies.destroy", id));
+    },
+
+    sort(field) {
+      this.params.field = field;
+      this.params.direction = this.params.direction === "asc" ? "desc" : "asc";
+    },
+  },
+  watch: {
+    params: {
+      handler() {
+        this.$inertia.get(this.route("companies"), this.params, {
+          replace: true,
+          preserveState: true,
+        });
+      },
+      deep: true,
     },
   },
 };

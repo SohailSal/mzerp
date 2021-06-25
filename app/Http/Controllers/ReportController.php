@@ -1,0 +1,168 @@
+<?php
+
+namespace App\Http\Controllers;
+
+
+use App;
+use App\Models\Account;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Request as Req;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Year;
+use App\Models\Setting;
+use App\Models\Company;
+use App\Models\Document;
+use App\Models\Entry;
+use App\Models\DocumentType;
+use Inertia\Inertia;
+use Carbon\Carbon;
+
+class ReportController extends Controller
+{
+    public function index()
+    {
+        return Inertia::render('Reports/Index', [
+            'companies' => Company::all()
+                ->map(function ($com) {
+                    return [
+                        'id' => $com->id,
+                        'name' => $com->name,
+                    ];
+                }),
+        ]);
+    }
+
+
+    // FOR PDF GENERATION -------------------------- --------
+    public function pd()
+    {
+        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'))->where('year_id', session('year_id'));
+
+        $i = 0;
+        foreach ($data['entry_obj'] as $entry) {
+            if ($entry) {
+                $data['entries'][$i] = $entry;
+                $i++;
+            }
+        }
+        $data['doc'] = Document::all()->where('id', $data['entries'][0]->document_id)->first();
+        $data['doc_type'] = DocumentType::all()->where('id', $data['doc']->type_id)->first();
+        // $a = Company::where('id', session('company_id'))->first();
+        $pdf = App::make('dompdf.wrapper');
+        // $pdf->loadView('pdf', compact('a'));
+        $pdf->loadView('pdf', $data);
+        return $pdf->stream('v.pdf');
+    }
+
+
+    // FOR trialbalance GENERATION -------------------------- --------
+    public function trialbalance()
+    {
+        $data['accounts'] = Account::where('company_id', session('company_id'))->get();
+        $tb = App::make('dompdf.wrapper');
+        // $pdf->loadView('pdf', compact('a'));
+        $tb->loadView('trialbalance', $data);
+        return $tb->stream('v.pdf');
+    }
+
+    public function bs()
+    {
+        // $pdf = PDF::loadView('balanceSheet');
+        $bs = App::make('dompdf.wrapper');
+        $bs->loadView('balanceSheet');
+        return $bs->stream('bs.pdf');
+    }
+
+    public function pl()
+    {
+        $pl = App::make('dompdf.wrapper');
+        $pl->loadView('profitOrLoss');
+        return $pl->stream('pl.pdf');
+    }
+
+    public function create()
+    {
+        return Inertia::render('Years/Create');
+    }
+
+    public function store(Req $request)
+    {
+        Request::validate([
+            'begin' => ['required', 'date'],
+            'end' => ['required', 'date'],
+        ]);
+
+        $year = Year::create([
+            'begin' => $request->begin,
+            'end' => $request->end,
+            'company_id' => session('company_id'),
+        ]);
+
+        Setting::create([
+            'key' => 'active_year',
+            'value' => $year->id,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        session(['year_id' => $year->id]);
+        return Redirect::route('years')->with('success', 'Year created.');
+    }
+
+    public function edit(Year $year)
+    {
+        return Inertia::render('Years/Edit', [
+            'year' => [
+                'id' => $year->id,
+                'begin' => $year->begin,
+                'end' => $year->end,
+                'company_id' => session('company_id'),
+            ],
+        ]);
+    }
+
+    public function update(Year $year)
+    {
+        Request::validate([
+            'begin' => ['required', 'date'],
+            'end' => ['required', 'date'],
+        ]);
+
+        $begin = new carbon(Request::input('begin'));
+        $end = new carbon(Request::input('end'));
+
+        $year->begin = $begin->format('Y-m-d');
+        $year->end = $end->format('Y-m-d');
+        $year->company_id = session('company_id');
+        $year->save();
+
+        return Redirect::route('years')->with('success', 'Year updated.');
+    }
+
+    public function destroy(Year $year)
+    {
+        // if (Document::where('year_id', $year->id)->first()) {
+        //     return Redirect::back()->with('success', 'Can\'t DELETE this Year.');
+        // } else {
+        $year->delete();
+        if (Year::where('company_id', session('company_id'))->first()) {
+            return Redirect::back()->with('success', 'Year deleted.');
+        } else {
+            session(['year_id' => null]);
+            return Redirect::route('years.create')->with('success', 'YEAR NOT FOUND. Please create an Year for selected Company.');
+        }
+        // }
+    }
+
+    public function yrch($id)
+    {
+
+        $active_yr = Setting::where('user_id', Auth::user()->id)->where('key', 'active_year')->first();
+
+        $active_yr->value = $id;
+        $active_yr->save();
+        session(['year_id' => $id]);
+
+        return Redirect::back();
+    }
+}

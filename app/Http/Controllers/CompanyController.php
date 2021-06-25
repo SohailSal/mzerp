@@ -92,21 +92,57 @@ class CompanyController extends Controller
 
     public function index()
     {
+
+        //Validating request
+        request()->validate([
+            'direction' => ['in:asc,decs'],
+            'field' => ['in:name,email']
+        ]);
+
+
+        $query = Company::query();
+        $data = Company::all()
+            ->map(function ($comp) {
+                return [
+                    'id' => $comp->id,
+                    'name' => $comp->name,
+                    'address' => $comp->address,
+                    'email' => $comp->email,
+                    'web' => $comp->web,
+                    'phone' => $comp->phone,
+                    'fiscal' => $comp->fiscal,
+                    'incorp' => $comp->incorp,
+                    'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
+                ];
+            });
+
+        //Searching request
+        if (request('search')) {
+            $query->where('name', 'LIKE', '%' . request('search') . '%');
+            $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
+        }
+        //Ordering request
+        if (request()->has(['field', 'direction'])) {
+            $query->orderBy(request('field'), request('direction'));
+            // $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
+        }
+
         return Inertia::render('Company/Index', [
-            'data' => Company::all()
-                ->map(function ($comp) {
-                    return [
-                        'id' => $comp->id,
-                        'name' => $comp->name,
-                        'address' => $comp->address,
-                        'email' => $comp->email,
-                        'web' => $comp->web,
-                        'phone' => $comp->phone,
-                        'fiscal' => $comp->fiscal,
-                        'incorp' => $comp->incorp,
-                        'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
-                    ];
-                }),
+            'data' => $query->paginate()
+            // 'data' => Company::all()
+            //     ->map(function ($comp) {
+            //         return [
+            //             'id' => $comp->id,
+            //             'name' => $comp->name,
+            //             'address' => $comp->address,
+            //             'email' => $comp->email,
+            //             'web' => $comp->web,
+            //             'phone' => $comp->phone,
+            //             'fiscal' => $comp->fiscal,
+            //             'incorp' => $comp->incorp,
+            //             'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
+            //         ];
+            //     }),
         ]);
     }
 

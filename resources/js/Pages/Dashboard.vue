@@ -17,11 +17,6 @@
       <!-- :disabled="form.processing" -->
       <!-- </div> -->
     </template>
-    <div
-      class="border rounded-lg shadow-md p-2 m-2 inline-block hover:bg-gray-600 hover:text-white"
-    >
-      <a href="pd">Generate pdf file</a>
-    </div>
 
     <!-- ---------------------------------------------------------------------------- - - -->
     <div class="py-12">
@@ -53,10 +48,10 @@ export default {
   },
 
   methods: {
-    route() {
-      // this.$inertia.post(route("companies.store"), this.form);
-      this.$inertia.get(route("pd"));
-    },
+    // route() {
+    //   // this.$inertia.post(route("companies.store"), this.form);
+    //   this.$inertia.get(route("pd"));
+    // },
   },
 };
 </script>

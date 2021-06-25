@@ -11,6 +11,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\YearController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,12 +32,6 @@ use App\Http\Controllers\YearController;
 //     ], 'practice');
 // });
 
-//mzAudit --------------- -----
-Route::get('pd', [CompanyController::class, 'pd'])
-    ->name('pd')
-    ->middleware('auth');
-//PDF -------------------- ENDS ---------------------------
-
 
 
 Route::get('/', function () {
@@ -47,6 +42,30 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('reports', [ReportController::class, 'index'])
+    ->name('reports')
+    ->middleware('auth');
+
+//PDF -----------------------------------------------
+Route::get('pd', [ReportController::class, 'pd'])
+    ->name('pd')
+    ->middleware('auth');
+
+//Trial Balance -------------------- ENDS ---------------------------
+Route::get('trialbalance', [ReportController::class, 'trialbalance'])
+    ->name('trialbalance')
+    ->middleware('auth');
+
+//Balance Sheet -------------------- Starts ---------------------------
+Route::get('bs', [ReportController::class, 'bs'])
+    ->name('bs')
+    ->middleware('auth');
+
+Route::get('pl', [ReportController::class, 'pl'])
+    ->name('pl')
+    ->middleware('auth');
+
 
 //TO CHANGE COMPANY THE FROM DROPDOWN
 Route::get('companies/coch/{id}', [CompanyController::class, 'coch'])
