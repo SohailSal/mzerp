@@ -13,6 +13,6 @@ class UserController extends Controller
     public function index()
     {
         $data = User::all();
-            return Inertia::render('Users/Index', ['data' => $data]);
+        return Inertia::render('Users/Index', ['data' => $data]);
     }
 }

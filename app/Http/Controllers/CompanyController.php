@@ -92,18 +92,22 @@ class CompanyController extends Controller
 
     public function index()
     {
-
         //Validating request
         request()->validate([
-            'direction' => ['in:asc,decs'],
+            'direction' => ['in:asc,desc'],
             'field' => ['in:name,email']
         ]);
 
-
-        $query = Company::query();
-        $data = Company::all()
-            ->map(function ($comp) {
-                return [
+        // $query = Company::query();
+        $query = Company::paginate(6)
+            ->withQueryString()
+            // 'data' => Company::paginate(3)->withQueryString()
+            ->through(
+                fn ($comp) =>
+                [
+                    //             all()
+                    // ->map(function ($comp) {
+                    //     return [
                     'id' => $comp->id,
                     'name' => $comp->name,
                     'address' => $comp->address,
@@ -112,23 +116,87 @@ class CompanyController extends Controller
                     'phone' => $comp->phone,
                     'fiscal' => $comp->fiscal,
                     'incorp' => $comp->incorp,
-                    'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
-                ];
-            });
+                    // 'can' => [
+                    //     'edit_articles' => $comp->users,
+                    //     // can('edit articles'),
+                    // ],
+                    // 'can' => auth()->user()->can,
+                    // [
+                    //     'edit_articles' => $comp->users[0],
+                    //     // users->can('edit articles'),
+                    // ],
+
+                    'delete' => Year::where('company_id', $comp->id)->first() ? true : false,
+                ],
+            );
+        // $user = auth()->user();
+        // $user = \App\Models\User::all()->where('name', 'Haris')->first();
+        // dd($user);
+
+        // dd($query);
+
+
+        // $query = Company::query();
+        // $data = Company::all()
+        //     ->map(function ($comp) {
+        //         return [
+        //             'id' => $comp->id,
+        //             'name' => $comp->name,
+        //             'address' => $comp->address,
+        //             'email' => $comp->email,
+        //             'web' => $comp->web,
+        //             'phone' => $comp->phone,
+        //             'fiscal' => $comp->fiscal,
+        //             'incorp' => $comp->incorp,
+        //             'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
+        //         ];
+        //     });
 
         //Searching request
+        $query = Company::query();
         if (request('search')) {
             $query->where('name', 'LIKE', '%' . request('search') . '%');
             $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
         }
         //Ordering request
         if (request()->has(['field', 'direction'])) {
-            $query->orderBy(request('field'), request('direction'));
+            $query->orderBy(
+                request('field'),
+                request('direction')
+            );
             // $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
         }
+        $balances = $query->with('years')->paginate(6);
+        // dd($balances[4]->years[0]->id);
+
+
 
         return Inertia::render('Company/Index', [
-            'data' => $query->paginate()
+            // 'data' => $query,
+            // 'balances' => $query,
+            // 'can' => auth()->user()->can('edit_articles'),
+            'can' => auth()->user()->can('publish articles'),
+            'balances' => $query->with('years')->paginate(6),
+            // 'balances' => Company::paginate(6)->withQueryString()
+            //     // 'data' => Company::paginate(3)->withQueryString()
+            //     ->through(
+            //         fn ($comp) =>
+            //         [
+            //             //             all()
+            //             // ->map(function ($comp) {
+            //             //     return [
+            //             'id' => $comp->id,
+            //             'name' => $comp->name,
+            //             'address' => $comp->address,
+            //             'email' => $comp->email,
+            //             'web' => $comp->web,
+            //             'phone' => $comp->phone,
+            //             'fiscal' => $comp->fiscal,
+            //             'incorp' => $comp->incorp,
+            //             'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
+            //         ],
+            //     ),
+            'filters' => request()->all(['search', 'field', 'direction'])
             // 'data' => Company::all()
             //     ->map(function ($comp) {
             //         return [

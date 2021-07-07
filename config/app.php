@@ -136,6 +136,9 @@ return [
 
     'providers' => [
 
+        //FOR ROLES AND PERMISSIONS
+        Spatie\Permission\PermissionServiceProvider::class,
+
         /*
          * Laravel Framework Service Providers...
          */
