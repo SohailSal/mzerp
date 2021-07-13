@@ -12,6 +12,8 @@ use App\Models\Year;
 use App\Models\Setting;
 use Egulias\EmailValidator\Warning\Warning;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
+
 
 use App;
 use App\Models\AccountType;
@@ -135,6 +137,10 @@ class CompanyController extends Controller
 
         // dd($query);
 
+        // $can = auth()->user()->can('edit articles');
+
+        // ->can('publish articles');
+        // dd($can);
 
         // $query = Company::query();
         // $data = Company::all()
@@ -175,7 +181,12 @@ class CompanyController extends Controller
             // 'data' => $query,
             // 'balances' => $query,
             // 'can' => auth()->user()->can('edit_articles'),
-            'can' => auth()->user()->can('publish articles'),
+            'can' => [
+                'edit' => auth()->user()->can('edit articles'),
+                'publish' => auth()->user()->can('publish articles'),
+                'delete' => auth()->user()->can('delete articles'),
+            ],
+            // 'can' => auth()->user()->can('publish articles'),
             'balances' => $query->with('years')->paginate(6),
             // 'balances' => Company::paginate(6)->withQueryString()
             //     // 'data' => Company::paginate(3)->withQueryString()
@@ -224,37 +235,110 @@ class CompanyController extends Controller
         ]);
     }
 
+    // public function store()
+    // {
+    //     Request::validate([
+    //         'name' => ['required'],
+    //         'address' => ['nullable'],
+    //         'email' => ['nullable'],
+    //         'web' => ['nullable'],
+    //         'phone' => ['nullable'],
+    //         'fiscal' => ['required'],
+    //         'incorp' => ['nullable', 'date'],
+    //     ]);
+    //     $comp = Company::create([
+    //         'name' => Request::input('name'),
+    //         'address' => Request::input('address'),
+    //         'email' => Request::input('email'),
+    //         'web' => Request::input('web'),
+    //         'phone' => Request::input('phone'),
+    //         'fiscal' => Request::input('fiscal'),
+    //         'incorp' => Request::input('incorp'),
+    //     ]);
+
+    //     Setting::create([
+    //         'key' => 'active_company',
+    //         'value' => $comp->id,
+    //         'user_id' => Auth::user()->id,
+    //     ]);
+
+    //     session(['company_id' => $comp->id]);
+    //     session(['year_id' => null]);
+
+    //     return Redirect::route('years.create')->with('success', 'Company created. Please create Year for your to Company.');
+    // }
+
     public function store()
     {
         Request::validate([
             'name' => ['required'],
-            'address' => ['nullable'],
-            'email' => ['nullable'],
-            'web' => ['nullable'],
-            'phone' => ['nullable'],
             'fiscal' => ['required'],
-            'incorp' => ['nullable', 'date'],
         ]);
-        $comp = Company::create([
-            'name' => Request::input('name'),
-            'address' => Request::input('address'),
-            'email' => Request::input('email'),
-            'web' => Request::input('web'),
-            'phone' => Request::input('phone'),
-            'fiscal' => Request::input('fiscal'),
-            'incorp' => Request::input('incorp'),
-        ]);
+        DB::transaction(function () {
+            $company = Company::create([
+                'name' => strtoupper(Request::input('name')),
+                'address' => Request::input('address'),
+                'email' => Request::input('email'),
+                'web' => Request::input('web'),
+                'phone' => Request::input('phone'),
+                'fiscal' => Request::input('fiscal'),
+                'incorp' => Request::input('incorp'),
+            ]);
 
-        Setting::create([
-            'key' => 'active_company',
-            'value' => $comp->id,
-            'user_id' => Auth::user()->id,
-        ]);
 
-        session(['company_id' => $comp->id]);
-        session(['year_id' => null]);
+            //Start Month & End Month
+            $startMonth = Carbon::parse($company->fiscal)->month + 1;
+            $endMonth = Carbon::parse($company->fiscal)->month;
+            if ($startMonth == 13) {
+                $startMonth = 1;
+            }
 
-        return Redirect::route('years.create')->with('success', 'Company created. Please create Year for your to Company.');
+            //Start Month Day & End Month Day
+            $startMonthDays = 1;
+            $endMonthDays = Carbon::create()->month($endMonth)->daysInMonth;
+
+            // Year Get
+            $today = Carbon::today();
+            $startYear = 0;
+            $endYear = 0;
+            if ($startMonth == 1) {
+                $startYear = $today->year;
+                $endYear = $today->year;
+            } else {
+                $endYear = ($today->month >= $startMonth) ? $today->year + 1 : $today->year;
+                $startYear = $endYear - 1;
+            }
+
+
+            $startDate = $startYear . '-' . '0' . $startMonth . '-' . $startMonthDays;
+            $endDate = $endYear . '-' . '0' . $endMonth . '-' . $endMonthDays;
+
+
+            $year = Year::create([
+                'begin' => $startDate,
+                'end' => $endDate,
+                'company_id' => $company->id,
+            ]);
+            Setting::create([
+                'key' => 'active_company',
+                'value' => $company->id,
+                'user_id' => Auth::user()->id,
+            ]);
+
+            Setting::create([
+                'key' => 'active_year',
+                'value' => $year->id,
+                'user_id' => Auth::user()->id,
+            ]);
+
+            session(['company_id' => $company->id]);
+            session(['year_id' => $year->id]);
+
+
+            // Storage::makeDirectory('/public/' . $company->id);
+            // Storage::makeDirectory('/public/' . $company->id . '/' . $year->id);
+        });
+        return Redirect::route('companies')->with('success', 'Company created');
     }
 
     public function edit(Company $company)

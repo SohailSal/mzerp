@@ -19,29 +19,75 @@
     </select>
     <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
     <div
-      class="border rounded-lg shadow-md p-2 m-2 inline-block hover:bg-gray-600 hover:text-white"
+      class="
+        border
+        rounded-lg
+        shadow-md
+        p-2
+        m-2
+        inline-block
+        hover:bg-gray-600
+        hover:text-white
+      "
     >
       <a href="trialbalance">Trial Balance</a>
     </div>
 
     <div
-      class="border rounded-lg shadow-md p-2 m-2 inline-block hover:bg-gray-600 hover:text-white"
+      class="
+        border
+        rounded-lg
+        shadow-md
+        p-2
+        m-2
+        inline-block
+        hover:bg-gray-600
+        hover:text-white
+      "
     >
       <a href="bs">Balance Sheet</a>
     </div>
 
     <div
-      class="border rounded-lg shadow-md p-2 m-2 inline-block hover:bg-gray-600 hover:text-white"
+      class="
+        border
+        rounded-lg
+        shadow-md
+        p-2
+        m-2
+        inline-block
+        hover:bg-gray-600
+        hover:text-white
+      "
     >
       <a href="pl">Profit or Loss A/C</a>
     </div>
 
     <div
-      class="border rounded-lg shadow-md p-2 m-2 inline-block hover:bg-gray-600 hover:text-white"
+      class="
+        border
+        rounded-lg
+        shadow-md
+        p-2
+        m-2
+        inline-block
+        hover:bg-gray-600
+        hover:text-white
+      "
     >
       <a href="pd">Generate pdf file</a>
     </div>
-    <div class=""></div>
+    <div class="">
+      <select class="rounded-md w-36">
+        <option
+          v-for="account in accounts"
+          :key="account.id"
+          :value="account.id"
+        >
+          {{ account.name }}
+        </option>
+      </select>
+    </div>
   </app-layout>
 </template>
 
@@ -55,7 +101,12 @@ export default {
     JetButton,
   },
 
-  props: ["data", "companies"],
+  props: {
+    data: Object,
+    companies: Object,
+    accounts: Object,
+    account_first: Object,
+  },
 
   data() {
     return {

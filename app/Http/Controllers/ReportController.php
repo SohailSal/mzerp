@@ -18,11 +18,20 @@ use App\Models\DocumentType;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
+use Illuminate\Support\Facades\DB;
+// use Crypt;
+use Illuminate\Support\Facades\Crypt;
+use PDF;
+
 class ReportController extends Controller
 {
     public function index()
     {
+        $accounts = \App\Models\Account::all()->map->only('id', 'name');
+        $account_first = \App\Models\Account::all('id', 'name')->first();
         return Inertia::render('Reports/Index', [
+            'account_first' => $account_first,
+            'accounts' => $accounts,
             'companies' => Company::all()
                 ->map(function ($com) {
                     return [
@@ -79,6 +88,34 @@ class ReportController extends Controller
         $pl = App::make('dompdf.wrapper');
         $pl->loadView('profitOrLoss');
         return $pl->stream('pl.pdf');
+    }
+
+    public function ledger($id)
+    {
+        $year = Year::where('company_id', session('company_id'))->where('enabled', 1)->first();
+        $acc = Account::where('company_id', session('company_id'))->where('id', Crypt::decrypt($id))->first();
+
+        $entries = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '>=', $year->begin)
+            ->whereDate('documents.date', '<=', $year->end)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
+            ->where('entries.account_id', '=', Crypt::decrypt($id))
+            ->get();
+
+        $previous = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '<', $year->begin)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.debit', 'entries.credit')
+            ->where('entries.account_id', '=', Crypt::decrypt($id))
+            ->get();
+
+        //        $entries = Entry::where('account_id',Crypt::decrypt($id))->where('company_id',session('company_id'))->get();
+        $period = "From " . strval($year->begin) . " to " . strval($year->end);
+        $pdf = PDF::loadView('led', compact('entries', 'previous', 'year', 'period', 'acc'));
+        return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
     }
 
     public function create()

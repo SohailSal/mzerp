@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use App\Models\AccountGroup;
 use App\Models\Company;
+use Database\Seeders\AccountSeeder;
 use Inertia\Inertia;
 
 class AccountGroupController extends Controller
@@ -28,6 +29,8 @@ class AccountGroupController extends Controller
                     ];
                 }),
 
+            'exists' => Account::where('company_id', session('company_id'))->first() ? false : true,
+
             'companies' => Company::all()
                 ->map(function ($com) {
                     return [
@@ -37,6 +40,24 @@ class AccountGroupController extends Controller
                 }),
         ]);
     }
+
+    // public function generate()
+    // {
+    //     // $exitCode = Artisan::call('db:seed', [
+    //     //     '--class' => 'TypeSeeder'
+    //     // ]);
+    //     // print_r("hi");
+    //     // die();
+    //     // $this->call([
+    //     //     // UserSeeder::class,
+    //     //     // PostSeeder::class,
+    //     //     // CommentSeeder::class,
+    //     //     // AccountSeeder::class,
+    //     //     GroupSeeder::class,
+    //     // ]);
+    //     return GroupSeeder::class;
+    //     return Redirect::back()->with('success', 'Account Group deleted.');
+    // }
 
     public function create()
     {

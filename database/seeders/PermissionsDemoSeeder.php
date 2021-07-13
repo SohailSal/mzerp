@@ -46,8 +46,7 @@ class PermissionsDemoSeeder extends Seeder
         ]);
         $user->assignRole($role3);
 
-        $user = \App\Models\User::all()->where('name', 'Haris')->first();
-        $user->assignRole($role3);
+        // $user = \App\Models\User::all()->where('name', 'Haris')->first();
         // $user->assignRole($role3);
     }
 }

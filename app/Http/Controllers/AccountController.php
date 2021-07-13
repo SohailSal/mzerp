@@ -16,29 +16,33 @@ class AccountController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Accounts/Index', [
-            'data' => Account::all()
-                ->where('company_id', session('company_id'))
-                ->map(function ($account) {
-                    return [
-                        'id' => $account->id,
-                        'name' => $account->name,
-                        'group_id' => $account->group_id,
-                        'group_name' => $account->accountGroup->name,
-                        'delete' => Entry::where('account_id', $account->id)->first() ? false : true,
+        if (AccountGroup::where('company_id', session('company_id'))->first()) {
+            return Inertia::render('Accounts/Index', [
+                'data' => Account::all()
+                    ->where('company_id', session('company_id'))
+                    ->map(function ($account) {
+                        return [
+                            'id' => $account->id,
+                            'name' => $account->name,
+                            'group_id' => $account->group_id,
+                            'group_name' => $account->accountGroup->name,
+                            'delete' => Entry::where('account_id', $account->id)->first() ? false : true,
 
-                    ];
-                }),
+                        ];
+                    }),
 
-            'companies' => Company::all()
-                ->map(function ($com) {
-                    return [
-                        'id' => $com->id,
-                        'name' => $com->name,
-                    ];
-                }),
+                'companies' => Company::all()
+                    ->map(function ($com) {
+                        return [
+                            'id' => $com->id,
+                            'name' => $com->name,
+                        ];
+                    }),
 
-        ]);
+            ]);
+        } else {
+            return Redirect::route('accountgroups')->with('success', 'ACCOUNTGROUP NOT FOUND, Please create account group first.');
+        }
     }
 
     public function create()

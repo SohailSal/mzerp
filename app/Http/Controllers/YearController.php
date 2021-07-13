@@ -44,33 +44,58 @@ class YearController extends Controller
         ]);
     }
 
+    // public function create()
+    // {
+    //     return Inertia::render('Years/Create');
+    // }
     public function create()
     {
-        return Inertia::render('Years/Create');
-    }
+        $year = Year::where('company_id', session('company_id'))->latest()->first();
+        $begin = explode('-', $year->begin);
+        $begin[0]++;
+        $end = explode('-', $year->end);
+        $end[0]++;
+        $newBegin = implode('-', $begin);
+        $newEnd = implode('-', $end);
 
-    public function store(Req $request)
-    {
-        Request::validate([
-            'begin' => ['required', 'date'],
-            'end' => ['required', 'date'],
-        ]);
 
-        $year = Year::create([
-            'begin' => $request->begin,
-            'end' => $request->end,
+        // dd($newBegin);
+        Year::create([
+            'begin' => $newBegin,
+            'end' => $newEnd,
             'company_id' => session('company_id'),
+
         ]);
 
-        Setting::create([
-            'key' => 'active_year',
-            'value' => $year->id,
-            'user_id' => Auth::user()->id,
-        ]);
+        $year = Year::where('company_id', session('company_id'))->latest()->first();
+        // Storage::makedirectory('/public/' . $year->company->id . '/' . $year->id);
 
-        session(['year_id' => $year->id]);
-        return Redirect::route('years')->with('success', 'Year created.');
+
+        return Redirect::back()->with('success', 'Year created.');
     }
+
+    // public function store(Req $request)
+    // {
+    //     Request::validate([
+    //         'begin' => ['required', 'date'],
+    //         'end' => ['required', 'date'],
+    //     ]);
+
+    //     $year = Year::create([
+    //         'begin' => $request->begin,
+    //         'end' => $request->end,
+    //         'company_id' => session('company_id'),
+    //     ]);
+
+    //     Setting::create([
+    //         'key' => 'active_year',
+    //         'value' => $year->id,
+    //         'user_id' => Auth::user()->id,
+    //     ]);
+
+    //     session(['year_id' => $year->id]);
+    //     return Redirect::route('years')->with('success', 'Year created.');
+    // }
 
     public function edit(Year $year)
     {

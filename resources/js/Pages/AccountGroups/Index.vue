@@ -9,6 +9,9 @@
       {{ $page.props.flash.success }}
     </div>
     <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>
+    <jet-button @click="generate" v-if="exists" class="mt-4 ml-8"
+      >Auto Generate Groups</jet-button
+    >
 
     <!-- disabled="false" -->
     <!-- <button
@@ -81,6 +84,7 @@ export default {
   props: {
     data: Object,
     companies: Object,
+    exists: Object,
   },
 
   data() {
@@ -101,6 +105,11 @@ export default {
     destroy(id) {
       this.$inertia.delete(route("accountgroups.destroy", id));
     },
+
+    generate() {
+      this.$inertia.get(route("accountgroups.generate"));
+    },
+
     coch() {
       this.$inertia.get(route("companies.coch", this.co_id));
     },

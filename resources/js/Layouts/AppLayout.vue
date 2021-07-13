@@ -73,6 +73,7 @@
 
                 <jet-nav-link
                   :href="route('reports')"
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :active="route().current('reports')"
                 >
                   Reports

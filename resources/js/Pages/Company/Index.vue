@@ -12,7 +12,7 @@
       v-model="params.search"
       aria-label="Search"
       placeholder="Search..."
-      class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
+      class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
     />
     <div class="">
       <!-- class="w-full ml-10" -->
@@ -251,13 +251,14 @@
               <button
                 class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
                 @click="edit(item.id)"
+                v-if="can.edit"
               >
                 <span>Edit</span>
               </button>
               <button
                 class="border bg-red-500 rounded-xl px-4 py-1 m-1"
                 @click="destroy(item.id)"
-                v-if="!item.years[0]"
+                v-if="!item.years[0] || can.delete"
               >
                 <!-- v-if="item.delete" -->
                 <span>Delete</span>

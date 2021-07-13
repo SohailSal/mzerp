@@ -12,6 +12,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\ReportController;
+use Database\Seeders\GroupSeeder;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +79,14 @@ Route::get('years/yrch/{id}', [YearController::class, 'yrch'])
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
+
+// Route::get('accountgroups/generate', [AccountGroupController::class, 'generate'])
+//     ->name('accountgroups.generate')
+//     ->middleware('auth');
+
+Route::get('accountgroups/generate', [GroupSeeder::class, 'run'])
+    ->name('accountgroups.generate')
+    ->middleware('auth');
 
 Route::get('accountgroups', [AccountGroupController::class, 'index'])
     ->name('accountgroups')
