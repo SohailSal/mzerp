@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Document;
 use App\Models\DocumentType;
+use App\Models\Account;
 use App\Models\Company;
 use App\Models\Year;
 use App\Models\Entry;
@@ -19,49 +20,53 @@ class DocumentController extends Controller
 {
     public function index()
     {
-        return Inertia::render(
-            'Documents/Index',
-            [
-                'data' => Document::all()
-                    ->where('company_id', session('company_id'))
-                    ->where('year_id', session('year_id'))
-                    ->map(function ($document) {
+        if (Account::where('company_id', session('company_id'))->first()) {
+            return Inertia::render(
+                'Documents/Index',
+                [
+                    'data' => Document::all()
+                        ->where('company_id', session('company_id'))
+                        ->where('year_id', session('year_id'))
+                        ->map(function ($document) {
 
-                        $date = new Carbon($document->date);
+                            $date = new Carbon($document->date);
 
-                        return [
-                            'id' => $document->id,
-                            'ref' => $document->ref,
-                            'date' => $date->format('M d, Y'),
-                            'description' => $document->description,
-                            'type_id' => $document->type_id,
-                            'company_id' => session('company_id'),
-                            'year_id' => session('year_id'),
-                            'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
-                        ];
-                    }),
+                            return [
+                                'id' => $document->id,
+                                'ref' => $document->ref,
+                                'date' => $date->format('M d, Y'),
+                                'description' => $document->description,
+                                'type_id' => $document->type_id,
+                                'company_id' => session('company_id'),
+                                'year_id' => session('year_id'),
+                                'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
+                            ];
+                        }),
 
-                'companies' => Company::all()
-                    ->map(function ($com) {
-                        return [
-                            'id' => $com->id,
-                            'name' => $com->name,
-                        ];
-                    }),
+                    'companies' => Company::all()
+                        ->map(function ($com) {
+                            return [
+                                'id' => $com->id,
+                                'name' => $com->name,
+                            ];
+                        }),
 
-                'years' => Year::all()
-                    ->where('company_id', session('company_id'))
-                    ->map(function ($year) {
-                        $begin = new Carbon($year->begin);
-                        $end = new Carbon($year->end);
+                    'years' => Year::all()
+                        ->where('company_id', session('company_id'))
+                        ->map(function ($year) {
+                            $begin = new Carbon($year->begin);
+                            $end = new Carbon($year->end);
 
-                        return [
-                            'id' => $year->id,
-                            'name' => $begin->format('M d, Y') . ' - ' . $end->format('M d, Y'),
-                        ];
-                    }),
-            ]
-        );
+                            return [
+                                'id' => $year->id,
+                                'name' => $begin->format('M d, Y') . ' - ' . $end->format('M d, Y'),
+                            ];
+                        }),
+                ]
+            );
+        } else {
+            return Redirect::route('accounts')->with('warning', 'ACCOUNT NOT FOUND, Please create account first.');
+        }
     }
 
     public function create()

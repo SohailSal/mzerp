@@ -27,8 +27,8 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $accounts = \App\Models\Account::all()->map->only('id', 'name');
-        $account_first = \App\Models\Account::all('id', 'name')->first();
+        $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+        $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
         return Inertia::render('Reports/Index', [
             'account_first' => $account_first,
             'accounts' => $accounts,
@@ -41,6 +41,116 @@ class ReportController extends Controller
                 }),
         ]);
     }
+
+
+    // FOR LEDGER GENERATION -------------------------- START --------
+    public function ledger($id)
+    {
+        $year = Year::where('company_id', session('company_id'))->where('enabled', 1)->first();
+        $acc = Account::where('company_id', session('company_id'))->where('id', Crypt::decrypt($id))->first();
+
+        $entries = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '>=', $year->begin)
+            ->whereDate('documents.date', '<=', $year->end)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
+            ->where('entries.account_id', '=', Crypt::decrypt($id))
+            ->get();
+
+        $previous = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '<', $year->begin)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.debit', 'entries.credit')
+            ->where('entries.account_id', '=', Crypt::decrypt($id))
+            ->get();
+
+        //        $entries = Entry::where('account_id',Crypt::decrypt($id))->where('company_id',session('company_id'))->get();
+        $period = "From " . strval($year->begin) . " to " . strval($year->end);
+        $pdf = PDF::loadView('led', compact('entries', 'previous', 'year', 'period', 'acc'));
+        return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
+    }
+
+
+    public function rangeLedger()
+    // public function rangeLedger()
+    {
+        dd(Request::input('date_start'));
+        // 'address' => Request::input('address'),
+
+        // $start = Request::input('date_start');
+        // $end = Request::input('date_end');
+        // $account = Request::input('account_id');
+
+        // $start = $request->input('date_start');
+        // $end = $request->input('date_end');
+        // $account = $request->input('account_id');
+
+        $data['start'] = 2021 - 07 - 13;
+        $start = 2021 - 07 - 13;
+        $end = 2021 - 07 - 23;
+        $account = 47;
+
+        // $entries = DB::table('documents')
+        $data['entries'] = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '>=', $start)
+            ->whereDate('documents.date', '<=', $end)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
+            ->where('entries.account_id', '=', $account)
+            ->get();
+
+        // $previous = DB::table('documents')
+        $data['previous'] = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '<', $start)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.debit', 'entries.credit')
+            ->where('entries.account_id', '=', $account)
+            ->get();
+
+        $acc = Account::where('id', '=', $account)->where('company_id', session('company_id'))->first();
+        // dd(session('company_id'));
+        $data['acc'] = Account::where('id', '=', $account)->where('company_id', session('company_id'))->first();
+        // $period = "From " . strval($start) . " to " . strval($end);
+        $data['period'] = "From " . strval($start) . " to " . strval($end);
+        // $pdf = PDF::loadView('range', compact('entries', 'previous', 'acc', 'period', 'start'));
+        $pdf = PDF::loadView('range', $data);
+        return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
+    }
+
+
+    // public function ledger($id)
+    // {
+    //     $year = Year::where('company_id', session('company_id'))->where('enabled', 1)->first();
+    //     $acc = Account::where('company_id', session('company_id'))->where('id', Crypt::decrypt($id))->first();
+
+    //     $entries = DB::table('documents')
+    //         ->join('entries', 'documents.id', '=', 'entries.document_id')
+    //         ->whereDate('documents.date', '>=', $year->begin)
+    //         ->whereDate('documents.date', '<=', $year->end)
+    //         ->where('documents.company_id', session('company_id'))
+    //         ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
+    //         ->where('entries.account_id', '=', Crypt::decrypt($id))
+    //         ->get();
+
+    //     $previous = DB::table('documents')
+    //         ->join('entries', 'documents.id', '=', 'entries.document_id')
+    //         ->whereDate('documents.date', '<', $year->begin)
+    //         ->where('documents.company_id', session('company_id'))
+    //         ->select('entries.debit', 'entries.credit')
+    //         ->where('entries.account_id', '=', Crypt::decrypt($id))
+    //         ->get();
+
+    //     //        $entries = Entry::where('account_id',Crypt::decrypt($id))->where('company_id',session('company_id'))->get();
+    //     $period = "From " . strval($year->begin) . " to " . strval($year->end);
+    //     $pdf = PDF::loadView('led', compact('entries', 'previous', 'year', 'period', 'acc'));
+    //     return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
+    // }
+
+    // FOR LEDGER GENERATION -------------------------- END --------
 
 
     // FOR PDF GENERATION -------------------------- --------
@@ -90,33 +200,6 @@ class ReportController extends Controller
         return $pl->stream('pl.pdf');
     }
 
-    public function ledger($id)
-    {
-        $year = Year::where('company_id', session('company_id'))->where('enabled', 1)->first();
-        $acc = Account::where('company_id', session('company_id'))->where('id', Crypt::decrypt($id))->first();
-
-        $entries = DB::table('documents')
-            ->join('entries', 'documents.id', '=', 'entries.document_id')
-            ->whereDate('documents.date', '>=', $year->begin)
-            ->whereDate('documents.date', '<=', $year->end)
-            ->where('documents.company_id', session('company_id'))
-            ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
-            ->where('entries.account_id', '=', Crypt::decrypt($id))
-            ->get();
-
-        $previous = DB::table('documents')
-            ->join('entries', 'documents.id', '=', 'entries.document_id')
-            ->whereDate('documents.date', '<', $year->begin)
-            ->where('documents.company_id', session('company_id'))
-            ->select('entries.debit', 'entries.credit')
-            ->where('entries.account_id', '=', Crypt::decrypt($id))
-            ->get();
-
-        //        $entries = Entry::where('account_id',Crypt::decrypt($id))->where('company_id',session('company_id'))->get();
-        $period = "From " . strval($year->begin) . " to " . strval($year->end);
-        $pdf = PDF::loadView('led', compact('entries', 'previous', 'year', 'period', 'acc'));
-        return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
-    }
 
     public function create()
     {

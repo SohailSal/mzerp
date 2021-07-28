@@ -8,6 +8,9 @@
     <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
       {{ $page.props.flash.success }}
     </div>
+    <div v-if="$page.props.flash.warning" class="bg-yellow-600 text-white">
+      {{ $page.props.flash.warning }}
+    </div>
 
     <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap">
       <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>

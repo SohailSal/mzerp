@@ -68,6 +68,19 @@ Route::get('pl', [ReportController::class, 'pl'])
     ->middleware('auth');
 
 
+//Balance Sheet -------------------- Starts ---------------------------
+Route::post('ledger/{id}', [ReportController::class, 'ledger'])
+    ->name('ledger')
+    ->middleware('auth');
+
+Route::get('range', [ReportController::class, 'rangeLedger'])
+    ->name('range')
+    ->middleware('auth');
+Route::post('range', [ReportController::class, 'rangeLedger'])
+    ->name('range')
+    ->middleware('auth');
+
+
 //TO CHANGE COMPANY THE FROM DROPDOWN
 Route::get('companies/coch/{id}', [CompanyController::class, 'coch'])
     ->name('companies.coch');

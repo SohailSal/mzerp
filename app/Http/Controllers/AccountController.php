@@ -41,7 +41,7 @@ class AccountController extends Controller
 
             ]);
         } else {
-            return Redirect::route('accountgroups')->with('success', 'ACCOUNTGROUP NOT FOUND, Please create account group first.');
+            return Redirect::route('accountgroups')->with('warning', 'ACCOUNTGROUP NOT FOUND, Please create account group first.');
         }
     }
 

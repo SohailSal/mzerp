@@ -86,6 +86,7 @@
         <div class="panel-body">
           <button
             class="border bg-indigo-300 rounded-xl px-4 py-2 m-4"
+            type="button"
             @click.prevent="addRow"
           >
             Add row
