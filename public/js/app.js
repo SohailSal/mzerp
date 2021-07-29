@@ -19210,6 +19210,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     JetButton: _Jetstream_Button__WEBPACK_IMPORTED_MODULE_1__.default
   },
   props: {
+    errors: Object,
     data: Object,
     companies: Object,
     accounts: Object,
@@ -19217,8 +19218,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      co_id: this.$page.props.co_id //   form: {
-      //     account_id: this.accounts[0].id,
+      co_id: this.$page.props.co_id,
+      form: this.$inertia.form({
+        account_id: this.account_first.id,
+        date_start: null,
+        date_end: null
+      }) //   form: {
+      //     account_id: this.account_first.id,
       //     date_start: null,
       //     date_end: null,
       //     // begin: null,
@@ -19227,17 +19233,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     };
   },
-  setup: function setup(props) {
-    var form = (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_2__.useForm)({
-      account_id: props.account_first.id,
-      date_start: null,
-      date_end: ""
-    });
-    return {
-      form: form
-    };
-  },
+  //   setup(props) {
+  //     const form = useForm({
+  //       account_id: props.account_first.id,
+  //       date_start: null,
+  //       date_end: "",
+  //     });
+  //     return { form };
+  //   },
   methods: (_methods = {
+    submit: function submit() {
+      //   entries = this.entries;
+      //   if (this.difference === 0) {
+      this.$inertia.get(route("range"), this.form); //   } else {
+      //     alert("Entry is not equal");
+      //   }
+    },
     create: function create() {
       this.$inertia.get(route("years.create"));
     },
@@ -26833,15 +26844,14 @@ var _hoisted_9 = {
   "class": "p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"
 };
 var _hoisted_10 = {
+  key: 0
+};
+var _hoisted_11 = {
   "class": "p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"
 };
-
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "\n              border\n              rounded-lg\n              shadow-md\n              p-2\n              m-2\n              inline-block\n              hover:bg-gray-600\n              hover:text-white\n            "
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <a href=\"range\"> "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Generate Ledger "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" </a> ")], -1
-/* HOISTED */
-);
-
+var _hoisted_12 = {
+  key: 0
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_app_layout = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("app-layout");
 
@@ -26873,12 +26883,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       ))], 544
       /* HYDRATE_EVENTS, NEED_PATCH */
       ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.co_id]]), _hoisted_3, _hoisted_4, _hoisted_5, _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <form\n        @submit.prevent=\"\n          this.difference == 0 ? form.post(route('documents.store')) : ''\n        \"\n      > "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <form @submit.prevent=\"form.get(route('range'))\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
-        onSubmit: _cache[6] || (_cache[6] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
-          return $setup.form.get($options.route('range'));
+        onSubmit: _cache[6] || (_cache[6] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+          return $options.submit && $options.submit.apply($options, arguments);
         }, ["prevent"]))
-      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <form @submit.prevent=\"form.post(route('ranges'))\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
         "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
-          return $setup.form.account_id = $event;
+          return $data.form.account_id = $event;
         }),
         "class": "rounded-md w-36"
       }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.accounts, function (account) {
@@ -26892,32 +26902,37 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* KEYED_FRAGMENT */
       ))], 512
       /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $setup.form.account_id]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.form.account_id]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
         type: "date",
         "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
-          return $setup.form.date_start = $event;
+          return $data.form.date_start = $event;
         }),
         label: "date",
         placeholder: "Enter Begin date:",
         "class": "pr-2 pb-2 rounded-md placeholder-indigo-300"
       }, null, 512
       /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.form.date_start]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div v-if=\"errors.begin\">{{ errors.begin }}</div> ")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.form.date_start]]), $props.errors.date_start ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.errors.date_start), 1
+      /* TEXT */
+      )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
         type: "date",
         "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
-          return $setup.form.date_end = $event;
+          return $data.form.date_end = $event;
         }),
         "class": "pr-2 pb-2 rounded-md placeholder-indigo-300",
         label: "date",
         placeholder: "Enter End date:"
       }, null, 512
       /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.form.date_end]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div v-if=\"errors.end\">{{ errors.end }}</div> ")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.form.date_end]]), $props.errors.date_end ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.errors.date_end), 1
+      /* TEXT */
+      )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <button\n          class=\"border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4\"\n          type=\"submit\"\n          :disabled=\"form.processing\"\n        > "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div\n          class=\"\n            border\n            rounded-lg\n            shadow-md\n            p-2\n            m-2\n            inline-block\n            hover:bg-gray-600\n            hover:text-white\n          \"\n        >\n          <a href=\"range\"> Generate Ledger </a>\n        </div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" </button> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
         type: "submit",
-        disabled: $setup.form.processing
-      }, [_hoisted_11], 8
+        "class": "border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4",
+        disabled: $data.form.processing
+      }, " Generate Ledger ", 8
       /* PROPS */
-      , ["disabled"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <button\n          class=\"border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4\"\n          type=\"submit\"\n          :disabled=\"form.processing\"\n        >\n          Generate Ledger\n        </button> ")], 32
+      , ["disabled"])], 32
       /* HYDRATE_EVENTS */
       )])];
     }),

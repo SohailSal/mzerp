@@ -73,24 +73,36 @@ class ReportController extends Controller
     }
 
 
+    // public function rangeLedger(Req $request)
     public function rangeLedger()
-    // public function rangeLedger()
     {
-        dd(Request::input('date_start'));
-        // 'address' => Request::input('address'),
+        Request::validate([
+            'account_id' => ['required'],
+            // 'number' => ['nullable'],
+            'date_start' => ['required'],
+            'date_end' => ['required'],
+        ]);
 
-        // $start = Request::input('date_start');
-        // $end = Request::input('date_end');
-        // $account = Request::input('account_id');
+        // $acc_id = Request::input('account_id');
+        // dd($acc_id);
+        // 'address' => Request::input('address'),
+        // $date = new Carbon($request->date);
+
+        $start = new Carbon(Request::input('date_start'));
+        $end = new Carbon(Request::input('date_end'));
+        $account = Request::input('account_id');
+
+        $start = $start->format('Y-m-d');
+        $end = $end->format('Y-m-d');
 
         // $start = $request->input('date_start');
         // $end = $request->input('date_end');
         // $account = $request->input('account_id');
 
-        $data['start'] = 2021 - 07 - 13;
-        $start = 2021 - 07 - 13;
-        $end = 2021 - 07 - 23;
-        $account = 47;
+        $data['start'] = $start;
+        // $start = 2021 - 07 - 13;
+        // $end = 2021 - 07 - 23;
+        // $account = 47;
 
         // $entries = DB::table('documents')
         $data['entries'] = DB::table('documents')
@@ -118,6 +130,7 @@ class ReportController extends Controller
         $data['period'] = "From " . strval($start) . " to " . strval($end);
         // $pdf = PDF::loadView('range', compact('entries', 'previous', 'acc', 'period', 'start'));
         $pdf = PDF::loadView('range', $data);
+        // dd($acc->accountGroup->name);
         return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
     }
 

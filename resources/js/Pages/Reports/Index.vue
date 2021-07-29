@@ -85,7 +85,8 @@
         "
       > -->
       <!-- <form @submit.prevent="form.get(route('range'))"> -->
-      <form @submit.prevent="form.get(route('range'))">
+      <form @submit.prevent="submit">
+        <!-- <form @submit.prevent="form.post(route('ranges'))"> -->
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <select v-model="form.account_id" class="rounded-md w-36">
             <option
@@ -105,7 +106,7 @@
             placeholder="Enter Begin date:"
             class="pr-2 pb-2 rounded-md placeholder-indigo-300"
           />
-          <!-- <div v-if="errors.begin">{{ errors.begin }}</div> -->
+          <div v-if="errors.date_start">{{ errors.date_start }}</div>
         </div>
 
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
@@ -116,34 +117,37 @@
             label="date"
             placeholder="Enter End date:"
           />
-          <!-- <div v-if="errors.end">{{ errors.end }}</div> -->
+          <div v-if="errors.date_end">{{ errors.date_end }}</div>
         </div>
 
-        <button type="submit" :disabled="form.processing">
-          <div
-            class="
-              border
-              rounded-lg
-              shadow-md
-              p-2
-              m-2
-              inline-block
-              hover:bg-gray-600
-              hover:text-white
-            "
-          >
-            <!-- <a href="range"> -->
-            Generate Ledger
-            <!-- </a> -->
-          </div>
-        </button>
         <!-- <button
           class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
           type="submit"
           :disabled="form.processing"
+        > -->
+        <!-- <div
+          class="
+            border
+            rounded-lg
+            shadow-md
+            p-2
+            m-2
+            inline-block
+            hover:bg-gray-600
+            hover:text-white
+          "
+        >
+          <a href="range"> Generate Ledger </a>
+        </div> -->
+        <!-- </button> -->
+
+        <button
+          type="submit"
+          class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
+          :disabled="form.processing"
         >
           Generate Ledger
-        </button> -->
+        </button>
       </form>
     </div>
   </app-layout>
@@ -161,6 +165,7 @@ export default {
   },
 
   props: {
+    errors: Object,
     data: Object,
     companies: Object,
     accounts: Object,
@@ -170,9 +175,14 @@ export default {
   data() {
     return {
       co_id: this.$page.props.co_id,
+      form: this.$inertia.form({
+        account_id: this.account_first.id,
+        date_start: null,
+        date_end: null,
+      }),
 
       //   form: {
-      //     account_id: this.accounts[0].id,
+      //     account_id: this.account_first.id,
       //     date_start: null,
       //     date_end: null,
       //     // begin: null,
@@ -180,16 +190,25 @@ export default {
       //   },
     };
   },
-  setup(props) {
-    const form = useForm({
-      account_id: props.account_first.id,
-      date_start: null,
-      date_end: "",
-    });
-    return { form };
-  },
+  //   setup(props) {
+  //     const form = useForm({
+  //       account_id: props.account_first.id,
+  //       date_start: null,
+  //       date_end: "",
+  //     });
+  //     return { form };
+  //   },
 
   methods: {
+    submit() {
+      //   entries = this.entries;
+      //   if (this.difference === 0) {
+      this.$inertia.get(route("range"), this.form);
+      //   } else {
+      //     alert("Entry is not equal");
+      //   }
+    },
+
     create() {
       this.$inertia.get(route("years.create"));
     },

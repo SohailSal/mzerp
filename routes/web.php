@@ -76,9 +76,9 @@ Route::post('ledger/{id}', [ReportController::class, 'ledger'])
 Route::get('range', [ReportController::class, 'rangeLedger'])
     ->name('range')
     ->middleware('auth');
-Route::post('range', [ReportController::class, 'rangeLedger'])
-    ->name('range')
-    ->middleware('auth');
+// Route::post('range', [ReportController::class, 'rangeLedger'])
+//     ->name('range')
+//     ->middleware('auth');
 
 
 //TO CHANGE COMPANY THE FROM DROPDOWN
