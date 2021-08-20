@@ -12,6 +12,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\LedgerController;
 use Database\Seeders\GroupSeeder;
 
 /*
@@ -48,6 +49,14 @@ Route::get('reports', [ReportController::class, 'index'])
     ->name('reports')
     ->middleware('auth');
 
+Route::get('ledgers', [LedgerController::class, 'index'])
+    ->name('ledgers')
+    ->middleware('auth');
+
+Route::get('ledgers/getledger/{id}', [LedgerController::class, 'getledger'])
+    // ->name('getledger.onscreen');
+    ->name('getledger');
+
 //PDF -----------------------------------------------
 Route::get('pd', [ReportController::class, 'pd'])
     ->name('pd')
@@ -68,17 +77,14 @@ Route::get('pl', [ReportController::class, 'pl'])
     ->middleware('auth');
 
 
-//Balance Sheet -------------------- Starts ---------------------------
-Route::post('ledger/{id}', [ReportController::class, 'ledger'])
-    ->name('ledger')
-    ->middleware('auth');
+//Ledger Sheet -------------------- Starts ---------------------------
+// Route::post('ledger/{id}', [ReportController::class, 'ledger'])
+//     ->name('ledger')
+//     ->middleware('auth');
 
 Route::get('range', [ReportController::class, 'rangeLedger'])
     ->name('range')
     ->middleware('auth');
-// Route::post('range', [ReportController::class, 'rangeLedger'])
-//     ->name('range')
-//     ->middleware('auth');
 
 
 //TO CHANGE COMPANY THE FROM DROPDOWN

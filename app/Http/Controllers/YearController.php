@@ -18,6 +18,7 @@ class YearController extends Controller
 {
     public function index()
     {
+
         return Inertia::render('Years/Index', [
             'data' => Year::all()
                 ->where('company_id', session('company_id'))
@@ -30,7 +31,8 @@ class YearController extends Controller
                         'end' => $end->format('F,j Y'),
                         'company_name' => $year->company->name,
                         'company_id' => $year->company_id,
-                        'delete' => Document::where('year_id', $year->id)->first() ? false : true,
+                        'delete' => Document::where('year_id', $year->id)->first() || $year->id == Year::where('company_id', session('company_id'))->first()->id ? false : true,
+                        // 'delete' => Document::where('year_id', $year->id)->first() || $year == Year::where('company_id', session('company_id'))->first() ? false : true,
                     ];
                 }),
 

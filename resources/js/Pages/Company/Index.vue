@@ -14,13 +14,22 @@
       placeholder="Search..."
       class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
     />
+    <select
+      v-model="co_id"
+      class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
+      label="company"
+      placeholder="Select Company"
+      @change="coch"
+    >
+      <option v-for="type in companies" :key="type.id" :value="type.id">
+        {{ type.name }}
+      </option>
+    </select>
     <div class="">
       <!-- class="w-full ml-10" -->
       <table class="shadow-lg border mt-4 ml-8 rounded-xl">
         <thead>
           <tr class="bg-indigo-100">
-            <th class="py-2 px-4 border">ID</th>
-
             <th class="py-2 px-4 border">
               <span @click="sort('name')">
                 Name
@@ -239,9 +248,9 @@
           <!-- <tr v-for="item in balances.data" :key="item.id"> -->
           <tr v-for="item in balances.data" :key="item.id">
             <!-- <td class="py-1 px-4 border">{{ item.id }}</td> -->
-            <td class="py-1 px-4 border">
-              <!-- {{ item.years[0].id ? item.years[0].id : "hi" }} -->
-            </td>
+            <!-- <td class="py-1 px-4 border">
+              {{ item.years[0].id ? item.years[0].id : "hi" }}
+            </td> -->
             <td class="py-1 px-4 border">{{ item.name }}</td>
             <td class="py-1 px-4 border">{{ item.address }}</td>
             <td class="py-1 px-4 border">{{ item.email }}</td>
@@ -251,8 +260,8 @@
               <button
                 class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
                 @click="edit(item.id)"
-                v-if="can.edit"
               >
+                <!-- v-if="can.edit" -->
                 <span>Edit</span>
               </button>
               <button
@@ -298,10 +307,13 @@ export default {
     balances: Object,
     filters: Object,
     can: Object,
+    companies: Object,
   },
 
   data() {
     return {
+      co_id: this.$page.props.co_id,
+
       params: {
         search: this.filters.search,
         field: this.filters.field,
@@ -321,6 +333,10 @@ export default {
 
     destroy(id) {
       this.$inertia.delete(route("companies.destroy", id));
+    },
+
+    coch() {
+      this.$inertia.get(route("companies.coch", this.co_id));
     },
 
     sort(field) {

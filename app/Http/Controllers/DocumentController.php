@@ -65,22 +65,27 @@ class DocumentController extends Controller
                 ]
             );
         } else {
-            return Redirect::route('accounts')->with('warning', 'ACCOUNT NOT FOUND, Please create account first.');
+            return Redirect::route('accounts')->with('warning', 'ACCOUNT NOT FOUND, Please create an account first.');
         }
     }
 
     public function create()
     {
-        $accounts = \App\Models\Account::all()->map->only('id', 'name');
-        $account_first = \App\Models\Account::all('id', 'name')->first();
+        // if (DocumentType::all()->where('company_id', session('company_id'))->first()) {
 
-        $doc_type_first = \App\Models\DocumentType::all('id', 'name')->first();
+        // $accounts = \App\Models\Account::all()->map->only('id', 'name');
+        // $account_first = \App\Models\Account::all('id', 'name')->first();
+        $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+        $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+
+        $doc_type_first = \App\Models\DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
 
         if ($doc_type_first && $account_first) {
             return Inertia::render('Documents/Create', [
                 'accounts' => $accounts, 'account_first' => $account_first,
                 'doc_type_first' => $doc_type_first,
                 'doc_types' => DocumentType::all()
+                    ->where('company_id', session('company_id'))
                     ->map(function ($doc_type) {
                         return [
                             'id' => $doc_type->id,
@@ -96,6 +101,9 @@ class DocumentController extends Controller
                 return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
             }
         }
+        // }else{
+
+        // }
     }
 
 

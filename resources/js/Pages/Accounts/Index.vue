@@ -8,6 +8,12 @@
     <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
       {{ $page.props.flash.success }}
     </div>
+    <div
+      v-if="$page.props.flash.warning"
+      class="bg-yellow-600 contentDSS-center text-white"
+    >
+      {{ $page.props.flash.warning }}
+    </div>
     <jet-button @click="create" class="mt-4 ml-8">Create Account</jet-button>
     <select
       v-model="co_id"

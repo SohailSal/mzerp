@@ -15,6 +15,7 @@ use App\Models\Company;
 use App\Models\Document;
 use App\Models\Entry;
 use App\Models\DocumentType;
+use App\Models\User;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -73,38 +74,85 @@ class ReportController extends Controller
     }
 
 
-    // public function rangeLedger(Req $request)
-    public function rangeLedger()
+    // public function rangeLedger($account_id, $date_start, $date_end)
+    public function rangeLedger(Req $request)
     {
-        Request::validate([
-            'account_id' => ['required'],
-            // 'number' => ['nullable'],
-            'date_start' => ['required'],
-            'date_end' => ['required'],
-        ]);
+        // dd($account_id . '  ' . $date_start . ' ' . $date_end);
+        // $account_id = $request->input('account_id');
+        // $account_id = $request->input('date_start');
+        // dd($account_id);
+
+
+        // Request::validate([
+        //     $request->account_id => ['required'],
+        //     $request->date_start => ['required'],
+        //     $request->date_end => ['required'],
+        //     // 'account_id' => ['required'],
+        //     // 'date_start' => ['required'],
+        //     // 'date_end' => ['required'],
+        // ]);
 
         // $acc_id = Request::input('account_id');
         // dd($acc_id);
         // 'address' => Request::input('address'),
         // $date = new Carbon($request->date);
 
-        $start = new Carbon(Request::input('date_start'));
-        $end = new Carbon(Request::input('date_end'));
-        $account = Request::input('account_id');
+        // $start = new Carbon(Request::input('date_start'));
+        // $end = new Carbon(Request::input('date_end'));
+        // $account = Request::input('account_id');
+
+        $start = new Carbon($request->input('date_start'));
+        $end = new Carbon($request->input('date_end'));
+        $account = $request->input('account_id');
 
         $start = $start->format('Y-m-d');
         $end = $end->format('Y-m-d');
+
 
         // $start = $request->input('date_start');
         // $end = $request->input('date_end');
         // $account = $request->input('account_id');
 
-        $data['start'] = $start;
-        // $start = 2021 - 07 - 13;
-        // $end = 2021 - 07 - 23;
+        // $start = "2021-09-03";
+        // $end = "2021-09-23";
+
+
+
+        // $account = $account_id;
+        // $start = new Carbon($date_start);
+        // $end = new Carbon($date_end);
+
+        // $start = $start->format('Y-m-d');
+        // $end = $end->format('Y-m-d');
+
+        // $start = "skjdf";
+        // $end = "skjdf";
         // $account = 47;
 
-        // $entries = DB::table('documents')
+        $entries = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '>=', $start)
+            ->whereDate('documents.date', '<=', $end)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
+            ->where('entries.account_id', '=', $account)
+            ->get();
+
+        $previous = DB::table('documents')
+            ->join('entries', 'documents.id', '=', 'entries.document_id')
+            ->whereDate('documents.date', '<', $start)
+            ->where('documents.company_id', session('company_id'))
+            ->select('entries.debit', 'entries.credit')
+            ->where('entries.account_id', '=', $account)
+            ->get();
+
+        $acc = Account::where('id', '=', $account)->where('company_id', session('company_id'))->first();
+        $period = "From " . strval($start) . " to " . strval($end);
+
+
+        // $data['start'] = $start;
+        $data['start'] = $start;
+
         $data['entries'] = DB::table('documents')
             ->join('entries', 'documents.id', '=', 'entries.document_id')
             ->whereDate('documents.date', '>=', $start)
@@ -114,7 +162,6 @@ class ReportController extends Controller
             ->where('entries.account_id', '=', $account)
             ->get();
 
-        // $previous = DB::table('documents')
         $data['previous'] = DB::table('documents')
             ->join('entries', 'documents.id', '=', 'entries.document_id')
             ->whereDate('documents.date', '<', $start)
@@ -123,15 +170,31 @@ class ReportController extends Controller
             ->where('entries.account_id', '=', $account)
             ->get();
 
-        $acc = Account::where('id', '=', $account)->where('company_id', session('company_id'))->first();
         // dd(session('company_id'));
+        // dd($account);
         $data['acc'] = Account::where('id', '=', $account)->where('company_id', session('company_id'))->first();
-        // $period = "From " . strval($start) . " to " . strval($end);
         $data['period'] = "From " . strval($start) . " to " . strval($end);
         // $pdf = PDF::loadView('range', compact('entries', 'previous', 'acc', 'period', 'start'));
-        $pdf = PDF::loadView('range', $data);
+        // dd($data['entries']);
         // dd($acc->accountGroup->name);
+
+        // dd($data['acc']);
+        $a = "hello world";
+        $pdf = App::make('dompdf.wrapper');
+        // $pdf->loadView('ledger', compact('a'));
+        // return $pdf->stream('v.pdf');
+
+        $pdf = PDF::loadView('range', $data);
+        // $pdf = PDF::loadView('ledger', compact('entries', 'previous', 'acc', 'period', 'start'));
+
+        // $pdf = PDF::loadView('range', $data);
+
+
+        // $pdf = PDF::loadView('range', compact('entries', 'previous', 'acc', 'period', 'start'));
+
+
         return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
+        return $pdf->stream('hi.pdf');
     }
 
 
@@ -192,6 +255,7 @@ class ReportController extends Controller
     public function trialbalance()
     {
         $data['accounts'] = Account::where('company_id', session('company_id'))->get();
+
         $tb = App::make('dompdf.wrapper');
         // $pdf->loadView('pdf', compact('a'));
         $tb->loadView('trialbalance', $data);

@@ -37,6 +37,18 @@
         </div>
         <!-- DATE -->
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <!-- v-model="form.date_end" -->
+          <input
+            type="date"
+            v-model="form.date"
+            class="pr-2 pb-2 rounded-md placeholder-indigo-300"
+            label="date"
+            placeholder="Enter Date:"
+            name="date"
+          />
+          <div v-if="errors.date">{{ errors.date }}</div>
+        </div>
+        <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
           <datepicker
             v-model="form.date"
             class="pr-2 pb-2 w-full rounded-md placeholder-indigo-300"
@@ -44,7 +56,7 @@
             placeholder="Enter Date:"
           />
           <div v-if="errors.date">{{ errors.date }}</div>
-        </div>
+        </div> -->
 
         <!-- TABLE FOR ENTRIES ---- START ------------- -->
         <div class="panel-body">
@@ -192,17 +204,17 @@ export default {
   setup(props) {
     const form = useForm({
       type_id: props.doc_type_first.id,
-      date: null,
+      date: new Date().toISOString().substr(0, 10),
       description: null,
 
       entries: [
         {
-          account_id: props.accounts[0].id,
+          account_id: props.account_first.id,
           debit: 0,
           credit: 0,
         },
         {
-          account_id: props.accounts[0].id,
+          account_id: props.account_first.id,
           debit: 0,
           credit: 0,
         },

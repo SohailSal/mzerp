@@ -100,6 +100,8 @@ class CompanyController extends Controller
             'field' => ['in:name,email']
         ]);
 
+        $companies = Company::all();
+
         // $query = Company::query();
         $query = Company::paginate(6)
             ->withQueryString()
@@ -181,6 +183,7 @@ class CompanyController extends Controller
             // 'data' => $query,
             // 'balances' => $query,
             // 'can' => auth()->user()->can('edit_articles'),
+            'companies' => $companies,
             'can' => [
                 'edit' => auth()->user()->can('edit articles'),
                 'publish' => auth()->user()->can('publish articles'),

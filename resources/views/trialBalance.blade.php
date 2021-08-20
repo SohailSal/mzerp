@@ -26,7 +26,6 @@
             $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
             $fmt->setSymbol(NumberFormatter::CURRENCY_SYMBOL, '');
             $year =  \App\Models\Year::where('company_id',session('company_id'))->where('enabled',1)->first();
-
                 $obalance = [];
                 $oite= 0;
                 foreach ($accounts as $account) {
@@ -35,7 +34,6 @@
                     $isExpense = ($account->accountGroup->accountType->name == 'Expenses')? true : false;
                     $isRevenue = ($account->accountGroup->accountType->name == 'Revenue')? true : false;
                     $isProfit =  ($account->name == 'Accumulated Profit')? true : false;
-
                         $entries = Illuminate\Support\Facades\DB::table('documents')
                             ->join('entries', 'documents.id', '=', 'entries.document_id')
                             ->whereDate('documents.date', '<=', $year->end)
@@ -43,7 +41,6 @@
                             ->where('entries.account_id','=',$account->id)
                             ->select('entries.debit', 'entries.credit')
                             ->get();
-
                         $cnt = count($entries);
                         foreach ($entries as $entry){
                             if((--$cnt <= 0) && ($year->closed) && ($isExpense || $isRevenue || $isProfit)){
@@ -54,7 +51,6 @@
                     }
                     $obalance[$oite++] = $balance;
                 }
-
                 $debit = 0;
                 $credit = 0;
                 for($i=0;$i<count($obalance);$i++){
@@ -65,7 +61,6 @@
                         $credit = $credit + $obalance[$i];
                     }
                 }
-
            $dt = \Carbon\Carbon::now(new DateTimeZone('Asia/Karachi'))->format('M d, Y - h:m a');
     ?>
 
