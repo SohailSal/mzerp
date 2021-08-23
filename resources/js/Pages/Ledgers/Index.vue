@@ -49,6 +49,7 @@
               label="date"
               placeholder="Enter Begin date:"
               class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300"
+              @change="getledger"
               name="date_start"
             />
             <div v-if="errors.date_start">{{ errors.date_start }}</div>
@@ -61,6 +62,7 @@
               class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300"
               label="date"
               placeholder="Enter End date:"
+              @change="getledger"
               name="date_end"
               value="{{new Date().toISOString().substr(0, 10)}}"
             />
