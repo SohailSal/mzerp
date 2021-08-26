@@ -14,6 +14,13 @@
 
     <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap">
       <jet-button @click="create" class="mt-4 ml-8">Create</jet-button>
+      <input
+        type="search"
+        v-model="params.search"
+        aria-label="Search"
+        placeholder="Search..."
+        class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
+      />
 
       <select
         v-model="co_id"
@@ -38,8 +45,9 @@
       </select>
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
     </div>
-    <div class="">
-      <table class="shadow-lg border mt-4 ml-8 rounded-xl">
+    <div class="w-full px-8">
+      <!-- ml-8 mr-8 -->
+      <table class="shadow-lg w-11/12 border mt-4 rounded-xl">
         <thead>
           <tr class="bg-indigo-100">
             <th class="py-2 px-4 border">Reference</th>
@@ -49,7 +57,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id">
+          <tr v-for="item in data.data" :key="item.id">
             <td class="py-1 px-4 border">{{ item.ref }}</td>
             <td class="py-1 px-4 border">{{ item.date }}</td>
             <td class="py-1 px-4 border w-2/5">{{ item.description }}</td>
@@ -69,8 +77,12 @@
               </button>
             </td>
           </tr>
+          <tr v-if="data.data.length === 0">
+            <td class="border-t px-6 py-4" colspan="4">No Record found.</td>
+          </tr>
         </tbody>
       </table>
+      <paginator class="mt-6" :balances="data" />
     </div>
   </app-layout>
 </template>
@@ -78,17 +90,24 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
+import Paginator from "@/Layouts/Paginator";
 import moment from "moment";
+import { pickBy } from "lodash";
+import { throttle } from "lodash";
 
 export default {
   components: {
     AppLayout,
     JetButton,
+    Paginator,
+    throttle,
+    pickBy,
     moment,
   },
 
   props: {
     data: Object,
+    filters: Object,
     companies: Object,
     years: Object,
   },
@@ -97,6 +116,12 @@ export default {
     return {
       co_id: this.$page.props.co_id,
       yr_id: this.$page.props.yr_id,
+
+      params: {
+        search: this.filters.search,
+        field: this.filters.field,
+        direction: this.filters.direction,
+      },
     };
   },
 
@@ -121,6 +146,38 @@ export default {
     // },
     yrch() {
       this.$inertia.get(route("years.yrch", this.yr_id));
+    },
+
+    sort(field) {
+      this.params.field = field;
+      this.params.direction = this.params.direction === "asc" ? "desc" : "asc";
+    },
+  },
+  watch: {
+    params: {
+      //   handler() {
+      //     // let params = this.params;
+      //     // Object.keys(params).forEach((key) => {
+      //     //   if (params[key] == "") {
+      //     //     delete params[key];
+      //     //   }
+      //     // });
+
+      //     this.$inertia.get(this.route("companies"), params, {
+      //       replace: true,
+      //       preserveState: true,
+      //     });
+      //   },
+      //   deep: true,
+      // },
+      handler: throttle(function () {
+        let params = pickBy(this.params);
+        this.$inertia.get(this.route("documents"), params, {
+          replace: true,
+          preserveState: true,
+        });
+      }, 150),
+      deep: true,
     },
   },
 };

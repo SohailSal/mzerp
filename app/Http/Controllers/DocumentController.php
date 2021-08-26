@@ -15,33 +15,103 @@ use App\Models\Entry;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Exception;
+use PhpParser\Comment\Doc;
 
 class DocumentController extends Controller
 {
     public function index()
     {
+
+        //Validating request
+        request()->validate([
+            'direction' => ['in:asc,desc'],
+            'field' => ['in:name,email']
+        ]);
+
         if (Account::where('company_id', session('company_id'))->first()) {
+
+            //Searching request
+            $query = Document::query();
+            $query = Document::all()
+                ->where('company_id', session('company_id'))
+                ->where('year_id', session('year_id'))
+                ->map(function ($document) {
+
+                    $date = new Carbon($document->date);
+
+                    return [
+                        'id' => $document->id,
+                        'ref' => $document->ref,
+                        'date' => $date->format('M d, Y'),
+                        'description' => $document->description,
+                        'type_id' => $document->type_id,
+                        'company_id' => session('company_id'),
+                        'year_id' => session('year_id'),
+                        'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
+                    ];
+                });
+
+            $query = Document::query();
+
+            $query
+                ->where('company_id', session('company_id'))
+                ->where('year_id', session('year_id'))
+                ->paginate(6)
+                ->withQueryString()
+                ->through(
+                    fn ($document) =>
+                    [
+                        'id' => $document->id,
+                        'ref' => $document->ref,
+
+                        $date = new Carbon($document->date),
+                        'date' => $date->format('M d, Y'),
+                        'description' => $document->description,
+                        'type_id' => $document->type_id,
+                        'company_id' => session('company_id'),
+                        'year_id' => session('year_id'),
+                        'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
+                    ]
+                );
+            if (request('search')) {
+                $query->where('description', 'LIKE', '%' . request('search') . '%');
+                // $data = Document::all()->where('description', 'LIKE', '%' . request('search') . '%');
+            }
+            //Ordering request
+            if (request()->has(['field', 'direction'])) {
+                $query->orderBy(
+                    request('field'),
+                    request('direction')
+                );
+                // $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
+            }
+            // $balances = $query->with('years')->paginate(6);
+
+            // dd($query->paginate(10));
+
             return Inertia::render(
                 'Documents/Index',
                 [
-                    'data' => Document::all()
-                        ->where('company_id', session('company_id'))
-                        ->where('year_id', session('year_id'))
-                        ->map(function ($document) {
+                    'data' => $query->paginate(6),
+                    'filters' => request()->all(['search', 'field', 'direction']),
+                    // 'data' => Document::all()
+                    //     ->where('company_id', session('company_id'))
+                    //     ->where('year_id', session('year_id'))
+                    //     ->map(function ($document) {
 
-                            $date = new Carbon($document->date);
+                    //         $date = new Carbon($document->date);
 
-                            return [
-                                'id' => $document->id,
-                                'ref' => $document->ref,
-                                'date' => $date->format('M d, Y'),
-                                'description' => $document->description,
-                                'type_id' => $document->type_id,
-                                'company_id' => session('company_id'),
-                                'year_id' => session('year_id'),
-                                'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
-                            ];
-                        }),
+                    //         return [
+                    //             'id' => $document->id,
+                    //             'ref' => $document->ref,
+                    //             'date' => $date->format('M d, Y'),
+                    //             'description' => $document->description,
+                    //             'type_id' => $document->type_id,
+                    //             'company_id' => session('company_id'),
+                    //             'year_id' => session('year_id'),
+                    //             'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
+                    //         ];
+                    //     }),
 
                     'companies' => Company::all()
                         ->map(function ($com) {
@@ -81,18 +151,37 @@ class DocumentController extends Controller
         $doc_type_first = \App\Models\DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
 
         if ($doc_type_first && $account_first) {
+            $document_types = DocumentType::where('company_id', session('company_id'))->get()
+                ->filter(function ($doc_type) {
+                    if ($doc_type->documents()
+                        ->where('year_id', session('year_id'))->first('ref')
+                    ) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
+                ->map(function ($doc_type) {
+                    return [
+                        'id' => $doc_type->id,
+                        'name' => $doc_type->name,
+                        'ref' => $doc_type->prefix . "/" . $doc_type->timestamps,
+                    ];
+                });
+
+            $doc_types = null;
+            $i = 0;
+            foreach ($document_types as $d_type) {
+                if ($d_type) {
+                    $doc_types[$i] = $d_type;
+                    $i++;
+                }
+            }
+
             return Inertia::render('Documents/Create', [
                 'accounts' => $accounts, 'account_first' => $account_first,
                 'doc_type_first' => $doc_type_first,
-                'doc_types' => DocumentType::all()
-                    ->where('company_id', session('company_id'))
-                    ->map(function ($doc_type) {
-                        return [
-                            'id' => $doc_type->id,
-                            'name' => $doc_type->name,
-                            'ref' => $doc_type->prefix . "/" . $doc_type->timestamps,
-                        ];
-                    }),
+                'doc_types' => $doc_types,
             ]);
         } else {
             if ($doc_type_first) {

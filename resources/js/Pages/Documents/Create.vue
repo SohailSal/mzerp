@@ -203,7 +203,7 @@ export default {
 
   setup(props) {
     const form = useForm({
-      type_id: props.doc_type_first.id,
+      type_id: props.doc_types[0].id,
       date: new Date().toISOString().substr(0, 10),
       description: null,
 
