@@ -2,19 +2,20 @@
   <app-layout>
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Transactions
+        Edit Transactions
       </h2>
     </template>
-    <div class="">
-      <form @submit.prevent="submit">
-        <!--
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+      <div class="">
+        <form @submit.prevent="submit">
+          <!--
         @submit.prevent="
           this.difference == 0 ? form.post(route('documents.store')) : ''
         "
         -->
-        <!-- DOCUMENT TYPE ID -->
-        <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
-          <!-- <select
+          <!-- DOCUMENT TYPE ID -->
+          <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+            <!-- <select
             v-model="form.type_id"
             class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
             label="voucher"
@@ -23,182 +24,197 @@
               {{ type.name }}
             </option>
           </select> -->
-          <input
-            type="text"
-            v-model="document.type_name"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
-            label="ref"
-            placeholder="Enter Voucher"
-            readonly
-          />
-          <div v-if="errors.type">{{ errors.type }}</div>
-          <!-- </div> -->
+            <input
+              type="text"
+              v-model="document.type_name"
+              class="
+                pr-2
+                pb-2
+                w-full
+                lg:w-1/4
+                rounded-md
+                placeholder-indigo-300
+              "
+              label="ref"
+              placeholder="Enter Voucher"
+              readonly
+            />
+            <div v-if="errors.type">{{ errors.type }}</div>
+            <!-- </div> -->
+            <!-- DESCRIPTION -->
+            <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"> -->
+            <input
+              type="text"
+              v-model="document.ref"
+              class="
+                pr-2
+                pb-2
+                ml-6
+                w-full
+                lg:w-1/4
+                rounded-md
+                placeholder-indigo-300
+              "
+              label="ref"
+              placeholder="Enter Refernce"
+              readonly
+            />
+            <div v-if="errors.ref">{{ errors.ref }}</div>
+          </div>
           <!-- DESCRIPTION -->
-          <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"> -->
-          <input
-            type="text"
-            v-model="document.ref"
-            class="
-              pr-2
-              pb-2
-              ml-6
-              w-full
-              lg:w-1/4
-              rounded-md
-              placeholder-indigo-300
-            "
-            label="ref"
-            placeholder="Enter Refernce"
-            readonly
-          />
-          <div v-if="errors.ref">{{ errors.ref }}</div>
-        </div>
-        <!-- DESCRIPTION -->
-        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-          <input
-            type="text"
-            v-model="form.description"
-            class="pr-2 pb-2 w-full lg:w-1/4 rounded-md placeholder-indigo-300"
-            label="description"
-            placeholder="Enter Description"
-          />
-          <div v-if="errors.description">{{ errors.description }}</div>
-          <!-- </div> -->
-          <!-- DATE -->
-          <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"> -->
-          <input
-            type="date"
-            v-model="form.date"
-            class="pr-2 pb-2 ml-6 rounded-md placeholder-indigo-300"
-            label="date"
-            placeholder="Date:"
-          />
-          <!-- <datepicker
+          <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+            <input
+              type="text"
+              v-model="form.description"
+              class="
+                pr-2
+                pb-2
+                w-full
+                lg:w-1/4
+                rounded-md
+                placeholder-indigo-300
+              "
+              label="description"
+              placeholder="Enter Description"
+            />
+            <div v-if="errors.description">{{ errors.description }}</div>
+            <!-- </div> -->
+            <!-- DATE -->
+            <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"> -->
+            <input
+              type="date"
+              v-model="form.date"
+              class="pr-2 pb-2 ml-6 rounded-md placeholder-indigo-300"
+              label="date"
+              placeholder="Date:"
+            />
+            <!-- <datepicker
             v-model="form.date"
             class="pr-2 pb-2 w-full rounded-md placeholder-indigo-300"
             label="date"
             placeholder="Enter Date:"
           /> -->
-          <div v-if="errors.date">{{ errors.date }}</div>
-        </div>
+            <div v-if="errors.date">{{ errors.date }}</div>
+          </div>
 
-        <!-- TABLE FOR ENTRIES ---- START ------------- -->
-        <div class="panel-body">
-          <button
-            class="border bg-indigo-300 rounded-xl px-4 py-2 m-4"
-            type="button"
-            @click.prevent="addRow"
-          >
-            Add row
-          </button>
-          <div v-if="isError">{{ firstError }}</div>
-          <table class="table border">
-            <thead class="">
-              <tr>
-                <th>Account:</th>
-                <th>Debit:</th>
-                <th>Credit:</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(entry, index) in form.entries" :key="entry.id">
-                <!-- <tr v-for="(entry, index) in entries" :key="entry.id"> -->
-                <td>
-                  <select v-model="entry.account_id" class="rounded-md w-36">
-                    <option
-                      v-for="account in accounts"
-                      :key="account.id"
-                      :value="account.id"
+          <!-- TABLE FOR ENTRIES ---- START ------------- -->
+          <div class="panel-body">
+            <button
+              class="border bg-indigo-300 rounded-xl px-4 py-2 m-4"
+              type="button"
+              @click.prevent="addRow"
+            >
+              Add row
+            </button>
+            <div v-if="isError">{{ firstError }}</div>
+            <table class="table border">
+              <thead class="">
+                <tr>
+                  <th>Account:</th>
+                  <th>Debit:</th>
+                  <th>Credit:</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(entry, index) in form.entries" :key="entry.id">
+                  <!-- <tr v-for="(entry, index) in entries" :key="entry.id"> -->
+                  <td>
+                    <select v-model="entry.account_id" class="rounded-md w-36">
+                      <option
+                        v-for="account in accounts"
+                        :key="account.id"
+                        :value="account.id"
+                      >
+                        {{ account.name }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      v-model="entry.debit"
+                      type="text"
+                      @change="debitchange(index)"
+                      class="rounded-md w-36"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      v-model="entry.credit"
+                      type="text"
+                      @change="creditchange(index)"
+                      class="rounded-md w-36"
+                    />
+                  </td>
+                  <td>
+                    <button
+                      @click.prevent="deleteRow(index)"
+                      v-if="index > 1"
+                      class="border bg-indigo-300 rounded-xl px-4 py-2 m-4"
                     >
-                      {{ account.name }}
-                    </option>
-                  </select>
-                </td>
-                <td>
-                  <input
-                    v-model="entry.debit"
-                    type="text"
-                    @change="debitchange(index)"
-                    class="rounded-md w-36"
-                  />
-                </td>
-                <td>
-                  <input
-                    v-model="entry.credit"
-                    type="text"
-                    @change="creditchange(index)"
-                    class="rounded-md w-36"
-                  />
-                </td>
-                <td>
-                  <button
-                    @click.prevent="deleteRow(index)"
-                    v-if="index > 1"
-                    class="border bg-indigo-300 rounded-xl px-4 py-2 m-4"
-                  >
-                    Delete
-                  </button>
-                  <div v-else class="border rounded-xl px-4 py-2 m-4"></div>
-                </td>
-              </tr>
+                      Delete
+                    </button>
+                    <div v-else class="border rounded-xl px-4 py-2 m-4"></div>
+                  </td>
+                </tr>
 
-              <tr>
-                <th>Difference:</th>
-                <th>Debit:</th>
-                <th>Credit:</th>
-              </tr>
+                <tr>
+                  <th>Difference:</th>
+                  <th>Debit:</th>
+                  <th>Credit:</th>
+                </tr>
 
-              <tr>
-                <td>
-                  <input
-                    type="text"
-                    v-model="difference"
-                    readonly
-                    class="rounded-md w-36"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    v-model="debit"
-                    readonly
-                    class="rounded-md w-36"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    v-model="credit"
-                    readonly
-                    class="rounded-md w-36"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- TABLE FOR ENTRIES ---- END ------------- -->
+                <tr>
+                  <td>
+                    <input
+                      type="text"
+                      v-model="difference"
+                      readonly
+                      class="rounded-md w-36"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      v-model="debit"
+                      readonly
+                      class="rounded-md w-36"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      v-model="credit"
+                      readonly
+                      class="rounded-md w-36"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- TABLE FOR ENTRIES ---- END ------------- -->
 
-        <div
-          class="
-            px-4
-            py-2
-            bg-gray-100
-            border-t border-gray-200
-            flex
-            justify-start
-            items-center
-          "
-        >
-          <button
-            class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
-            type="submit"
+          <div
+            class="
+              px-4
+              py-2
+              bg-gray-100
+              border-t border-gray-200
+              flex
+              justify-start
+              items-center
+            "
           >
-            <!-- :disabled="form.processing" -->
-            Update Transaction
-          </button>
-        </div>
-      </form>
+            <button
+              class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
+              type="submit"
+            >
+              <!-- :disabled="form.processing" -->
+              Update Transaction
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </app-layout>
 </template>

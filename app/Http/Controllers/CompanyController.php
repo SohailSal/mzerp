@@ -179,16 +179,21 @@ class CompanyController extends Controller
 
 
 
+        $active_co = Setting::where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
+        $coch_hold = Company::where('id', $active_co->value)->first();
+
         return Inertia::render('Company/Index', [
             // 'data' => $query,
             // 'balances' => $query,
             // 'can' => auth()->user()->can('edit_articles'),
             'companies' => $companies,
-            'can' => [
-                'edit' => auth()->user()->can('edit articles'),
-                'publish' => auth()->user()->can('publish articles'),
-                'delete' => auth()->user()->can('delete articles'),
-            ],
+            'cochange' => $coch_hold,
+            // 'can' => [
+            //     'edit' => auth()->user()->can('edit'),
+            //     'create' => auth()->user()->can('create'),
+            //     'delete' => auth()->user()->can('delete'),
+            //     'read' => auth()->user()->can('read'),
+            // ],
             // 'can' => auth()->user()->can('publish articles'),
             'balances' => $query->with('years')->paginate(6),
             // 'balances' => Company::paginate(6)->withQueryString()
@@ -397,7 +402,14 @@ class CompanyController extends Controller
     public function coch($id)
     {
         $active_co = Setting::where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
+        // $coch_hold = Company::where('id', $active_co->value)->first();
+        $active_co = Setting::all();
 
+
+        // where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
+
+        // dd($active_co);
+        
         $active_co->value = $id;
 
         $active_co->save();
@@ -407,7 +419,11 @@ class CompanyController extends Controller
             $active_yr = Setting::where('user_id', Auth::user()->id)->where('key', 'active_year')->first();
             $active_yr->value = Year::where('company_id', $id)->latest()->first()->id;
             $active_yr->save();
-            session(['year_id' => $active_yr->value]);
+
+            $active_yr = Year::where('company_id', $id)->latest()->first()->id;
+          
+            session(['year_id' => $active_yr]);
+            // session(['year_id' => $active_yr->value]);
             // $active_co->save();
             // session(['company_id' => $id]);
             return Redirect::back();

@@ -3,69 +3,69 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Reports</h2>
     </template>
-    <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
-      {{ $page.props.flash.success }}
-    </div>
-    <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+      <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
+        {{ $page.props.flash.success }}
+      </div>
+      <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
-    <select
-      v-model="co_id"
-      class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right m-2"
-      label="company"
-      @change="coch"
-    >
-      <option v-for="type in companies" :key="type.id" :value="type.id">
-        {{ type.name }}
-      </option>
-    </select>
-    <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
-    <div
-      class="
-        border
-        rounded-lg
-        shadow-md
-        p-2
-        m-2
-        inline-block
-        hover:bg-gray-600
-        hover:text-white
-        ml-12
-      "
-    >
-      <a href="trialbalance">Trial Balance</a>
-    </div>
+      <select
+        v-model="co_id"
+        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right m-2"
+        label="company"
+        @change="coch"
+      >
+        <option v-for="type in companies" :key="type.id" :value="type.id">
+          {{ type.name }}
+        </option>
+      </select>
+      <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
+      <div
+        class="
+          border
+          rounded-lg
+          shadow-md
+          p-2
+          m-2
+          inline-block
+          hover:bg-gray-600
+          hover:text-white
+        "
+      >
+        <a href="trialbalance" target="_blank">Trial Balance</a>
+      </div>
 
-    <div
-      class="
-        border
-        rounded-lg
-        shadow-md
-        p-2
-        m-2
-        inline-block
-        hover:bg-gray-600
-        hover:text-white
-      "
-    >
-      <a href="bs">Balance Sheet</a>
-    </div>
+      <div
+        class="
+          border
+          rounded-lg
+          shadow-md
+          p-2
+          m-2
+          inline-block
+          hover:bg-gray-600
+          hover:text-white
+        "
+      >
+        <a href="bs" target="_blank">Balance Sheet</a>
+      </div>
 
-    <div
-      class="
-        border
-        rounded-lg
-        shadow-md
-        p-2
-        m-2
-        inline-block
-        hover:bg-gray-600
-        hover:text-white
-      "
-    >
-      <a href="pl">Profit or Loss A/C</a>
-    </div>
+      <div
+        class="
+          border
+          rounded-lg
+          shadow-md
+          p-2
+          m-2
+          inline-block
+          hover:bg-gray-600
+          hover:text-white
+        "
+      >
+        <a href="pl" target="_blank">Profit or Loss A/C</a>
+      </div>
 
-    <!-- <div
+      <!-- <div
       class="
         border
         rounded-lg
@@ -79,6 +79,7 @@
     >
       <a href="pd">Generate pdf file</a>
     </div> -->
+    </div>
   </app-layout>
 </template>
 

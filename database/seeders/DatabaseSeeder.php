@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        if(count(Company::all()) == 0){
-            Company::create([
-            'name' => 'abc',
-            ]);
-        }
+        // if(count(Company::all()) == 0){
+        //     Company::create([
+        //     'name' => 'abc',
+        //     ]);
+        // }
 
         $this->call([
             TypeSeeder::class,

@@ -232,7 +232,8 @@ class ReportController extends Controller
     // FOR PDF GENERATION -------------------------- --------
     public function pd()
     {
-        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'))->where('year_id', session('year_id'));
+        // $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'))->where('year_id', session('year_id'));
+        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'));
 
         $i = 0;
         foreach ($data['entry_obj'] as $entry) {
@@ -255,19 +256,30 @@ class ReportController extends Controller
     public function trialbalance()
     {
         $data['accounts'] = Account::where('company_id', session('company_id'))->get();
+        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'));
 
         $tb = App::make('dompdf.wrapper');
         // $pdf->loadView('pdf', compact('a'));
-        $tb->loadView('trialbalance', $data);
+        $tb->loadView('trial', $data);
+        // $tb->loadView('trialbalance', $data);
         return $tb->stream('v.pdf');
     }
 
     public function bs()
     {
+        // $pdf = app('dompdf.wrapper');   
+        // $pdf->getDomPDF()->set_option("enable_php", true);
+        // $pdf->loadView('balanceSheet');
+        // return $pdf->stream('branches.pdf');
+
+
         // $pdf = PDF::loadView('balanceSheet');
         $bs = App::make('dompdf.wrapper');
+        $bs->getDomPDF()->set_option("enable_php", true);
         $bs->loadView('balanceSheet');
         return $bs->stream('bs.pdf');
+
+        
     }
 
     public function pl()

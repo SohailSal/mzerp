@@ -13,6 +13,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\DashboardController;
 use Database\Seeders\GroupSeeder;
 
 /*
@@ -95,9 +96,17 @@ Route::get('companies/coch/{id}', [CompanyController::class, 'coch'])
 Route::get('years/yrch/{id}', [YearController::class, 'yrch'])
     ->name('years.yrch');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->name('dashboard');
+
+Route::get('dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('auth');
+
+    Route::post('dashboard/roleassign', [DashboardController::class, 'roleassign'])
+    ->name('dashboard.roleassign')
+    ->middleware('auth');
 
 // Route::get('accountgroups/generate', [AccountGroupController::class, 'generate'])
 //     ->name('accountgroups.generate')

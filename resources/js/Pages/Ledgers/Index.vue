@@ -3,73 +3,85 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ledgers</h2>
     </template>
-    <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
-      {{ $page.props.flash.success }}
-    </div>
-    <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
-    <select
-      v-model="co_id"
-      class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right m-2"
-      label="company"
-      @change="coch"
-    >
-      <option v-for="type in companies" :key="type.id" :value="type.id">
-        {{ type.name }}
-      </option>
-    </select>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+      <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
+        {{ $page.props.flash.success }}
+      </div>
+      <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
-    <div class="">
+      <!-- <div class=""> -->
       <!-- <form @submit.prevent="submit" action="range" ref="form"> -->
-      <form @submit.prevent="submit">
-        <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap border">
-          <div>
-            <!-- placeholder="Select Option..." -->
-            <select
-              v-model="form.account_id"
-              name="account_id"
-              class="rounded-md w-36"
-              @change="getledger"
-            >
-              <option value="0" disabled>Select your option</option>
-              <!-- <option disabled>Select option</option> -->
-              <option
-                v-for="account in accounts"
-                :key="account.id"
-                :value="account.id"
-              >
-                {{ account.name }}
-              </option>
-            </select>
-          </div>
-          <div>
-            <input
-              v-model="form.date_start"
-              type="date"
-              label="date"
-              placeholder="Enter Begin date:"
-              class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300"
-              @change="getledger"
-              name="date_start"
-            />
-            <div v-if="errors.date_start">{{ errors.date_start }}</div>
-          </div>
 
-          <div>
-            <input
-              v-model="form.date_end"
-              type="date"
-              class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300"
-              label="date"
-              placeholder="Enter End date:"
-              @change="getledger"
-              name="date_end"
-              value="{{new Date().toISOString().substr(0, 10)}}"
-            />
-            <div v-if="errors.date_end">{{ errors.date_end }}</div>
-          </div>
-        </div>
-        <table class="shadow-lg border mt-4 ml-8 rounded-xl">
+      <form @submit.prevent="submit">
+        <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap border"> -->
+        <!-- placeholder="Select Option..." -->
+        <select
+          v-model="form.account_id"
+          name="account_id"
+          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
+          @change="getledger"
+        >
+          <!-- class="pr-2 ml-2 pb-2 rounded-md" -->
+          <!-- lg:w-1/4 -->
+          <!-- class="rounded-md w-36" -->
+          <option value="0" disabled>Choose an Account</option>
+          <!-- <option disabled>Select option</option> -->
+          <option
+            v-for="account in accounts"
+            :key="account.id"
+            :value="account.id"
+          >
+            {{ account.name }}
+          </option>
+        </select>
+        <input
+          v-model="form.date_start"
+          type="date"
+          label="date"
+          placeholder="Enter Begin date:"
+          class="pr-2 ml-2 pb-2 rounded-md"
+          @change="getledger"
+          name="date_start"
+        />
+        <!-- class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300" -->
+        <div v-if="errors.date_start">{{ errors.date_start }}</div>
+
+        <input
+          v-model="form.date_end"
+          type="date"
+          class="pr-2 ml-2 pb-2 rounded-md"
+          label="date"
+          placeholder="Enter End date:"
+          @change="getledger"
+          name="date_end"
+        />
+        <!-- class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300" -->
+        <!-- value="{{new Date().toISOString().substr(0, 10)}}" -->
+        <div v-if="errors.date_end">{{ errors.date_end }}</div>
+
+        <!-- <multiselect
+          style="display: inline-block"
+          class="rounded-md border border-black"
+          placeholder="Select Company."
+          v-model="co_id"
+          track-by="id"
+          label="name"
+          :options="options"
+          @update:model-value="coch"
+        >
+        </multiselect> -->
+        <select
+          v-model="co_id"
+          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
+          label="company"
+          @change="coch"
+        >
+          <option v-for="type in companies" :key="type.id" :value="type.id">
+            {{ type.name }}
+          </option>
+        </select>
+        <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
           <thead>
             <tr class="bg-indigo-100">
               <th class="py-2 px-4 border">Reference</th>
@@ -87,28 +99,35 @@
               <td class="py-1 px-4 border font-bold">Opening Balance</td>
               <td class="py-1 px-4 border"></td>
               <td class="py-1 px-4 border"></td>
-              <td class="py-1 px-4 border font-bold">{{ prebal }}</td>
+              <td class="py-1 px-4 border font-bold text-center">
+                {{ prebal }}
+              </td>
             </tr>
             <tr v-for="(item, index) in entries" :key="item.id">
               <td class="py-1 px-4 border">{{ item.ref }}</td>
-              <td class="py-1 px-4 border">{{ item.date }}</td>
+              <td class="py-1 px-4 border text-center">{{ item.date }}</td>
               <td class="py-1 px-4 border">{{ item.description }}</td>
-              <td class="py-1 px-4 border">{{ item.debit }}</td>
-              <td class="py-1 px-4 border">{{ item.credit }}</td>
+              <td class="py-1 px-4 border text-center">{{ item.debit }}</td>
+              <td class="py-1 px-4 border text-center">{{ item.credit }}</td>
               <!-- <td class="py-1 px-4 border">{{ item.balance }}</td> -->
-              <td class="py-1 px-4 border">{{ balance[index] }}</td>
+              <td class="py-1 px-4 border text-center">{{ balance[index] }}</td>
             </tr>
             <tr>
               <td class="py-1 px-4 border"></td>
               <td class="py-1 px-4 border"></td>
               <td class="py-1 px-4 border font-bold">Totals</td>
-              <td class="py-1 px-4 border font-bold">{{ debits }}</td>
-              <td class="py-1 px-4 border font-bold">{{ credits }}</td>
+              <td class="py-1 px-4 border font-bold text-center">
+                {{ debits }}
+              </td>
+              <td class="py-1 px-4 border font-bold text-center">
+                {{ credits }}
+              </td>
               <td class="py-1 px-4 border"></td>
             </tr>
           </tbody>
         </table>
       </form>
+      <!-- </div> -->
     </div>
   </app-layout>
 </template>
@@ -117,11 +136,13 @@
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
 import { useForm } from "@inertiajs/inertia-vue3";
+// import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
     AppLayout,
     JetButton,
+    // Multiselect,
   },
 
   props: {

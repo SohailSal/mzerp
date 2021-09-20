@@ -34,7 +34,7 @@ class DocumentController extends Controller
             $query = Document::query();
             $query = Document::all()
                 ->where('company_id', session('company_id'))
-                ->where('year_id', session('year_id'))
+                // ->where('year_id', session('year_id'))
                 ->map(function ($document) {
 
                     $date = new Carbon($document->date);
@@ -46,7 +46,7 @@ class DocumentController extends Controller
                         'description' => $document->description,
                         'type_id' => $document->type_id,
                         'company_id' => session('company_id'),
-                        'year_id' => session('year_id'),
+                        // 'year_id' => session('year_id'),
                         'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
                     ];
                 });
@@ -55,7 +55,7 @@ class DocumentController extends Controller
 
             $query
                 ->where('company_id', session('company_id'))
-                ->where('year_id', session('year_id'))
+                // ->where('year_id', session('year_id'))
                 ->paginate(6)
                 ->withQueryString()
                 ->through(
