@@ -5,13 +5,19 @@
         Account Groups
       </h2>
     </template>
+    <div
+      v-if="$page.props.flash.success"
+      class="bg-green-600 text-white text-center"
+    >
+      {{ $page.props.flash.success }}
+    </div>
+    <div
+      v-if="$page.props.flash.warning"
+      class="bg-yellow-600 text-white text-center"
+    >
+      {{ $page.props.flash.warning }}
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-      <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
-        {{ $page.props.flash.success }}
-      </div>
-      <div v-if="$page.props.flash.warning" class="bg-yellow-600 text-white">
-        {{ $page.props.flash.warning }}
-      </div>
       <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
       <jet-button @click="generate" v-if="exists" class="mt-4 ml-2"
         >Auto Generate Groups</jet-button
@@ -30,6 +36,13 @@
       <span>Check</span>
     </button> -->
 
+      <input
+        type="search"
+        v-model="params.search"
+        aria-label="Search"
+        placeholder="Search..."
+        class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
+      />
       <select
         v-model="co_id"
         class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right mt-2"
@@ -50,7 +63,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in data" :key="item.id">
+            <tr v-for="item in balances.data" :key="item.id">
               <td class="py-1 px-4 border">{{ item.name }}</td>
               <td class="py-1 px-4 border text-center">{{ item.type_name }}</td>
               <td class="py-1 px-4 border text-center">
@@ -69,8 +82,12 @@
                 </button>
               </td>
             </tr>
+            <tr v-if="balances.data.length === 0">
+              <td class="border-t px-6 py-4" colspan="4">No Record found.</td>
+            </tr>
           </tbody>
         </table>
+        <paginator class="mt-6" :balances="balances" />
       </div>
     </div>
   </app-layout>
@@ -79,15 +96,23 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
+import Paginator from "@/Layouts/Paginator";
+import { pickBy } from "lodash";
+import { throttle } from "lodash";
 
 export default {
   components: {
     AppLayout,
     JetButton,
+    Paginator,
+    throttle,
+    pickBy,
   },
 
   props: {
     data: Object,
+    balances: Object,
+    filters: Object,
     companies: Object,
     exists: Object,
   },
@@ -95,6 +120,12 @@ export default {
   data() {
     return {
       co_id: this.$page.props.co_id,
+
+      params: {
+        search: this.filters.search,
+        // field: this.filters.field,
+        // direction: this.filters.direction,
+      },
     };
   },
 
@@ -119,6 +150,11 @@ export default {
       this.$inertia.get(route("companies.coch", this.co_id));
     },
 
+    sort(field) {
+      this.params.field = field;
+      this.params.direction = this.params.direction === "asc" ? "desc" : "asc";
+    },
+
     check() {
       console.log("click");
 
@@ -133,6 +169,18 @@ export default {
     //     this.postRecordSolo('clientStore/UPDATE_RECORDS_NO_TAB', this.endPoint, true)
     //   }, 1000)
     // }
+  },
+  watch: {
+    params: {
+      handler: throttle(function () {
+        let params = pickBy(this.params);
+        this.$inertia.get(this.route("accountgroups"), params, {
+          replace: true,
+          preserveState: true,
+        });
+      }, 150),
+      deep: true,
+    },
   },
 };
 </script>

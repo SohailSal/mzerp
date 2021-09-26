@@ -14,19 +14,37 @@
       <!-- <form @submit.prevent="submit" action="range" ref="form"> -->
 
       <form @submit.prevent="submit">
+        <!-- class="rounded-md border border-black" -->
+        <multiselect
+          class="
+            ml-2
+            w-full
+            inline-block
+            lg:w-1/4
+            border border-black
+            rounded-md
+            float-left
+          "
+          v-model="form.account_id"
+          :options="option"
+          placeholder="Select account group"
+          label="name"
+          track-by="id"
+        ></multiselect>
+        <!-- style="width: 25%" -->
         <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap border"> -->
         <!-- placeholder="Select Option..." -->
-        <select
+        <!-- class="pr-2 ml-2 pb-2 rounded-md" -->
+        <!-- lg:w-1/4 -->
+        <!-- class="rounded-md w-36" -->
+        <!-- <option disabled>Select option</option> -->
+        <!-- <select
           v-model="form.account_id"
           name="account_id"
           class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
           @change="getledger"
         >
-          <!-- class="pr-2 ml-2 pb-2 rounded-md" -->
-          <!-- lg:w-1/4 -->
-          <!-- class="rounded-md w-36" -->
           <option value="0" disabled>Choose an Account</option>
-          <!-- <option disabled>Select option</option> -->
           <option
             v-for="account in accounts"
             :key="account.id"
@@ -34,7 +52,7 @@
           >
             {{ account.name }}
           </option>
-        </select>
+        </select> -->
         <input
           v-model="form.date_start"
           type="date"
@@ -136,20 +154,21 @@
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
 import { useForm } from "@inertiajs/inertia-vue3";
-// import Multiselect from "@suadelabs/vue3-multiselect";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
     AppLayout,
     JetButton,
-    // Multiselect,
+    Multiselect,
   },
 
   props: {
     errors: Object,
     data: Object,
     companies: Object,
-    accounts: Object,
+    // accounts: Object,
+    accounts: Array,
     account_first: Object,
 
     entries: Object,
@@ -165,6 +184,8 @@ export default {
   data() {
     return {
       co_id: this.$page.props.co_id,
+      option: this.accounts,
+
       //   form: this.$inertia.form({
       //     account_id: this.account_first.id,
       //     date_start: null,
@@ -178,7 +199,8 @@ export default {
       //   }),
 
       form: {
-        account_id: this.account_first.id,
+        // account_id: this.account_first.id,
+        account_id: this.accounts[0],
         // account_id: "",
         date_start: this.date_start
           ? this.date_start

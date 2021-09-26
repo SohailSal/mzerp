@@ -5,14 +5,19 @@
         Create Voucher
       </h2>
     </template>
-    <div v-if="$page.props.flash.success" class="bg-yellow-600 text-white">
+    <div
+      v-if="$page.props.flash.success"
+      class="bg-yellow-600 text-white text-center"
+    >
       {{ $page.props.flash.success }}
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div class="">
         <form @submit.prevent="form.post(route('documenttypes.store'))">
           <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-            <input
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Voucher Name :</label
+            ><input
               type="text"
               v-model="form.name"
               class="
@@ -36,7 +41,7 @@
               bg-gray-100
               border-t border-gray-200
               flex
-              justify-start
+              justify-center
               items-center
             "
           >

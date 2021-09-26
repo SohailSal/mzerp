@@ -9,7 +9,9 @@
       <div class="">
         <form @submit.prevent="submit">
           <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-            <input
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Account Group :</label
+            ><input
               type="text"
               v-model="form.name"
               class="
@@ -32,7 +34,7 @@
               bg-gray-100
               border-t border-gray-200
               flex
-              justify-start
+              justify-center
               items-center
             "
           >

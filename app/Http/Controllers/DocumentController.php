@@ -28,7 +28,9 @@ class DocumentController extends Controller
             'field' => ['in:name,email']
         ]);
 
-        if (Account::where('company_id', session('company_id'))->first()) {
+        $acc = Account::where('company_id', session('company_id'))->first();
+        $doc_ty = DocumentType::where('company_id', session('company_id'))->first();
+        if ($acc && $doc_ty) {
 
             //Searching request
             $query = Document::query();
@@ -75,7 +77,6 @@ class DocumentController extends Controller
                 );
             if (request('search')) {
                 $query->where('description', 'LIKE', '%' . request('search') . '%');
-                // $data = Document::all()->where('description', 'LIKE', '%' . request('search') . '%');
             }
             //Ordering request
             if (request()->has(['field', 'direction'])) {
@@ -83,12 +84,8 @@ class DocumentController extends Controller
                     request('field'),
                     request('direction')
                 );
-                // $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
             }
-            // $balances = $query->with('years')->paginate(6);
-
-            // dd($query->paginate(10));
-
+            
             return Inertia::render(
                 'Documents/Index',
                 [
@@ -134,67 +131,42 @@ class DocumentController extends Controller
                         }),
                 ]
             );
-        } else {
+        } elseif($acc) {
+            return Redirect::route('documenttypes')->with('warning', 'VOUCHER NOT FOUND, Please create voucher first.');
+        }else{
             return Redirect::route('accounts')->with('warning', 'ACCOUNT NOT FOUND, Please create an account first.');
         }
     }
 
     public function create()
     {
-        // if (DocumentType::all()->where('company_id', session('company_id'))->first()) {
-
-        // $accounts = \App\Models\Account::all()->map->only('id', 'name');
-        // $account_first = \App\Models\Account::all('id', 'name')->first();
-        $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
         $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
-
         $doc_type_first = \App\Models\DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
-
-        if ($doc_type_first && $account_first) {
-            $document_types = DocumentType::where('company_id', session('company_id'))->get()
-                ->filter(function ($doc_type) {
-                    if ($doc_type->documents()
-                        ->where('year_id', session('year_id'))->first('ref')
-                    ) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                })
-                ->map(function ($doc_type) {
-                    return [
-                        'id' => $doc_type->id,
-                        'name' => $doc_type->name,
-                        'ref' => $doc_type->prefix . "/" . $doc_type->timestamps,
-                    ];
-                });
-
-            $doc_types = null;
-            $i = 0;
-            foreach ($document_types as $d_type) {
-                if ($d_type) {
-                    $doc_types[$i] = $d_type;
-                    $i++;
-                }
-            }
+        // $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+        $accounts = \App\Models\Account::where('company_id', session('company_id'))
+        // ->map('id', 'name')
+        ->get();
+        
+   
+        if($account_first && $doc_type_first){
 
             return Inertia::render('Documents/Create', [
-                'accounts' => $accounts, 'account_first' => $account_first,
+           
+                'accounts' => $accounts,
+                'account_first' => $account_first,
                 'doc_type_first' => $doc_type_first,
-                'doc_types' => $doc_types,
+                'doc_types' => DocumentType::where('company_id', session('company_id'))->get(),
+                // 'doc_types' => DocumentType::all()->where('company_id', session('company_id')),
             ]);
+        }else {
+        if ($doc_type_first) {
+            return Redirect::route('accounts.create')->with('success', 'ACCOUNTS NOT FOUND, Please create an account first');
         } else {
-            if ($doc_type_first) {
-                return Redirect::route('accounts.create')->with('success', 'ACCOUNTS NOT FOUND, Please create an account first');
-            } else {
-                return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
-            }
+            return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
         }
-        // }else{
-
-        // }
+    
     }
-
+}
 
     public function store(Req $request)
     {
@@ -216,7 +188,7 @@ class DocumentController extends Controller
                 $date = $date->format('Y-m-d');
                 $ref_date_parts = explode("-", $date);
                 $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2];
-
+     
                 $doc = Document::create([
                     'type_id' => Request::input('type_id'),
                     'company_id' => session('company_id'),
@@ -225,7 +197,6 @@ class DocumentController extends Controller
                     'date' => $date,
                     'year_id' => session('year_id'),
                 ]);
-
                 $data = $request->entries;
                 foreach ($data as $entry) {
                     Entry::create([

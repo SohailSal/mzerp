@@ -100,7 +100,6 @@ class CompanyController extends Controller
             'field' => ['in:name,email']
         ]);
 
-        $companies = Company::all();
 
         // $query = Company::query();
         $query = Company::paginate(6)
@@ -120,51 +119,15 @@ class CompanyController extends Controller
                     'phone' => $comp->phone,
                     'fiscal' => $comp->fiscal,
                     'incorp' => $comp->incorp,
-                    // 'can' => [
-                    //     'edit_articles' => $comp->users,
-                    //     // can('edit articles'),
-                    // ],
-                    // 'can' => auth()->user()->can,
-                    // [
-                    //     'edit_articles' => $comp->users[0],
-                    //     // users->can('edit articles'),
-                    // ],
-
                     'delete' => Year::where('company_id', $comp->id)->first() ? true : false,
                 ],
             );
-        // $user = auth()->user();
-        // $user = \App\Models\User::all()->where('name', 'Haris')->first();
-        // dd($user);
-
-        // dd($query);
-
-        // $can = auth()->user()->can('edit articles');
-
-        // ->can('publish articles');
-        // dd($can);
-
-        // $query = Company::query();
-        // $data = Company::all()
-        //     ->map(function ($comp) {
-        //         return [
-        //             'id' => $comp->id,
-        //             'name' => $comp->name,
-        //             'address' => $comp->address,
-        //             'email' => $comp->email,
-        //             'web' => $comp->web,
-        //             'phone' => $comp->phone,
-        //             'fiscal' => $comp->fiscal,
-        //             'incorp' => $comp->incorp,
-        //             'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
-        //         ];
-        //     });
-
+     
+     
         //Searching request
         $query = Company::query();
         if (request('search')) {
             $query->where('name', 'LIKE', '%' . request('search') . '%');
-            $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
         }
         //Ordering request
         if (request()->has(['field', 'direction'])) {
@@ -172,49 +135,22 @@ class CompanyController extends Controller
                 request('field'),
                 request('direction')
             );
-            // $data = Company::all()->where('email', 'LIKE', '%' . request('search') . '%');
         }
-        $balances = $query->with('years')->paginate(6);
-        // dd($balances[4]->years[0]->id);
+     
 
 
-
-        $active_co = Setting::where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
-        $coch_hold = Company::where('id', $active_co->value)->first();
+        // $active_co = Setting::where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
+        // $coch_hold = Company::where('id', $active_co->value)->first();
 
         return Inertia::render('Company/Index', [
-            // 'data' => $query,
-            // 'balances' => $query,
-            // 'can' => auth()->user()->can('edit_articles'),
-            'companies' => $companies,
-            'cochange' => $coch_hold,
+            'companies' => Company::all(),
             // 'can' => [
             //     'edit' => auth()->user()->can('edit'),
             //     'create' => auth()->user()->can('create'),
             //     'delete' => auth()->user()->can('delete'),
             //     'read' => auth()->user()->can('read'),
             // ],
-            // 'can' => auth()->user()->can('publish articles'),
-            'balances' => $query->with('years')->paginate(6),
-            // 'balances' => Company::paginate(6)->withQueryString()
-            //     // 'data' => Company::paginate(3)->withQueryString()
-            //     ->through(
-            //         fn ($comp) =>
-            //         [
-            //             //             all()
-            //             // ->map(function ($comp) {
-            //             //     return [
-            //             'id' => $comp->id,
-            //             'name' => $comp->name,
-            //             'address' => $comp->address,
-            //             'email' => $comp->email,
-            //             'web' => $comp->web,
-            //             'phone' => $comp->phone,
-            //             'fiscal' => $comp->fiscal,
-            //             'incorp' => $comp->incorp,
-            //             'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
-            //         ],
-            //     ),
+            'balances' => $query->with('years')->paginate(12),
             'filters' => request()->all(['search', 'field', 'direction'])
             // 'data' => Company::all()
             //     ->map(function ($comp) {
@@ -403,11 +339,8 @@ class CompanyController extends Controller
     {
         $active_co = Setting::where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
         // $coch_hold = Company::where('id', $active_co->value)->first();
-        $active_co = Setting::all();
-
-
+        // $active_co = Setting::all();
         // where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
-
         // dd($active_co);
         
         $active_co->value = $id;

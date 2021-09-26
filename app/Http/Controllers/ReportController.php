@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Year;
 use App\Models\Setting;
+use Dompdf\Dompdf;
 use App\Models\Company;
 use App\Models\Document;
 use App\Models\Entry;
@@ -257,7 +258,6 @@ class ReportController extends Controller
     {
         $data['accounts'] = Account::where('company_id', session('company_id'))->get();
         $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'));
-
         $tb = App::make('dompdf.wrapper');
         // $pdf->loadView('pdf', compact('a'));
         $tb->loadView('trial', $data);

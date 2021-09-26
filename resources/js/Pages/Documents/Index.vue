@@ -5,15 +5,21 @@
         Transactions
       </h2>
     </template>
-    <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
+    <div
+      v-if="$page.props.flash.success"
+      class="bg-green-600 text-white text-center"
+    >
       {{ $page.props.flash.success }}
     </div>
-    <div v-if="$page.props.flash.warning" class="bg-yellow-600 text-white">
+    <div
+      v-if="$page.props.flash.warning"
+      class="bg-yellow-600 text-white text-center"
+    >
       {{ $page.props.flash.warning }}
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" class="ml-2 mt-2 float-left"
+      <jet-button @click="create" class="ml-2 mt-1 float-left"
         >Create</jet-button
       >
       <input

@@ -73,10 +73,9 @@ class LedgerController extends Controller
     public function index(Request $request)
     {
 
-        // if ($request->account_id) {
+        // $transaction = Document::where('company_id', session('company_id'))->where('year_id', session('year_id'))->first();
+        // if($transaction){
 
-        //     dd($request->account_id);
-        // }
         $account_first = ['id' => 0];
         $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
         if ($request->account_id) {
@@ -186,6 +185,9 @@ class LedgerController extends Controller
             'balance' => $balance,
             'prebal' => $prebal,
         ]);
+    // }else{
+    //     return Redirect::route('documents')->with('warning', 'Transaction NOT FOUND, Please create an transaction first.');
+    // }
     }
 
     public function getledger($id)

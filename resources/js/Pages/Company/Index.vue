@@ -3,10 +3,13 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Company</h2>
     </template>
+    <div
+      v-if="$page.props.flash.success"
+      class="bg-green-600 text-white text-center"
+    >
+      {{ $page.props.flash.success }}
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-      <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
-        {{ $page.props.flash.success }}
-      </div>
       <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
       <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
       <input
@@ -41,7 +44,6 @@
         </option>
       </select>
       <div class="">
-        <!-- class="w-full ml-10" -->
         <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
           <thead>
             <tr class="bg-indigo-100">
@@ -263,12 +265,7 @@
             </tr>
           </thead>
           <tbody>
-            <!-- <tr v-for="item in balances.data" :key="item.id"> -->
             <tr v-for="item in balances.data" :key="item.id">
-              <!-- <td class="py-1 px-4 border">{{ item.id }}</td> -->
-              <!-- <td class="py-1 px-4 border">
-              {{ item.years[0].id ? item.years[0].id : "hi" }}
-            </td> -->
               <td class="py-1 px-4 border">{{ item.name }}</td>
               <td class="py-1 px-4 border">{{ item.address }}</td>
               <td class="py-1 px-4 border">{{ item.email }}</td>
@@ -301,8 +298,6 @@
         </table>
         <paginator class="mt-6" :balances="balances" />
       </div>
-      <!-- <paginator class="mt-10" :links="data.links" /> -->
-      <!-- <paginator class="mt-6" :data="data" /> -->
     </div>
   </app-layout>
 </template>
