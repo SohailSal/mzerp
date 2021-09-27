@@ -190,7 +190,7 @@ class DocumentController extends Controller
                 $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2];
      
                 $doc = Document::create([
-                    'type_id' => Request::input('type_id'),
+                    'type_id' => Request::input('type_id')['id'],
                     'company_id' => session('company_id'),
                     'description' => Request::input('description'),
                     'ref' => $reference,
@@ -201,7 +201,7 @@ class DocumentController extends Controller
                 foreach ($data as $entry) {
                     Entry::create([
                         'company_id' => $doc->company_id,
-                        'account_id' => $entry['account_id'],
+                        'account_id' => $entry['account_id']['id'],
                         'year_id' => $doc->year_id,
                         'document_id' => $doc->id,
                         'debit' => $entry['debit'],
@@ -218,6 +218,7 @@ class DocumentController extends Controller
 
     public function edit(Document $document)
     {
+        // dd($document->id);
         $accounts = \App\Models\Account::all()->map->only('id', 'name');
 
         $doc_types = \App\Models\DocumentType::all()->map->only('id', 'name');
@@ -225,8 +226,13 @@ class DocumentController extends Controller
         $doc = \App\Models\Document::all()->where('id', $document->id)->map->only('id', 'ref')->first();
 
         $ref = Entry::all()->where('document_id', $document->id);
-        $entrie = Entry::all()->where('document_id', $document->id)->toArray();
+        $entrie = \App\Models\Entry::all()->where('document_id', $document->id)->toArray();
+        // $ref = Document::all()->where('document_id', $document->id);
+        // // $entrie = Document::all()->where('document_id', $document->id);
+        // $entrie = Document::all()->where('document_id', 1);
+        // // ->toArray();
 
+        // dd($entrie);
         $i = 0;
         foreach ($entrie as $entry) {
             $entries[$i] = $entry;
@@ -267,6 +273,7 @@ class DocumentController extends Controller
                 'accounts' => $accounts,
                 'doc_types' => $doc_types,
                 'entriess' => $entries,
+                // 'entries' => $entries,
             ]
         );
     }

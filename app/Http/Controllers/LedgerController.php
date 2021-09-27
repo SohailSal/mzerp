@@ -77,7 +77,8 @@ class LedgerController extends Controller
         // if($transaction){
 
         $account_first = ['id' => 0];
-        $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+        $accounts = \App\Models\Account::where('company_id', session('company_id'))->get();
+        // ->map->only('id', 'name');
         if ($request->account_id) {
             $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->where('id', $request->account_id)->map->only('id', 'name')->first();
         }
@@ -174,6 +175,7 @@ class LedgerController extends Controller
         return Inertia::render('Ledgers/Index', [
             'companies' => Company::all(),
             'account_first' => $account_first,
+            // 'accounts' => $accounts,
             'accounts' => $accounts,
 
             'date_start' => $start,

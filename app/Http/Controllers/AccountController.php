@@ -83,8 +83,9 @@ class AccountController extends Controller
 
     public function create()
     {
-        $groups = \App\Models\AccountGroup::all()->map->only('id', 'name');
-        $group_first = \App\Models\AccountGroup::all('id', 'name')->first();
+        $groups = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+        // $group_first = \App\Models\AccountGroup::all('id', 'name')->first();
+        $group_first = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
 
         if ($group_first) {
 
@@ -122,7 +123,10 @@ class AccountController extends Controller
 
     public function edit(Account $account)
     {
-        $groups = \App\Models\AccountGroup::all()->map->only('id', 'name');
+        $groups = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+    
+        $group_first = AccountGroup::where('id', $account->group_id)->first();
+        
         return Inertia::render('Accounts/Edit', [
             'account' => [
                 'id' => $account->id,
@@ -132,6 +136,7 @@ class AccountController extends Controller
                 'number' => $account->number,
             ],
             'groups' => $groups,
+            'group_first' => $group_first,
         ]);
     }
 
@@ -142,7 +147,7 @@ class AccountController extends Controller
             'number' => ['nullable'],
             'name' => ['required'],
         ]);
-        $account->group_id = Request::input('group');
+        $account->group_id = Request::input('group')['id'];
         $account->company_id = session('company_id');
         $account->number = Request::input('number');
         $account->name = Request::input('name');

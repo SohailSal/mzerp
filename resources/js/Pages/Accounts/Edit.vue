@@ -108,7 +108,9 @@ export default {
   props: {
     errors: Object,
     account: Object,
-    groups: Object,
+    groups: Array,
+    group_first: Object,
+    // groups: Object,
   },
 
   data() {
@@ -117,8 +119,8 @@ export default {
       form: this.$inertia.form({
         name: this.account.name,
         number: this.account.number,
-        group: this.groups[this.account.group_id],
-        // group: props.groups[0],
+        // group: this.groups[this.account.group_id],
+        group: this.group_first,
       }),
     };
   },

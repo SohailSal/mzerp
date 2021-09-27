@@ -30,6 +30,7 @@
           placeholder="Select account group"
           label="name"
           track-by="id"
+          @update:model-value="getledger"
         ></multiselect>
         <!-- style="width: 25%" -->
         <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap border"> -->

@@ -69,7 +69,8 @@ class AccountGroupController extends Controller
             'filters' => request()->all(['search', 'field', 'direction']),
             'balances' => $balances,
 
-            'exists' => Account::where('company_id', session('company_id'))->first() ? false : true,
+            // 'exists' => Account::where('company_id', session('company_id'))->first() ? false : true,
+            'exists' => AccountGroup::where('company_id', session('company_id'))->first() ? false : true,
 
             'companies' => Company::all()
                 ->map(function ($com) {

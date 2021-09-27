@@ -14,6 +14,7 @@
       <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
       <input
         type="search"
+        v-if="companies[0]"
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
@@ -34,6 +35,7 @@
       </multiselect> -->
       <select
         v-model="co_id"
+        v-if="companies[0]"
         class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right mt-2"
         label="company"
         placeholder="Select Company"
