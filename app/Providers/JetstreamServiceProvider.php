@@ -5,6 +5,10 @@ namespace App\Providers;
 use App\Actions\Jetstream\DeleteUser;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Fortify\Fortify;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
@@ -16,6 +20,7 @@ class JetstreamServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        // dd($request);
     }
 
     /**
@@ -28,6 +33,26 @@ class JetstreamServiceProvider extends ServiceProvider
         $this->configurePermissions();
 
         Jetstream::deleteUsersUsing(DeleteUser::class);
+
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+
+            if (
+                $user &&
+                Hash::check($request->password, $user->password)
+            ) {
+
+                if ($user->settings()->where('key', 'active_company')->first()) {
+                    session(['company_id' => $user->settings()->where('key', 'active_company')->first()->value]);
+                    // session(['year_id'=>$user->settings()->where('key', 'active_year')->first()->value]);
+                }
+                if ($user->settings()->where('key', 'active_year')->first()) {
+                    // session(['company_id'=>$user->settings()->where('key', 'active_company')->first()->value]);
+                    session(['year_id' => $user->settings()->where('key', 'active_year')->first()->value]);
+                }
+                return $user;
+            }
+        });
     }
 
     /**

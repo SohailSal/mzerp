@@ -17,24 +17,12 @@
 
               <!-- Navigation Links -->
               <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                <jet-nav-link
+                <!-- <jet-nav-link
                   :href="route('dashboard')"
                   :active="route().current('dashboard')"
                 >
                   Dashboard
-                </jet-nav-link>
-                <jet-nav-link
-                  :href="route('accountgroups')"
-                  :active="route().current('accountgroups')"
-                >
-                  Account Groups
-                </jet-nav-link>
-                <jet-nav-link
-                  :href="route('users')"
-                  :active="route().current('users')"
-                >
-                  Users
-                </jet-nav-link>
+                </jet-nav-link> -->
 
                 <jet-nav-link
                   :href="route('companies')"
@@ -44,6 +32,23 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  v-if="this.$page.props.co_id"
+                  :href="route('years')"
+                  :active="route().current('years')"
+                >
+                  Years
+                </jet-nav-link>
+
+                <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
+                  :href="route('accountgroups')"
+                  :active="route().current('accountgroups')"
+                >
+                  Account Groups
+                </jet-nav-link>
+
+                <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('accounts')"
                   :active="route().current('accounts')"
                 >
@@ -51,6 +56,7 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('documenttypes')"
                   :active="route().current('documenttypes')"
                 >
@@ -58,6 +64,7 @@
                 </jet-nav-link>
 
                 <jet-nav-link
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
                   :href="route('documents')"
                   :active="route().current('documents')"
                 >
@@ -65,10 +72,19 @@
                 </jet-nav-link>
 
                 <jet-nav-link
-                  :href="route('years')"
-                  :active="route().current('years')"
+                  :href="route('reports')"
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
+                  :active="route().current('reports')"
                 >
-                  Years
+                  Reports
+                </jet-nav-link>
+
+                <jet-nav-link
+                  :href="route('ledgers')"
+                  v-if="this.$page.props.co_id && this.$page.props.yr_id"
+                  :active="route().current('ledgers')"
+                >
+                  Ledger
                 </jet-nav-link>
               </div>
             </div>
@@ -85,7 +101,27 @@
                     <span class="inline-flex rounded-md">
                       <button
                         type="button"
-                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150"
+                        class="
+                          inline-flex
+                          items-center
+                          px-3
+                          py-2
+                          border border-transparent
+                          text-sm
+                          leading-4
+                          font-medium
+                          rounded-md
+                          text-gray-500
+                          bg-white
+                          hover:bg-gray-50
+                          hover:text-gray-700
+                          focus:outline-none
+                          focus:bg-gray-50
+                          active:bg-gray-50
+                          transition
+                          ease-in-out
+                          duration-150
+                        "
                       >
                         {{ $page.props.user.current_team.name }}
 
@@ -176,7 +212,17 @@
                   <template #trigger>
                     <button
                       v-if="$page.props.jetstream.managesProfilePhotos"
-                      class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
+                      class="
+                        flex
+                        text-sm
+                        border-2 border-transparent
+                        rounded-full
+                        focus:outline-none
+                        focus:border-gray-300
+                        transition
+                        duration-150
+                        ease-in-out
+                      "
                     >
                       <img
                         class="h-8 w-8 rounded-full object-cover"
@@ -188,7 +234,24 @@
                     <span v-else class="inline-flex rounded-md">
                       <button
                         type="button"
-                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                        class="
+                          inline-flex
+                          items-center
+                          px-3
+                          py-2
+                          border border-transparent
+                          text-sm
+                          leading-4
+                          font-medium
+                          rounded-md
+                          text-gray-500
+                          bg-white
+                          hover:text-gray-700
+                          focus:outline-none
+                          transition
+                          ease-in-out
+                          duration-150
+                        "
                       >
                         {{ $page.props.user.name }}
 
@@ -242,7 +305,22 @@
             <div class="-mr-2 flex items-center sm:hidden">
               <button
                 @click="showingNavigationDropdown = !showingNavigationDropdown"
-                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                class="
+                  inline-flex
+                  items-center
+                  justify-center
+                  p-2
+                  rounded-md
+                  text-gray-400
+                  hover:text-gray-500
+                  hover:bg-gray-100
+                  focus:outline-none
+                  focus:bg-gray-100
+                  focus:text-gray-500
+                  transition
+                  duration-150
+                  ease-in-out
+                "
               >
                 <svg
                   class="h-6 w-6"

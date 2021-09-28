@@ -8,74 +8,170 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Document;
 use App\Models\DocumentType;
+use App\Models\Account;
+use App\Models\Company;
+use App\Models\Year;
 use App\Models\Entry;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Exception;
+use PhpParser\Comment\Doc;
 
 class DocumentController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Documents/Index', [
-            'data' => Document::all()
-                ->map(function ($document){
+
+        //Validating request
+        request()->validate([
+            'direction' => ['in:asc,desc'],
+            'field' => ['in:name,email']
+        ]);
+
+        $acc = Account::where('company_id', session('company_id'))->first();
+        $doc_ty = DocumentType::where('company_id', session('company_id'))->first();
+        if ($acc && $doc_ty) {
+
+            //Searching request
+            $query = Document::query();
+            $query = Document::all()
+                ->where('company_id', session('company_id'))
+                // ->where('year_id', session('year_id'))
+                ->map(function ($document) {
+
+                    $date = new Carbon($document->date);
+
                     return [
                         'id' => $document->id,
                         'ref' => $document->ref,
+                        'date' => $date->format('M d, Y'),
                         'description' => $document->description,
                         'type_id' => $document->type_id,
-                        'company_id' => $document->company_id,
-                        'year_id' => $document->year_id,
+                        'company_id' => session('company_id'),
+                        // 'year_id' => session('year_id'),
+                        'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
                     ];
-                }), 
-        ]);
+                });
+
+            $query = Document::query();
+
+            $query
+                ->where('company_id', session('company_id'))
+                // ->where('year_id', session('year_id'))
+                ->paginate(6)
+                ->withQueryString()
+                ->through(
+                    fn ($document) =>
+                    [
+                        'id' => $document->id,
+                        'ref' => $document->ref,
+
+                        $date = new Carbon($document->date),
+                        'date' => $date->format('M d, Y'),
+                        'description' => $document->description,
+                        'type_id' => $document->type_id,
+                        'company_id' => session('company_id'),
+                        'year_id' => session('year_id'),
+                        'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
+                    ]
+                );
+            if (request('search')) {
+                $query->where('description', 'LIKE', '%' . request('search') . '%');
+            }
+            //Ordering request
+            if (request()->has(['field', 'direction'])) {
+                $query->orderBy(
+                    request('field'),
+                    request('direction')
+                );
+            }
+            
+            return Inertia::render(
+                'Documents/Index',
+                [
+                    'data' => $query->paginate(6),
+                    'filters' => request()->all(['search', 'field', 'direction']),
+                    // 'data' => Document::all()
+                    //     ->where('company_id', session('company_id'))
+                    //     ->where('year_id', session('year_id'))
+                    //     ->map(function ($document) {
+
+                    //         $date = new Carbon($document->date);
+
+                    //         return [
+                    //             'id' => $document->id,
+                    //             'ref' => $document->ref,
+                    //             'date' => $date->format('M d, Y'),
+                    //             'description' => $document->description,
+                    //             'type_id' => $document->type_id,
+                    //             'company_id' => session('company_id'),
+                    //             'year_id' => session('year_id'),
+                    //             'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
+                    //         ];
+                    //     }),
+
+                    'companies' => Company::all()
+                        ->map(function ($com) {
+                            return [
+                                'id' => $com->id,
+                                'name' => $com->name,
+                            ];
+                        }),
+
+                    'years' => Year::all()
+                        ->where('company_id', session('company_id'))
+                        ->map(function ($year) {
+                            $begin = new Carbon($year->begin);
+                            $end = new Carbon($year->end);
+
+                            return [
+                                'id' => $year->id,
+                                'name' => $begin->format('M d, Y') . ' - ' . $end->format('M d, Y'),
+                            ];
+                        }),
+                ]
+            );
+        } elseif($acc) {
+            return Redirect::route('documenttypes')->with('warning', 'VOUCHER NOT FOUND, Please create voucher first.');
+        }else{
+            return Redirect::route('accounts')->with('warning', 'ACCOUNT NOT FOUND, Please create an account first.');
+        }
     }
 
     public function create()
     {
-        $accounts = \App\Models\Account::all()->map->only('id','name');
-        $account_first = \App\Models\Account::all('id','name')->first();
+        $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+        $doc_type_first = \App\Models\DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+        // $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+        $accounts = \App\Models\Account::where('company_id', session('company_id'))
+        // ->map('id', 'name')
+        ->get();
+        
+   
+        if($account_first && $doc_type_first){
 
-        $companies = \App\Models\Company::all()->map->only('id','name');
-        $comp_first = \App\Models\Company::all('id','name')->first();
-
-        $years = \App\Models\Year::all()->map->only('id','begin', 'end');
-        $year_first = \App\Models\Year::all('id','begin', 'end')->first();
-
-        $doc_type_first = \App\Models\DocumentType::all('id','name')->first();
-//FUNCTION FOR REFERENCE GENERATOR       
-            // $str = "My name is Muhammad Haris";
-            // $stri = explode(" ",$str);
-            // print_r($str);
-            // dd($stri);
-            // $second;
-            // foreach($word in $stri){
-            //     $second = explode("", $word);
-            // }
-
-        return Inertia::render('Documents/Create',[ 
-            'accounts' => $accounts, 'account_first' => $account_first,
-            'companies' => $companies, 'comp_first' => $comp_first,
-            'years' => $years, 'year_first' => $year_first,
-            'doc_type_first' => $doc_type_first,
-            'doc_types' => DocumentType::all()
-                ->map(function ($doc_type){
-                    return [
-                    'id' => $doc_type->id,
-                    'name' => $doc_type->name,
-                    'ref' => $doc_type->prefix. "/" .$doc_type->timestamps,
-                ];
-            }),            
+            return Inertia::render('Documents/Create', [
+           
+                'accounts' => $accounts,
+                'account_first' => $account_first,
+                'doc_type_first' => $doc_type_first,
+                'doc_types' => DocumentType::where('company_id', session('company_id'))->get(),
+                // 'doc_types' => DocumentType::all()->where('company_id', session('company_id')),
             ]);
+        }else {
+        if ($doc_type_first) {
+            return Redirect::route('accounts.create')->with('success', 'ACCOUNTS NOT FOUND, Please create an account first');
+        } else {
+            return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
         }
+    
+    }
+}
 
     public function store(Req $request)
     {
         Request::validate([
             'type_id' => ['required'],
-            'year_id' => ['required'],
-            'company_id' => ['required'],
-            'ref' => ['required'],
             'description' => ['required'],
             'date' => ['required', 'date'],
 
@@ -84,31 +180,35 @@ class DocumentController extends Controller
             'entries.*.credit' => ['required'],
         ]);
 
-        DB::transaction(function() use ($request){
-        
+        DB::transaction(function () use ($request) {
             $date = new Carbon($request->date);
-            try{
-                $doc = Document::create([
-                    'type_id' => Request::input('type_id'),
-                    'company_id' => Request::input('company_id'),
-                    'description' => Request::input('description'),
-                    'ref' => Request::input('ref'),
-                    'date' => $date->format('Y-m-d'),
-                    'year_id' => Request::input('year_id'),
-                ]);
+            try {
 
+                $prefix = \App\Models\DocumentType::where('id', $request->type_id)->first()->prefix;
+                $date = $date->format('Y-m-d');
+                $ref_date_parts = explode("-", $date);
+                $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2];
+     
+                $doc = Document::create([
+                    'type_id' => Request::input('type_id')['id'],
+                    'company_id' => session('company_id'),
+                    'description' => Request::input('description'),
+                    'ref' => $reference,
+                    'date' => $date,
+                    'year_id' => session('year_id'),
+                ]);
                 $data = $request->entries;
-                foreach($data as $entry){
+                foreach ($data as $entry) {
                     Entry::create([
                         'company_id' => $doc->company_id,
-                        'account_id' => $entry['account_id'],
+                        'account_id' => $entry['account_id']['id'],
                         'year_id' => $doc->year_id,
                         'document_id' => $doc->id,
                         'debit' => $entry['debit'],
                         'credit' => $entry['credit'],
                     ]);
                 }
-            }catch(Exception $e){
+            } catch (Exception $e) {
                 return $e;
             }
         });
@@ -116,46 +216,167 @@ class DocumentController extends Controller
         return Redirect::route('documents')->with('success', 'Transaction created.');
     }
 
-    public function show(AccountGroup $accountgroup)
+    public function edit(Document $document)
     {
+        // dd($document->id);
+        $accounts = \App\Models\Account::all()->map->only('id', 'name');
+
+        $doc_types = \App\Models\DocumentType::all()->map->only('id', 'name');
+        // $doc_types = \App\Models\DocumentType::all()->map->only('id', 'name')->first();
+        $doc = \App\Models\Document::all()->where('id', $document->id)->map->only('id', 'ref')->first();
+
+        $ref = Entry::all()->where('document_id', $document->id);
+        $entrie = \App\Models\Entry::all()->where('document_id', $document->id)->toArray();
+        // $ref = Document::all()->where('document_id', $document->id);
+        // // $entrie = Document::all()->where('document_id', $document->id);
+        // $entrie = Document::all()->where('document_id', 1);
+        // // ->toArray();
+
+        // dd($entrie);
+        $i = 0;
+        foreach ($entrie as $entry) {
+            $entries[$i] = $entry;
+            $i++;
+        }
+        // dd($entries);
+
+        // $document =
+        //     // $document,
+        //     [
+        //         'id' => $document->id,
+        //         'ref' => $document->ref,
+        //         'date' => $document->date,
+        //         'description' => $document->description,
+        //         'type_id' => $document->type_id,
+        //         'entries' => $document->entries,
+        //     ];
+        //     'accounts' => $accounts,
+        //     'doc_types' => $doc_types,
+        //     'entries' => $entries,
+        // ]
+        // dd($document);
+        // $document = Document::all()->where('document_id', $document->id);
+        return Inertia::render(
+            'Documents/Edit',
+            [
+                'document' =>
+                // $document,
+                [
+                    'id' => $document->id,
+                    'ref' => $document->ref,
+                    'date' => $document->date,
+                    'description' => $document->description,
+                    'type_id' => $document->type_id,
+                    'type_name' => $document->documentType->name,
+                    'entries' => $document->entries,
+                ],
+                'accounts' => $accounts,
+                'doc_types' => $doc_types,
+                'entriess' => $entries,
+                // 'entries' => $entries,
+            ]
+        );
     }
 
-    public function edit(AccountGroup $accountgroup)
-    {
-        // $types = \App\Models\AccountType::all()->map->only('id','name');
-        // $companies = \App\Models\Company::all()->map->only('id','name');
-        // return Inertia::render('AccountGroups/Edit', [
-        //     'accountgroup' => [
-        //         'id' => $accountgroup->id,
-        //         'type_id' => $accountgroup->type_id,
-        //         'name' => $accountgroup->name,
-        //         'company_id' => $accountgroup->company_id,
-        //     ],
-        //     'types' => $types,
-        //     'companies' => $companies,
+    // public function update(Document $document)
+    public function update(
+        Req $request,
+        Document $document
+        // Entry $entry
+    ) {
+        // dd($request->entries);
+        // dd($entry);
+        // dd($document->id);
+
+        Request::validate([
+            'type_id' => ['required'],
+            'description' => ['required'],
+            'date' => ['required', 'date'],
+
+            'entries.*.account_id' => ['required'],
+            'entries.*.debit' => ['required'],
+            'entries.*.credit' => ['required'],
+        ]);
+
+        $preEntries = Entry::all()->where('document_id', $document->id);
+
+
+        DB::transaction(function () use ($request, $document, $preEntries) {
+            $date = new Carbon($request->date);
+            try {
+
+                foreach ($preEntries as $preEntry) {
+                    $preEntry->delete();
+                }
+                // $prefix = \App\Models\DocumentType::where('id', $request->type_id)->first()->prefix;
+                // $date = $date->format('Y-m-d');
+                // $ref_date_parts = explode("-", $date);
+                // $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2];
+
+                // $doc = Document::create([
+                //     'type_id' => Request::input('type_id'),
+                //     'company_id' => session('company_id'),
+                //     'description' => Request::input('description'),
+                //     'ref' => $reference,
+                //     'date' => $date,
+                //     'year_id' => session('year_id'),
+                // ]);
+                $date = new carbon(Request::input('date'));
+
+                $document->description = Request::input('description');
+                $document->date = $date->format('Y-m-d');
+
+                $document->save();
+
+                $data = $request->entries;
+                foreach ($data as $entry) {
+                    Entry::create([
+                        // 'company_id' => $document->company_id,
+                        'company_id' => session('company_id'),
+                        'account_id' => $entry['account_id'],
+                        'year_id' => session('year_id'),
+                        // 'year_id' => $document->year_id,
+                        'document_id' => $document->id,
+                        'debit' => $entry['debit'],
+                        'credit' => $entry['credit'],
+                    ]);
+                }
+            } catch (Exception $e) {
+                return $e;
+            }
+        });
+
+        // dd($request->entries);
+        // dd(Request::input('ref'));
+        // dd($document->type_id);
+
+
+        // $data = $request->entries;
+        // foreach ($data as $entry) {
+        // Entry::create([
+        // 'company_id' => $doc->company_id,
+        // 'year_id' => $doc->year_id,
+        // 'document_id' => $doc->id,
+
+        // $entry->account_id = $entry->account_id;
+        // $entry->debit = $entry->debit;
+        // $entry->credit = $entry->credit;
+
+        // $entry->save;
+
+        // 'account_id' => $entry['account_id'],
+        // 'debit' => $entry['debit'],
+        // 'credit' => $entry['credit'],
         // ]);
+        // }
+
+        return Redirect::route('documents')->with('success', 'Transaction updated.');
     }
 
-    public function update(AccountGroup $accountgroup)
+
+    public function destroy(Document $document)
     {
-        // Request::validate([
-        //     'type' => ['required'],
-        //     'name' => ['required'],
-        //     'company' => ['required'],
-
-        // ]);
-
-        // $accountgroup->type_id = Request::input('type');
-        // $accountgroup->name = Request::input('name');
-        // $accountgroup->company_id = Request::input('company');
-        // $accountgroup->save();
-
-        // return Redirect::route('accountgroups')->with('success', 'Account Group updated.');
-    }
-
-    public function destroy(Account $account)
-    {
-        $account->delete();
+        $document->delete();
         return Redirect::back()->with('success', 'Transaction deleted.');
     }
 }
