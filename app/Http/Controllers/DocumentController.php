@@ -110,6 +110,7 @@ class DocumentController extends Controller
                     //         ];
                     //     }),
 
+                    'company' => Company::where('id', session('company_id'))->first(),
                     'companies' => Company::all()
                         ->map(function ($com) {
                             return [
@@ -117,7 +118,6 @@ class DocumentController extends Controller
                                 'name' => $com->name,
                             ];
                         }),
-
                     'years' => Year::all()
                         ->where('company_id', session('company_id'))
                         ->map(function ($year) {

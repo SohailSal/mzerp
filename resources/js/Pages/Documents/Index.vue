@@ -3,6 +3,31 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         Transactions
+        <select
+          v-model="yr_id"
+          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
+          label="year"
+          @change="yrch"
+        >
+          <option v-for="type in years" :key="type.id" :value="type.id">
+            {{ type.name }}
+          </option>
+        </select>
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
       </h2>
     </template>
     <div
@@ -32,16 +57,7 @@
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
-      <select
-        v-model="co_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-        label="company"
-        @change="coch"
-      >
-        <option v-for="type in companies" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <select
         v-model="yr_id"
@@ -105,6 +121,7 @@ import Paginator from "@/Layouts/Paginator";
 import moment from "moment";
 import { pickBy } from "lodash";
 import { throttle } from "lodash";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
@@ -114,18 +131,22 @@ export default {
     throttle,
     pickBy,
     moment,
+    Multiselect,
   },
 
   props: {
     data: Object,
     filters: Object,
     companies: Object,
+    company: Object,
     years: Object,
   },
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      // co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
       yr_id: this.$page.props.yr_id,
 
       params: {
@@ -150,7 +171,7 @@ export default {
     },
 
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
     // yrch() {
     //   this.$inertia.get(route("companies.yrch", this.yr_id));

@@ -173,6 +173,7 @@ class LedgerController extends Controller
         // dd($data['entries']);
 
         return Inertia::render('Ledgers/Index', [
+            'company' => Company::where('id', session("company_id"))->first(),
             'companies' => Company::all(),
             'account_first' => $account_first,
             // 'accounts' => $accounts,

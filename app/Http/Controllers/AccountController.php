@@ -18,11 +18,11 @@ class AccountController extends Controller
     {
         if (AccountGroup::where('company_id', session('company_id'))->first()) {
             
-        // //Validating request
-        // request()->validate([
-        //     'direction' => ['in:asc,desc'],
-        //     'field' => ['in:name,email']
-        // ]);
+        //Validating request
+        request()->validate([
+            'direction' => ['in:asc,desc'],
+            'field' => ['in:name,email']
+        ]);
 
         //Searching request
         $query = Account::query();
@@ -39,7 +39,7 @@ class AccountController extends Controller
 
         $balances = $query
             ->where('company_id', session('company_id'))
-            ->paginate(15)
+            ->paginate(12)
             ->through(
                 function ($account) {
                     return
@@ -56,6 +56,7 @@ class AccountController extends Controller
                 // 'data' => $query->paginate(6),
                 'filters' => request()->all(['search', 'field', 'direction']),
                 'balances' => $balances,
+                'company' => Company::where('id', session('company_id'))->first(),
                 'companies' => Company::all()
                     ->map(function ($com) {
                         return [

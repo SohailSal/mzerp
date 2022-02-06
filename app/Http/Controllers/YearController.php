@@ -19,10 +19,15 @@ class YearController extends Controller
     public function index()
     {
 
+        $query = Year::query();
         return Inertia::render('Years/Index', [
-            'data' => Year::all()
+            // 'data' => Year::all()
+            'balances' => $query
                 ->where('company_id', session('company_id'))
-                ->map(function ($year) {
+                // ->map(
+                ->paginate(12)
+                ->through(
+                    function ($year) {
                     return [
                         $begin = new Carbon($year->begin),
                         $end = new Carbon($year->end),
@@ -34,8 +39,9 @@ class YearController extends Controller
                         'delete' => Document::where('year_id', $year->id)->first() || $year->id == Year::where('company_id', session('company_id'))->first()->id ? false : true,
                         // 'delete' => Document::where('year_id', $year->id)->first() || $year == Year::where('company_id', session('company_id'))->first() ? false : true,
                     ];
-                }),
-
+                },
+            ),
+            'company' => Company::where('id', session('company_id'))->first(),
             'companies' => Company::all()
                 ->map(function ($com) {
                     return [

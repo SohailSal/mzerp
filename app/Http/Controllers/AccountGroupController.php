@@ -15,17 +15,18 @@ class AccountGroupController extends Controller
     public function index()
     {
 
-        // //Validating request
-        // request()->validate([
-        //     'direction' => ['in:asc,desc'],
-        //     'field' => ['in:name,email']
-        // ]);
+        //Validating request
+        request()->validate([
+            'direction' => ['in:asc,desc'],
+            'field' => ['in:name,email']
+        ]);
 
         //Searching request
         $query = AccountGroup::query();
         if (request('search')) {
             $query->where('name', 'LIKE', '%' . request('search') . '%');
         }
+
         // // Ordering request
         // if (request()->has(['field', 'direction'])) {
         //     $query->orderBy(
@@ -72,6 +73,7 @@ class AccountGroupController extends Controller
             // 'exists' => Account::where('company_id', session('company_id'))->first() ? false : true,
             'exists' => AccountGroup::where('company_id', session('company_id'))->first() ? false : true,
 
+            'company' => Company::where('id', session('company_id'))->first(),
             'companies' => Company::all()
                 ->map(function ($com) {
                     return [

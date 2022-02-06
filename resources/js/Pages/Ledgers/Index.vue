@@ -1,7 +1,24 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ledgers</h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        Ledgers
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
+      </h2>
     </template>
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
@@ -79,27 +96,6 @@
         <!-- value="{{new Date().toISOString().substr(0, 10)}}" -->
         <div v-if="errors.date_end">{{ errors.date_end }}</div>
 
-        <!-- <multiselect
-          style="display: inline-block"
-          class="rounded-md border border-black"
-          placeholder="Select Company."
-          v-model="co_id"
-          track-by="id"
-          label="name"
-          :options="options"
-          @update:model-value="coch"
-        >
-        </multiselect> -->
-        <select
-          v-model="co_id"
-          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-          label="company"
-          @change="coch"
-        >
-          <option v-for="type in companies" :key="type.id" :value="type.id">
-            {{ type.name }}
-          </option>
-        </select>
         <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
           <thead>
             <tr class="bg-indigo-100">
@@ -168,6 +164,7 @@ export default {
     errors: Object,
     data: Object,
     companies: Object,
+    company: Object,
     // accounts: Object,
     accounts: Array,
     account_first: Object,
@@ -184,7 +181,9 @@ export default {
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      // co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
       option: this.accounts,
 
       //   form: this.$inertia.form({
@@ -273,7 +272,7 @@ export default {
       this.$inertia.delete(route("years.destroy", id));
     },
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
   },
 };

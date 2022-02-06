@@ -3,6 +3,21 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         Account Groups
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
       </h2>
     </template>
     <div
@@ -43,16 +58,6 @@
         placeholder="Search..."
         class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
       />
-      <select
-        v-model="co_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right mt-2"
-        label="company"
-        @change="coch"
-      >
-        <option v-for="type in companies" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
       <div class="">
         <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
           <thead>
@@ -99,6 +104,7 @@ import JetButton from "@/Jetstream/Button";
 import Paginator from "@/Layouts/Paginator";
 import { pickBy } from "lodash";
 import { throttle } from "lodash";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
@@ -107,6 +113,7 @@ export default {
     Paginator,
     throttle,
     pickBy,
+    Multiselect,
   },
 
   props: {
@@ -114,12 +121,15 @@ export default {
     balances: Object,
     filters: Object,
     companies: Object,
+    company: Object,
     exists: Object,
   },
 
   data() {
     return {
       co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
 
       params: {
         search: this.filters.search,
@@ -147,7 +157,8 @@ export default {
     },
 
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      // this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
 
     sort(field) {
