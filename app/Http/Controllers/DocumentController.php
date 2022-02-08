@@ -57,8 +57,8 @@ class DocumentController extends Controller
 
             $query
                 ->where('company_id', session('company_id'))
-                // ->where('year_id', session('year_id'))
-                ->paginate(6)
+                ->where('year_id', session('year_id'))
+                ->paginate(12)
                 ->withQueryString()
                 ->through(
                     fn ($document) =>

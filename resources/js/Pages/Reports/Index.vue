@@ -68,21 +68,6 @@
       >
         <a href="pl" target="_blank">Profit or Loss A/C</a>
       </div>
-
-      <!-- <div
-      class="
-        border
-        rounded-lg
-        shadow-md
-        p-2
-        m-2
-        inline-block
-        hover:bg-gray-600
-        hover:text-white
-      "
-    >
-      <a href="pd">Generate pdf file</a>
-    </div> -->
     </div>
   </app-layout>
 </template>

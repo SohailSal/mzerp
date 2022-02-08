@@ -27,7 +27,6 @@ class DocumentTypeController extends Controller
                         'name' => $doc_type->name,
                         'prefix' => $doc_type->prefix,
                         'delete' => Document::where('type_id', $doc_type->id)->first() ? false : true,
-
                     ];
                 }),
             'company' => Company::where('id', session('company_id'))->first(),

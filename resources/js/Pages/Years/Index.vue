@@ -82,6 +82,14 @@
                   >
                     <span>Delete</span>
                   </button>
+                  <button
+                    v-if="item.closed == 0"
+                    class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                    @click="close(item.id)"
+                    type="button"
+                  >
+                    <span>Close Fiscal</span>
+                  </button>
                 </td>
               </tr>
               <tr v-if="balances.data.length === 0">
@@ -147,6 +155,11 @@ export default {
     destroy(id) {
       this.$inertia.delete(route("years.destroy", id));
     },
+
+    close(id) {
+      this.$inertia.get(route("years.close", id));
+    },
+
     coch() {
       // this.$inertia.get(route("companies.coch", this.co_id));
       this.$inertia.get(route("companies.coch", this.co_id["id"]));

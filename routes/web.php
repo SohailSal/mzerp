@@ -50,16 +50,22 @@ Route::get('reports', [ReportController::class, 'index'])
     ->name('reports')
     ->middleware('auth');
 
+// ------------ This function is generating on screen ledger -----------------------------
 Route::get('ledgers', [LedgerController::class, 'index'])
     ->name('ledgers')
     ->middleware('auth');
 
-Route::get('ledgers/getledger/{id}', [LedgerController::class, 'getledger'])
-    // ->name('getledger.onscreen');
-    ->name('getledger');
+//GENERATING LEDGER PDF REPORT ------------------
+Route::get('range/{id}', [LedgerController::class, 'rangeLedger'])
+    ->name('range')
+    ->middleware('auth');
+
+// Route::get('ledgers/getledger/{id}', [LedgerController::class, 'getledger'])
+//     // ->name('getledger.onscreen');
+//     ->name('getledger');
 
 //PDF -----------------------------------------------
-Route::get('pd', [ReportController::class, 'pd'])
+Route::get('pd/{id}', [ReportController::class, 'pd'])
     ->name('pd')
     ->middleware('auth');
 
@@ -83,18 +89,14 @@ Route::get('pl', [ReportController::class, 'pl'])
 //     ->name('ledger')
 //     ->middleware('auth');
 
-Route::get('range', [ReportController::class, 'rangeLedger'])
-    ->name('range')
-    ->middleware('auth');
+// Route::get('range', [ReportController::class, 'rangeLedger'])
+//     ->name('range')
+//     ->middleware('auth');
 
 
 //TO CHANGE COMPANY THE FROM DROPDOWN
 Route::get('companies/coch/{id}', [CompanyController::class, 'coch'])
     ->name('companies.coch');
-
-//TO CHANGE YEAR THE FROM DROPDOWN
-Route::get('years/yrch/{id}', [YearController::class, 'yrch'])
-    ->name('years.yrch');
 
 // Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
@@ -282,5 +284,13 @@ Route::put('years/{year}', [YearController::class, 'update'])
 
 Route::delete('years/{year}', [YearController::class, 'destroy'])
     ->name('years.destroy')
+    ->middleware('auth');
+
+//TO CHANGE YEAR THE FROM DROPDOWN
+Route::get('years/yrch/{id}', [YearController::class, 'yrch'])
+    ->name('years.yrch');
+
+Route::get('years/{year}/close', [YearController::class, 'close'])
+    ->name('years.close')
     ->middleware('auth');
 //YEARS ------------------------------------ END ------------------

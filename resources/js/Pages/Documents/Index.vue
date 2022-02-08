@@ -59,16 +59,7 @@
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
 
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
-      <select
-        v-model="yr_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-        label="year"
-        @change="yrch"
-      >
-        <option v-for="type in years" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <!-- </div> -->
       <!-- <div class="w-full px-8"> -->
@@ -101,6 +92,19 @@
               >
                 <span>Delete</span>
               </button>
+              <div
+                class="
+                  border
+                  rounded-lg
+                  shadow-md
+                  p-2
+                  m-2
+                  inline-block
+                  hover:bg-gray-600 hover:text-white
+                "
+              >
+                <a :href="'pd/' + item.id">Voucher in PDF</a>
+              </div>
             </td>
           </tr>
           <tr v-if="data.data.length === 0">
