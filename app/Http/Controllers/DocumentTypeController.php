@@ -30,16 +30,7 @@ class DocumentTypeController extends Controller
                     ];
                 }),
             'company' => Company::where('id', session('company_id'))->first(),
-            'companies' => Company::all()
-                ->map(
-                    function ($com) {
-                        return [
-                            'id' => $com->id,
-                            'name' => $com->name,
-                        ];
-                    }
-                ),
-
+            'companies' => Auth::user()->companies,
         ]);
     }
 

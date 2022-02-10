@@ -44,7 +44,7 @@
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" class="ml-2 mt-1 float-left"
+      <jet-button @click="create" v-if="yearclosed" class="ml-2 mt-1 float-left"
         >Create</jet-button
       >
       <input
@@ -82,6 +82,7 @@
               <button
                 class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
                 @click="edit(item.id)"
+                v-if="yearclosed"
               >
                 <span>Edit</span>
               </button>

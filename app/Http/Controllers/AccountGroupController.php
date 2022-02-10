@@ -9,6 +9,7 @@ use App\Models\AccountGroup;
 use App\Models\Company;
 use Database\Seeders\AccountSeeder;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class AccountGroupController extends Controller
 {
@@ -74,13 +75,7 @@ class AccountGroupController extends Controller
             'exists' => AccountGroup::where('company_id', session('company_id'))->first() ? false : true,
 
             'company' => Company::where('id', session('company_id'))->first(),
-            'companies' => Company::all()
-                ->map(function ($com) {
-                    return [
-                        'id' => $com->id,
-                        'name' => $com->name,
-                    ];
-                }),
+            'companies' => Auth::user()->companies,
         ]);
     }
 

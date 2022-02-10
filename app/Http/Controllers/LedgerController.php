@@ -123,7 +123,7 @@ class LedgerController extends Controller
 
         return Inertia::render('Ledgers/Index', [
             'company' => Company::where('id', session("company_id"))->first(),
-            'companies' => Company::all(),
+            'companies' => Auth::user()->companies,
             'account_first' => $account_first,
             'accounts' => $accounts,
             'date_start' => $start,
