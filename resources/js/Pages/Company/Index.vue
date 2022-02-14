@@ -12,9 +12,10 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
       <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
+      <!-- v-if="companies[0]" -->
       <input
         type="search"
-        v-if="companies[0]"
+        v-if="balances"
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
@@ -286,8 +287,9 @@
                 <button
                   class="border bg-red-500 rounded-xl px-4 py-1 m-1"
                   @click="destroy(item.id)"
-                  v-if="!item.years[0]"
+                  v-if="item.deleteyear"
                 >
+                  <!-- v-if="!item.years[0]" -->
                   <!-- v-if="!item.years[0] && can['delete']" -->
                   <span>Delete</span>
                 </button>
