@@ -145,6 +145,7 @@ export default {
     companies: Object,
     company: Object,
     years: Object,
+    yearclosed: Object,
   },
 
   data() {

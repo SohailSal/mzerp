@@ -26,71 +26,6 @@ use Carbon\Carbon;
 class CompanyController extends Controller
 {
 
-    // FOR PDF FROM MZAUDIT --------
-    public function pd()
-    {
-        // $a = "hello world";
-        // dd(AccountType::where('company_id', session('company_id'))->first());
-        $voucher = Entry::all()
-            ->where('id', 2)
-            // ->where('company_id', session('company_id'))
-            //     ->where('year_id', session('year_id'))
-
-            ->map(function ($comp) {
-                return [
-                    'id' => $comp->id,
-                    'debit' => $comp->debit,
-                    'credit' => $comp->credit,
-                    'description' => 'description',
-                    'ref' => 'ref',
-                    'name' => 'name',
-                    // 'ref' => $comp->document->ref,
-                    // 'description' => $comp->document->description,
-                    // 'name' => $comp->document->documentType->name,
-                ];
-            })
-            ->first();
-        // ->toArray()
-        // dd($voucher);
-        // $voucher = DocumentType::all()
-        //     ->where('company_id', session('company_id'))
-        //     ->map(function ($comp) {
-        //         return [
-        //             'id' => $comp->id,
-        //             'name' => $comp->name,
-        //             'ref' => $comp->id->hasMany(),
-        //             // 'email' => $comp->email,
-        //             // 'website' => $comp->web,
-        //             // 'phone' => $comp->phone,
-        //             // 'fiscal' => $comp->fiscal,
-        //             // 'incorp' => $comp->incorp,
-        //             // 'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
-        //         ];
-        //     });
-        // $voucher = Document::where('company_id', session('company_id'))->first();
-        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'))->where('year_id', session('year_id'));
-
-        $i = 0;
-        foreach ($data['entry_obj'] as $entry) {
-            if ($entry) {
-                $data['entries'][$i] = $entry;
-                $i++;
-            }
-        }
-        // dd($doc_id);
-        // dd($data['entries']);
-        // dd($entri->document_id);
-        // dd(($data['entries'][0])->document_id);
-        $data['doc'] = Document::all()->where('id', $data['entries'][0]->document_id)->first();
-        $data['doc_type'] = DocumentType::all()->where('id', $data['doc']->type_id)->first();
-        // dd($data['doc_type']);
-        $a = Company::where('id', session('company_id'))->first();
-        $pdf = App::make('dompdf.wrapper');
-        // $pdf->loadView('pdf', compact('a'));
-        $pdf->loadView('pdf', $data);
-        return $pdf->stream('v.pdf');
-    }
-    // FOR PDF FROM MZAUDIT --------
 
     public function index()
     {
@@ -100,11 +35,9 @@ class CompanyController extends Controller
             'field' => ['in:name,email']
         ]);
 
-        
-        $query = Company::query()->paginate(6)
-        // auth()->user()->companies()->
-        // $query = Company::paginate(6)
-        // $query = Company::paginate(6)
+
+        // $query = Company::query();
+        $query = auth()->user()->companies()->getQuery()->paginate(10)
             ->withQueryString()
             // 'data' => Company::paginate(3)->withQueryString()
             ->through(
@@ -121,38 +54,32 @@ class CompanyController extends Controller
                     'phone' => $comp->phone,
                     'fiscal' => $comp->fiscal,
                     'incorp' => $comp->incorp,
-                    'delete' => Year::where('company_id', $comp->id)->first() ? true : false,
+                    'deleteyear' => Year::where('company_id', $comp->id)->first() ? true : false,
                 ],
             );
-     
-     
-        //Searching request
-        $query = Company::query();
+
+
         if (request('search')) {
             $query->where('name', 'LIKE', '%' . request('search') . '%');
         }
-        //Ordering request
+
         if (request()->has(['field', 'direction'])) {
             $query->orderBy(
                 request('field'),
                 request('direction')
             );
         }
-     
 
-
-        // $active_co = Setting::where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
-        // $coch_hold = Company::where('id', $active_co->value)->first();
 
         return Inertia::render('Company/Index', [
-            'companies' => Company::all(),
+            // 'companies' => Company::all(),
             // 'can' => [
             //     'edit' => auth()->user()->can('edit'),
             //     'create' => auth()->user()->can('create'),
             //     'delete' => auth()->user()->can('delete'),
             //     'read' => auth()->user()->can('read'),
             // ],
-            'balances' => $query->with('years')->paginate(12),
+            'balances' => $query,
             'filters' => request()->all(['search', 'field', 'direction'])
             // 'data' => Company::all()
             //     ->map(function ($comp) {
@@ -312,7 +239,7 @@ class CompanyController extends Controller
         // $active_co = Setting::all();
         // where('user_id', Auth::user()->id)->where('key', 'active_company')->first();
         // dd($active_co);
-        
+
         $active_co->value = $id;
 
         $active_co->save();
@@ -324,7 +251,7 @@ class CompanyController extends Controller
             $active_yr->save();
 
             $active_yr = Year::where('company_id', $id)->latest()->first()->id;
-          
+
             session(['year_id' => $active_yr]);
             // session(['year_id' => $active_yr->value]);
             // $active_co->save();
@@ -335,4 +262,50 @@ class CompanyController extends Controller
             return Redirect::route('years.create')->with('success', 'YEAR NOT FOUND. Please create an Year for selected Company.');
         }
     }
+
+
+    // FOR PDF FROM MZAUDIT --------
+    public function pd()
+    {
+        // $a = "hello world";
+        // dd(AccountType::where('company_id', session('company_id'))->first());
+        $voucher = Entry::all()
+            ->where('id', 2)
+            // ->where('company_id', session('company_id'))
+            //     ->where('year_id', session('year_id'))
+
+            ->map(function ($comp) {
+                return [
+                    'id' => $comp->id,
+                    'debit' => $comp->debit,
+                    'credit' => $comp->credit,
+                    'description' => 'description',
+                    'ref' => 'ref',
+                    'name' => 'name',
+                    // 'ref' => $comp->document->ref,
+                    // 'description' => $comp->document->description,
+                    // 'name' => $comp->document->documentType->name,
+                ];
+            })
+            ->first();
+
+        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'))->where('year_id', session('year_id'));
+
+        $i = 0;
+        foreach ($data['entry_obj'] as $entry) {
+            if ($entry) {
+                $data['entries'][$i] = $entry;
+                $i++;
+            }
+        }
+        $data['doc'] = Document::all()->where('id', $data['entries'][0]->document_id)->first();
+        $data['doc_type'] = DocumentType::all()->where('id', $data['doc']->type_id)->first();
+        $a = Company::where('id', session('company_id'))->first();
+        $pdf = App::make('dompdf.wrapper');
+        // $pdf->loadView('pdf', compact('a'));
+        $pdf->loadView('pdf', $data);
+        return $pdf->stream('v.pdf');
+    }
+    // FOR PDF FROM MZAUDIT --------
+
 }
