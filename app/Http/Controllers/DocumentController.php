@@ -115,7 +115,7 @@ class DocumentController extends Controller
                     //     }),
 
                     'company' => Company::where('id', session('company_id'))->first(),
-                    'companies' => Auth::user()->companies,
+                    'companies' => auth()->user()->companies,
                     'years' => Year::all()
                         ->where('company_id', session('company_id'))
                         ->map(function ($year) {

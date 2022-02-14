@@ -57,7 +57,7 @@ class AccountController extends Controller
                 'filters' => request()->all(['search', 'field', 'direction']),
                 'balances' => $balances,
                 'company' => Company::where('id', session('company_id'))->first(),
-                'companies' => Auth::user()->companies,
+                'companies' => auth()->user()->companies,
 
                 // 'data' => Account::all()
                 //     ->where('company_id', session('company_id'))
