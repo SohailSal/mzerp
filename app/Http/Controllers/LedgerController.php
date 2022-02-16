@@ -36,108 +36,109 @@ class LedgerController extends Controller
     public function index(Request $request)
     {
 
-        // $transaction = Document::where('company_id', session('company_id'))->where('year_id', session('year_id'))->first();
-        // if($transaction){
+        $acc_exists = Account::where('company_id', session('company_id'))->first();
+        if($acc_exists)
+    {
 
-        $account_first = ['id' => 0];
-        $account_first = Account::where('company_id', session('company_id'))->first();
-        $accounts = Account::where('company_id', session('company_id'))->get();
-        // ->map->only('id', 'name');
-        if ($request->account_id) {
-            $account_first = Account::all()->where('company_id', session('company_id'))->where('id', $request->account_id)->map->only('id', 'name')->first();
-        }
-        //  else {
-        //     $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
-        // }
+            $account_first = ['id' => 0];
+            $account_first = Account::where('company_id', session('company_id'))->first();
+            $accounts = Account::where('company_id', session('company_id'))->get();
+            // ->map->only('id', 'name');
+            if ($request->account_id) {
+                $account_first = Account::all()->where('company_id', session('company_id'))->where('id', $request->account_id)->map->only('id', 'name')->first();
+            }
+            //  else {
+            //     $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+            // }
 
-        if ($request) {
-            $start = new Carbon($request->input('date_start'));
-            $end = new Carbon($request->input('date_end'));
-            $account = $request->input('account_id');
+            if ($request) {
+                $start = new Carbon($request->input('date_start'));
+                $end = new Carbon($request->input('date_end'));
+                $account = $request->input('account_id');
 
-            $start = $start->format('Y-m-d');
-            $end = $end->format('Y-m-d');
+                $start = $start->format('Y-m-d');
+                $end = $end->format('Y-m-d');
 
-            $data['start'] = $start;
+                $data['start'] = $start;
 
-            $data['entries'] = DB::table('documents')
-                ->join('entries', 'documents.id', '=', 'entries.document_id')
-                ->whereDate('documents.date', '>=', $start)
-                ->whereDate('documents.date', '<=', $end)
-                ->where('documents.company_id', session('company_id'))
-                ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
-                ->where('entries.account_id', '=', $account)
-                ->get();
+                $data['entries'] = DB::table('documents')
+                    ->join('entries', 'documents.id', '=', 'entries.document_id')
+                    ->whereDate('documents.date', '>=', $start)
+                    ->whereDate('documents.date', '<=', $end)
+                    ->where('documents.company_id', session('company_id'))
+                    ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
+                    ->where('entries.account_id', '=', $account)
+                    ->get();
 
-            $data['previous'] = DB::table('documents')
-                ->join('entries', 'documents.id', '=', 'entries.document_id')
-                ->whereDate('documents.date', '<', $start)
-                ->where('documents.company_id', session('company_id'))
-                ->select('entries.debit', 'entries.credit')
-                ->where('entries.account_id', '=', $account)
-                ->get();
+                $data['previous'] = DB::table('documents')
+                    ->join('entries', 'documents.id', '=', 'entries.document_id')
+                    ->whereDate('documents.date', '<', $start)
+                    ->where('documents.company_id', session('company_id'))
+                    ->select('entries.debit', 'entries.credit')
+                    ->where('entries.account_id', '=', $account)
+                    ->get();
 
-            $data['acc'] = Account::where('id', '=', $account)->where('company_id', session('company_id'))->first();
-            // $data['period'] = "From " . strval($start) . " to " . strval($end);
+                $data['acc'] = Account::where('id', '=', $account)->where('company_id', session('company_id'))->first();
+                // $data['period'] = "From " . strval($start) . " to " . strval($end);
 
 
-            //----------------------------------------------- WORKING OF VUE ---------------------------------------------
-            // $fmt = new NumberFormatter('en_GB', NumberFormatter::CURRENCY);
-            // $amt = new NumberFormatter('en_GB', NumberFormatter::SPELLOUT);
-            // $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
-            // $fmt->setSymbol(NumberFormatter::CURRENCY_SYMBOL, '');
-            $prebal = 0;
-            $data['lastbalance'] = 0;
-            $ite = 0;
-            $data['debits'] = 0;
-            $data['credits'] = 0;
-            if ($data['previous']->count()) {
-                foreach ($data['previous'] as $value) {
-                    $prebal = $data['lastbalance'] + floatval($value->debit) - floatval($value->credit);
-                    $data['lastbalance'] = $prebal;
+                //----------------------------------------------- WORKING OF VUE ---------------------------------------------
+                // $fmt = new NumberFormatter('en_GB', NumberFormatter::CURRENCY);
+                // $amt = new NumberFormatter('en_GB', NumberFormatter::SPELLOUT);
+                // $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
+                // $fmt->setSymbol(NumberFormatter::CURRENCY_SYMBOL, '');
+                $prebal = 0;
+                $data['lastbalance'] = 0;
+                $ite = 0;
+                $data['debits'] = 0;
+                $data['credits'] = 0;
+                if ($data['previous']->count()) {
+                    foreach ($data['previous'] as $value) {
+                        $prebal = $data['lastbalance'] + floatval($value->debit) - floatval($value->credit);
+                        $data['lastbalance'] = $prebal;
+                        $ite++;
+                    }
+                }
+                $balance = [];
+                $ite = 0;
+                foreach ($data['entries'] as $value) {
+                    $balance[$ite] = $data['lastbalance'] + floatval($value->debit) - floatval($value->credit);
+                    $data['lastbalance'] = $balance[$ite];
                     $ite++;
                 }
+                // $dt = \Carbon\Carbon::now(new DateTimeZone('Asia/Karachi'))->format('M d, Y - h:m a');
             }
-            $balance = [];
-            $ite = 0;
-            foreach ($data['entries'] as $value) {
-                $balance[$ite] = $data['lastbalance'] + floatval($value->debit) - floatval($value->credit);
-                $data['lastbalance'] = $balance[$ite];
-                $ite++;
+
+
+            // @foreach ($entries as $entry)
+            foreach ($data['entries'] as $entry) {
+                //     {{$entry->ref}}
+                //     {{$entry->date}}
+                //     {{$entry->description}}
+                //     {{str_replace(['Rs.','.00'],'',$fmt->formatCurrency($entry->debit,'Rs.'))}}
+                //     {{str_replace(['Rs.','.00'],'',$fmt->formatCurrency($entry->credit,'Rs.'))}}
+                //     {{str_replace(['Rs.','.00'],'',$fmt->formatCurrency($balance[$loop->index],'Rs.'))}}
+
+                $data['debits'] = $data['debits'] + $entry->debit;
+                $data['credits'] = $data['credits'] + $entry->credit;
             }
-            // $dt = \Carbon\Carbon::now(new DateTimeZone('Asia/Karachi'))->format('M d, Y - h:m a');
-        }
 
-
-        // @foreach ($entries as $entry)
-        foreach ($data['entries'] as $entry) {
-            //     {{$entry->ref}}
-            //     {{$entry->date}}
-            //     {{$entry->description}}
-            //     {{str_replace(['Rs.','.00'],'',$fmt->formatCurrency($entry->debit,'Rs.'))}}
-            //     {{str_replace(['Rs.','.00'],'',$fmt->formatCurrency($entry->credit,'Rs.'))}}
-            //     {{str_replace(['Rs.','.00'],'',$fmt->formatCurrency($balance[$loop->index],'Rs.'))}}
-
-            $data['debits'] = $data['debits'] + $entry->debit;
-            $data['credits'] = $data['credits'] + $entry->credit;
-        }
-
-        return Inertia::render('Ledgers/Index', [
-            'company' => Company::where('id', session("company_id"))->first(),
-            'companies' => Auth::user()->companies,
-            'account_first' => $account_first,
-            'accounts' => $accounts,
-            'date_start' => $start,
-            'date_end' => $end,
-            'entries' => $data['entries'],
-            'debits' => $data['debits'],
-            'credits' => $data['credits'],
-            'balance' => $balance,
-            'prebal' => $prebal,
-        ]);
-    // }else{
-    //     return Redirect::route('documents')->with('warning', 'Transaction NOT FOUND, Please create an transaction first.');
-    // }
+            return Inertia::render('Ledgers/Index', [
+                'company' => Company::where('id', session("company_id"))->first(),
+                'companies' => Auth::user()->companies,
+                'account_first' => $account_first,
+                'accounts' => $accounts,
+                'date_start' => $start,
+                'date_end' => $end,
+                'entries' => $data['entries'],
+                'debits' => $data['debits'],
+                'credits' => $data['credits'],
+                'balance' => $balance,
+                'prebal' => $prebal,
+            ]);
+    }else{
+        return Redirect::route('accounts')->with('warning', 'Transaction NOT FOUND, Please create an transaction first.');
+    }
     }
 
 

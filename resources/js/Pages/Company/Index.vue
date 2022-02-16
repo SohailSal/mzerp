@@ -12,15 +12,14 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
       <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
-      <!-- v-if="companies[0]" -->
-      <input
+      <!-- <input
         type="search"
         v-if="balances"
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
         class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
-      />
+      /> -->
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
 
       <!-- <multiselect

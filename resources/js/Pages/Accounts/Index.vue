@@ -46,7 +46,7 @@
         <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
           <thead>
             <tr class="bg-indigo-100">
-              <th class="py-2 px-4 border">ID</th>
+              <!-- <th class="py-2 px-4 border">ID</th> -->
               <th class="py-2 px-4 border">Name of Account</th>
               <th class="py-2 px-4 border">Group of Account</th>
               <th class="py-2 px-4 border">Action</th>
@@ -54,7 +54,7 @@
           </thead>
           <tbody>
             <tr v-for="item in balances.data" :key="item.id">
-              <td class="py-1 px-4 border text-center">{{ item.id }}</td>
+              <!-- <td class="py-1 px-4 border text-center">{{ item.id }}</td> -->
               <td class="py-1 px-4 border">{{ item.name }}</td>
               <td class="py-1 px-4 border">{{ item.group_name }}</td>
               <!-- <td class="py-1 px-4 border">{{ item.accountGroup.name }}</td> -->
