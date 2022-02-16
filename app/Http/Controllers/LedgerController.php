@@ -18,6 +18,7 @@ use App\Models\Setting;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\User;
+use PDF;
 
 use Carbon\Carbon;
 

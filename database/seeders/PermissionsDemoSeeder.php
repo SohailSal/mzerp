@@ -24,6 +24,7 @@ class PermissionsDemoSeeder extends Seeder
         $role1->givePermissionTo('create');
         $role1->givePermissionTo('edit');
         $role1->givePermissionTo('delete');
+        $role1->givePermissionTo('read');
 
         $role2 = Role::create(['name' => 'user']);
         $role2->givePermissionTo('read');

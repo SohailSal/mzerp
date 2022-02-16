@@ -26,12 +26,12 @@
         {{ $page.props.flash.success }}
       </div>
 
-      <!-- <form
+      <form
         @submit.prevent="submit_range"
         v-bind:action="'range/' + form.account_id['id']"
         ref="form_range"
-      > -->
-      <form @submit.prevent="submit">
+      >
+        <!-- <form @submit.prevent="submit"> -->
         <multiselect
           class="
             ml-2
