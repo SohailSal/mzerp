@@ -12,14 +12,14 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
       <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
-      <input
+      <!-- <input
         type="search"
-        v-if="companies[0]"
+        v-if="balances"
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
         class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
-      />
+      /> -->
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
 
       <!-- <multiselect
@@ -33,7 +33,7 @@
         @update:model-value="coch"
       >
       </multiselect> -->
-      <select
+      <!-- <select
         v-model="co_id"
         v-if="companies[0]"
         class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right mt-2"
@@ -44,7 +44,7 @@
         <option v-for="type in companies" :key="type.id" :value="type.id">
           {{ type.name }}
         </option>
-      </select>
+      </select> -->
       <div class="">
         <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
           <thead>
@@ -286,8 +286,9 @@
                 <button
                   class="border bg-red-500 rounded-xl px-4 py-1 m-1"
                   @click="destroy(item.id)"
-                  v-if="!item.years[0]"
+                  v-if="item.deleteyear"
                 >
+                  <!-- v-if="!item.years[0]" -->
                   <!-- v-if="!item.years[0] && can['delete']" -->
                   <span>Delete</span>
                 </button>

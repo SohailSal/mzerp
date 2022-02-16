@@ -1,7 +1,24 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Years</h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        Years
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
+      </h2>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
@@ -21,7 +38,7 @@
         >
           Add Year
         </button> -->
-        <select
+        <!-- <select
           v-model="co_id"
           class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right mt-2"
           label="company"
@@ -30,7 +47,7 @@
           <option v-for="type in companies" :key="type.id" :value="type.id">
             {{ type.name }}
           </option>
-        </select>
+        </select> -->
         <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
         <div class="">
           <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
@@ -43,7 +60,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in data" :key="item.id">
+              <tr v-for="item in balances.data" :key="item.id">
                 <td class="py-1 px-4 border w-2/5">
                   {{ item.company_name }}
                 </td>
@@ -65,10 +82,22 @@
                   >
                     <span>Delete</span>
                   </button>
+                  <button
+                    v-if="item.closed == 0"
+                    class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                    @click="close(item.id)"
+                    type="button"
+                  >
+                    <span>Close Fiscal</span>
+                  </button>
                 </td>
+              </tr>
+              <tr v-if="balances.data.length === 0">
+                <td class="border-t px-6 py-4" colspan="4">No Record found.</td>
               </tr>
             </tbody>
           </table>
+          <paginator class="mt-6" :balances="balances" />
         </div>
       </form>
     </div>
@@ -79,19 +108,33 @@
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
 import { useForm } from "@inertiajs/inertia-vue3";
+import Multiselect from "@suadelabs/vue3-multiselect";
+import Paginator from "@/Layouts/Paginator";
+// import { Head, Link } from "@inertiajs/inertia-vue3";
 
 export default {
   components: {
     AppLayout,
     JetButton,
     useForm,
+    Multiselect,
+    Paginator,
+    // Link,
+    // Head,
   },
 
-  props: ["data", "companies"],
+  // props: ["data", "companies", "company"],
+  props: {
+    balances: Object,
+    companies: Object,
+    company: Object,
+  },
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      // co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
     };
   },
 
@@ -112,8 +155,14 @@ export default {
     destroy(id) {
       this.$inertia.delete(route("years.destroy", id));
     },
+
+    close(id) {
+      this.$inertia.get(route("years.close", id));
+    },
+
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      // this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
   },
 };

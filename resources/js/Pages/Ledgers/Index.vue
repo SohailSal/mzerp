@@ -1,20 +1,37 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ledgers</h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        Ledgers
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
+      </h2>
     </template>
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
         {{ $page.props.flash.success }}
       </div>
-      <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
-      <!-- <div class=""> -->
-      <!-- <form @submit.prevent="submit" action="range" ref="form"> -->
-
-      <form @submit.prevent="submit">
-        <!-- class="rounded-md border border-black" -->
+      <form
+        @submit.prevent="submit_range"
+        v-bind:action="'range/' + form.account_id['id']"
+        ref="form_range"
+      >
+        <!-- <form @submit.prevent="submit"> -->
         <multiselect
           class="
             ml-2
@@ -32,28 +49,7 @@
           track-by="id"
           @update:model-value="getledger"
         ></multiselect>
-        <!-- style="width: 25%" -->
-        <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap border"> -->
-        <!-- placeholder="Select Option..." -->
-        <!-- class="pr-2 ml-2 pb-2 rounded-md" -->
-        <!-- lg:w-1/4 -->
-        <!-- class="rounded-md w-36" -->
-        <!-- <option disabled>Select option</option> -->
-        <!-- <select
-          v-model="form.account_id"
-          name="account_id"
-          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md"
-          @change="getledger"
-        >
-          <option value="0" disabled>Choose an Account</option>
-          <option
-            v-for="account in accounts"
-            :key="account.id"
-            :value="account.id"
-          >
-            {{ account.name }}
-          </option>
-        </select> -->
+
         <input
           v-model="form.date_start"
           type="date"
@@ -63,7 +59,6 @@
           @change="getledger"
           name="date_start"
         />
-        <!-- class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300" -->
         <div v-if="errors.date_start">{{ errors.date_start }}</div>
 
         <input
@@ -75,31 +70,24 @@
           @change="getledger"
           name="date_end"
         />
-        <!-- class="pr-2 pb-2 ml-4 rounded-md placeholder-indigo-300" -->
-        <!-- value="{{new Date().toISOString().substr(0, 10)}}" -->
         <div v-if="errors.date_end">{{ errors.date_end }}</div>
 
-        <!-- <multiselect
-          style="display: inline-block"
-          class="rounded-md border border-black"
-          placeholder="Select Company."
-          v-model="co_id"
-          track-by="id"
-          label="name"
-          :options="options"
-          @update:model-value="coch"
+        <div
+          class="
+            border
+            rounded-lg
+            shadow-md
+            p-2
+            mt-1
+            ml-2
+            inline-block
+            hover:bg-gray-600 hover:text-white
+            bg-indigo-300
+          "
         >
-        </multiselect> -->
-        <select
-          v-model="co_id"
-          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-          label="company"
-          @change="coch"
-        >
-          <option v-for="type in companies" :key="type.id" :value="type.id">
-            {{ type.name }}
-          </option>
-        </select>
+          <button type="submit">Ledger Report</button>
+        </div>
+
         <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
           <thead>
             <tr class="bg-indigo-100">
@@ -128,7 +116,6 @@
               <td class="py-1 px-4 border">{{ item.description }}</td>
               <td class="py-1 px-4 border text-center">{{ item.debit }}</td>
               <td class="py-1 px-4 border text-center">{{ item.credit }}</td>
-              <!-- <td class="py-1 px-4 border">{{ item.balance }}</td> -->
               <td class="py-1 px-4 border text-center">{{ balance[index] }}</td>
             </tr>
             <tr>
@@ -146,7 +133,6 @@
           </tbody>
         </table>
       </form>
-      <!-- </div> -->
     </div>
   </app-layout>
 </template>
@@ -168,7 +154,7 @@ export default {
     errors: Object,
     data: Object,
     companies: Object,
-    // accounts: Object,
+    company: Object,
     accounts: Array,
     account_first: Object,
 
@@ -184,7 +170,9 @@ export default {
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      // co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
       option: this.accounts,
 
       //   form: this.$inertia.form({
@@ -200,17 +188,13 @@ export default {
       //   }),
 
       form: {
-        // account_id: this.account_first.id,
-        account_id: this.accounts[0],
-        // account_id: "",
+        account_id: this.account_first ? this.account_first : this.accounts[0],
         date_start: this.date_start
           ? this.date_start
           : new Date().toISOString().substr(0, 10),
         date_end: this.date_end
           ? this.date_end
           : new Date().toISOString().substr(0, 10),
-        // begin: null,
-        // end: null,
       },
     };
   },
@@ -224,8 +208,12 @@ export default {
   //   },
 
   methods: {
+    // ------------------------- To generate PDF ------------------------
+    submit_range: function () {
+      this.$refs.form_range.submit();
+    },
+    // ----------------------- To generate on screen ledger -----------------------
     getledger() {
-      //   console.log(this.form.account_id);
       //   this.$inertia.get(route("getledger", this.form.account_id));
       this.$inertia.get(route("ledgers", this.form));
     },
@@ -273,7 +261,7 @@ export default {
       this.$inertia.delete(route("years.destroy", id));
     },
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
   },
 };

@@ -30,6 +30,9 @@ class DocumentController extends Controller
 
         $acc = Account::where('company_id', session('company_id'))->first();
         $doc_ty = DocumentType::where('company_id', session('company_id'))->first();
+
+        $yearclosed = year::where('id', session('year_id'))->where('closed', 0)->first();
+
         if ($acc && $doc_ty) {
 
             //Searching request
@@ -57,8 +60,8 @@ class DocumentController extends Controller
 
             $query
                 ->where('company_id', session('company_id'))
-                // ->where('year_id', session('year_id'))
-                ->paginate(6)
+                ->where('year_id', session('year_id'))
+                ->paginate(12)
                 ->withQueryString()
                 ->through(
                     fn ($document) =>
@@ -90,6 +93,7 @@ class DocumentController extends Controller
                 'Documents/Index',
                 [
                     'data' => $query->paginate(6),
+                    'yearclosed' => $yearclosed,
                     'filters' => request()->all(['search', 'field', 'direction']),
                     // 'data' => Document::all()
                     //     ->where('company_id', session('company_id'))
@@ -110,14 +114,8 @@ class DocumentController extends Controller
                     //         ];
                     //     }),
 
-                    'companies' => Company::all()
-                        ->map(function ($com) {
-                            return [
-                                'id' => $com->id,
-                                'name' => $com->name,
-                            ];
-                        }),
-
+                    'company' => Company::where('id', session('company_id'))->first(),
+                    'companies' => auth()->user()->companies,
                     'years' => Year::all()
                         ->where('company_id', session('company_id'))
                         ->map(function ($year) {

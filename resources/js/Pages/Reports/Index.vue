@@ -1,7 +1,24 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Reports</h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        Reports
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
+      </h2>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
@@ -9,16 +26,6 @@
       </div>
       <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
-      <select
-        v-model="co_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right m-2"
-        label="company"
-        @change="coch"
-      >
-        <option v-for="type in companies" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <div
         class="
@@ -28,8 +35,7 @@
           p-2
           m-2
           inline-block
-          hover:bg-gray-600
-          hover:text-white
+          hover:bg-gray-600 hover:text-white
         "
       >
         <a href="trialbalance" target="_blank">Trial Balance</a>
@@ -43,8 +49,7 @@
           p-2
           m-2
           inline-block
-          hover:bg-gray-600
-          hover:text-white
+          hover:bg-gray-600 hover:text-white
         "
       >
         <a href="bs" target="_blank">Balance Sheet</a>
@@ -58,27 +63,11 @@
           p-2
           m-2
           inline-block
-          hover:bg-gray-600
-          hover:text-white
+          hover:bg-gray-600 hover:text-white
         "
       >
         <a href="pl" target="_blank">Profit or Loss A/C</a>
       </div>
-
-      <!-- <div
-      class="
-        border
-        rounded-lg
-        shadow-md
-        p-2
-        m-2
-        inline-block
-        hover:bg-gray-600
-        hover:text-white
-      "
-    >
-      <a href="pd">Generate pdf file</a>
-    </div> -->
     </div>
   </app-layout>
 </template>
@@ -87,24 +76,28 @@
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
 import { useForm } from "@inertiajs/inertia-vue3";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
     AppLayout,
     JetButton,
+    Multiselect,
   },
 
   props: {
     errors: Object,
     data: Object,
     companies: Object,
+    company: Object,
     accounts: Object,
     account_first: Object,
   },
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
       //   form: this.$inertia.form({
       //     account_id: this.account_first.id,
       //     date_start: null,
@@ -180,7 +173,7 @@ export default {
       this.$inertia.delete(route("years.destroy", id));
     },
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
   },
 };

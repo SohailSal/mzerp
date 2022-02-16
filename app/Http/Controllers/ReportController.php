@@ -34,13 +34,8 @@ class ReportController extends Controller
         return Inertia::render('Reports/Index', [
             'account_first' => $account_first,
             'accounts' => $accounts,
-            'companies' => Company::all()
-                ->map(function ($com) {
-                    return [
-                        'id' => $com->id,
-                        'name' => $com->name,
-                    ];
-                }),
+            'company' => Company::where('id', session('company_id'))->first(),
+            'companies' => Auth::user()->companies,
         ]);
     }
 
@@ -231,11 +226,12 @@ class ReportController extends Controller
 
 
     // FOR PDF GENERATION -------------------------- --------
-    public function pd()
+    public function pd($id)
     {
         // $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'))->where('year_id', session('year_id'));
-        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'));
+        $data['entry_obj'] = Entry::where('company_id', session('company_id'))->where('year_id', session('year_id'))->where('document_id', $id)->get();
 
+        $data['entries'] = [];
         $i = 0;
         foreach ($data['entry_obj'] as $entry) {
             if ($entry) {
@@ -243,8 +239,11 @@ class ReportController extends Controller
                 $i++;
             }
         }
-        $data['doc'] = Document::all()->where('id', $data['entries'][0]->document_id)->first();
-        $data['doc_type'] = DocumentType::all()->where('id', $data['doc']->type_id)->first();
+        if($data['entries'] != [])
+        {
+            $data['doc'] = Document::all()->where('id', $data['entries'][0]->document_id)->first();
+            $data['doc_type'] = DocumentType::all()->where('id', $data['doc']->type_id)->first();
+        }
         // $a = Company::where('id', session('company_id'))->first();
         $pdf = App::make('dompdf.wrapper');
         // $pdf->loadView('pdf', compact('a'));
@@ -275,7 +274,7 @@ class ReportController extends Controller
 
         // $pdf = PDF::loadView('balanceSheet');
         $bs = App::make('dompdf.wrapper');
-        $bs->getDomPDF()->set_option("enable_php", true);
+        // $bs->getDomPDF()->set_option("enable_php", true);
         $bs->loadView('balanceSheet');
         return $bs->stream('bs.pdf');
 

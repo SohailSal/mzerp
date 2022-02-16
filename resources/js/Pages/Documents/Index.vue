@@ -3,6 +3,31 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         Transactions
+        <select
+          v-model="yr_id"
+          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
+          label="year"
+          @change="yrch"
+        >
+          <option v-for="type in years" :key="type.id" :value="type.id">
+            {{ type.name }}
+          </option>
+        </select>
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
       </h2>
     </template>
     <div
@@ -19,7 +44,7 @@
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" class="ml-2 mt-1 float-left"
+      <jet-button @click="create" v-if="yearclosed" class="ml-2 mt-1 float-left"
         >Create</jet-button
       >
       <input
@@ -32,27 +57,9 @@
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
-      <select
-        v-model="co_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-        label="company"
-        @change="coch"
-      >
-        <option v-for="type in companies" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
-      <select
-        v-model="yr_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-        label="year"
-        @change="yrch"
-      >
-        <option v-for="type in years" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <!-- </div> -->
       <!-- <div class="w-full px-8"> -->
@@ -75,6 +82,7 @@
               <button
                 class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
                 @click="edit(item.id)"
+                v-if="yearclosed"
               >
                 <span>Edit</span>
               </button>
@@ -85,6 +93,19 @@
               >
                 <span>Delete</span>
               </button>
+              <div
+                class="
+                  border
+                  rounded-lg
+                  shadow-md
+                  p-2
+                  m-2
+                  inline-block
+                  hover:bg-gray-600 hover:text-white
+                "
+              >
+                <a :href="'pd/' + item.id">Voucher in PDF</a>
+              </div>
             </td>
           </tr>
           <tr v-if="data.data.length === 0">
@@ -105,6 +126,7 @@ import Paginator from "@/Layouts/Paginator";
 import moment from "moment";
 import { pickBy } from "lodash";
 import { throttle } from "lodash";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
@@ -114,18 +136,23 @@ export default {
     throttle,
     pickBy,
     moment,
+    Multiselect,
   },
 
   props: {
     data: Object,
     filters: Object,
     companies: Object,
+    company: Object,
     years: Object,
+    yearclosed: Object,
   },
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      // co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
       yr_id: this.$page.props.yr_id,
 
       params: {
@@ -150,7 +177,7 @@ export default {
     },
 
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
     // yrch() {
     //   this.$inertia.get(route("companies.yrch", this.yr_id));

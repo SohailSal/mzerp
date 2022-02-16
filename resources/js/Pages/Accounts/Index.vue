@@ -3,6 +3,21 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         Accounts
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
       </h2>
     </template>
     <div
@@ -26,21 +41,12 @@
         placeholder="Search..."
         class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
       />
-      <select
-        v-model="co_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-        label="company"
-        @change="coch"
-      >
-        <option v-for="type in companies" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+
       <div class="">
         <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
           <thead>
             <tr class="bg-indigo-100">
-              <th class="py-2 px-4 border">ID</th>
+              <!-- <th class="py-2 px-4 border">ID</th> -->
               <th class="py-2 px-4 border">Name of Account</th>
               <th class="py-2 px-4 border">Group of Account</th>
               <th class="py-2 px-4 border">Action</th>
@@ -48,7 +54,7 @@
           </thead>
           <tbody>
             <tr v-for="item in balances.data" :key="item.id">
-              <td class="py-1 px-4 border text-center">{{ item.id }}</td>
+              <!-- <td class="py-1 px-4 border text-center">{{ item.id }}</td> -->
               <td class="py-1 px-4 border">{{ item.name }}</td>
               <td class="py-1 px-4 border">{{ item.group_name }}</td>
               <!-- <td class="py-1 px-4 border">{{ item.accountGroup.name }}</td> -->
@@ -85,6 +91,7 @@ import JetButton from "@/Jetstream/Button";
 import Paginator from "@/Layouts/Paginator";
 import { pickBy } from "lodash";
 import { throttle } from "lodash";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
@@ -93,6 +100,7 @@ export default {
     Paginator,
     throttle,
     pickBy,
+    Multiselect,
   },
 
   props: {
@@ -101,11 +109,14 @@ export default {
     filters: Object,
     can: Object,
     companies: Array,
+    company: Object,
   },
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      // co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
 
       params: {
         search: this.filters.search,
@@ -128,7 +139,7 @@ export default {
       this.$inertia.delete(route("accounts.destroy", id));
     },
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
 
     sort(field) {

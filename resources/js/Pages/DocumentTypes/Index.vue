@@ -1,7 +1,24 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Voucher</h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        Voucher
+        <div
+          style="display: inline-block; min-width: 25%"
+          class="flex-1 inline-block float-right"
+        >
+          <multiselect
+            class="rounded-md border border-black"
+            placeholder="Select Company."
+            v-model="co_id"
+            track-by="id"
+            label="name"
+            :options="options"
+            @update:model-value="coch"
+          >
+          </multiselect>
+        </div>
+      </h2>
     </template>
     <div
       v-if="$page.props.flash.success"
@@ -18,16 +35,7 @@
     <!-- <div class=""> -->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <jet-button @click="create" class="mt-2 ml-2">Create</jet-button>
-      <select
-        v-model="co_id"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-        label="company"
-        @change="coch"
-      >
-        <option v-for="type in companies" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+
       <!-- </div> -->
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <div class="">
@@ -69,18 +77,22 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
     AppLayout,
     JetButton,
+    Multiselect,
   },
 
-  props: ["data", "companies"],
+  props: ["data", "companies", "company"],
 
   data() {
     return {
-      co_id: this.$page.props.co_id,
+      // co_id: this.$page.props.co_id,
+      co_id: this.company,
+      options: this.companies,
     };
   },
 
@@ -97,7 +109,7 @@ export default {
       this.$inertia.delete(route("documenttypes.destroy", id));
     },
     coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
+      this.$inertia.get(route("companies.coch", this.co_id["id"]));
     },
   },
 };

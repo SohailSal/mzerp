@@ -2,7 +2,8 @@
   <app-layout>
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Dashboard - {{ this.$page.props.co_id }} - {{ this.$page.props.yr_id }}
+        Dashboard
+        <!-- - {{ this.$page.props.co_id }} - {{ this.$page.props.yr_id }} -->
       </h2>
       <!-- <div
         class="px-4 py-2 bg-gray-100 border-t border-gray-200 flex justify-start items-center"
@@ -41,8 +42,8 @@
         </div>
 
         <!-- <welcome /> -->
-        <!-- v-if="can['edit']" -->
         <div
+          v-if="can['edit']"
           class="
             inline-flex
             py-2
@@ -67,16 +68,18 @@
               <h3>Assign usage rights to another user</h3>
             </div>
             <div class="flex-col m-2">
-              <label class="inline-flex text-white mb-2 w-20">Email:</label>
+              <label for="email" class="inline-flex text-white mb-2 w-20"
+                >Email:</label
+              >
               <input
                 type="text"
+                id="email"
                 v-model="form.email"
                 class="
                   bg-gray-600
                   text-white
                   rounded
-                  focus:outline-none
-                  focus:shadow-outline
+                  focus:outline-none focus:shadow-outline
                   px-1
                   hover:text-blue-200
                   w-52
@@ -85,6 +88,47 @@
                 placeholder="Enter Email of User"
               />
               <div v-if="errors.email">{{ errors.email }}</div>
+            </div>
+            <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+              <input
+                v-model="form.role"
+                id="manager"
+                name="manager"
+                type="radio"
+                value="manager"
+                class="pr-2 mt-1 pb-2 rounded-md placeholder-indigo-300"
+              />
+              <label
+                for="manager"
+                class="mb-2 ml-4 mr-5 text-right w-38 font-bold"
+                >Manager
+              </label>
+
+              <input
+                v-model="form.role"
+                id="user"
+                name="user"
+                type="radio"
+                value="user"
+                class="pr-2 mt-1 pb-2 rounded-md placeholder-indigo-300"
+              />
+              <label for="user" class="mb-2 ml-2 mr-5 text-right w-38 font-bold"
+                >User
+              </label>
+              <div v-if="errors.role">{{ errors.role }}</div>
+            </div>
+
+            <div style="min-width: 25%" class="flex-1 float-right">
+              <multiselect
+                class="rounded-md border border-black"
+                placeholder="Select Company."
+                v-model="form.company_id"
+                track-by="id"
+                label="name"
+                :options="options"
+              >
+              </multiselect>
+              <div v-if="errors.company_id">{{ errors.company_id }}</div>
             </div>
             <!-- <div class="flex-col m-2">`  1
               <label class="inline-flex text-white mb-2 w-20">Company:</label>
@@ -145,8 +189,7 @@
                   bg-gray-600
                   text-white
                   hover:bg-gray-700
-                  focus:outline-none
-                  focus:shadow-outline
+                  focus:outline-none focus:shadow-outline
                 "
                 type="submit"
                 :disabled="form.processing"
@@ -251,40 +294,39 @@
 import AppLayout from "@/Layouts/AppLayout";
 import Welcome from "@/Jetstream/Welcome";
 import { useForm } from "@inertiajs/inertia-vue3";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
     AppLayout,
     Welcome,
+    Multiselect,
   },
 
   props: {
     errors: Object,
     companies: Object,
     // roles: Object,
-    // can: Object,
-
-    // types: Object,
-    // first: Object,
+    can: Object,
+  },
+  data() {
+    return {
+      options: this.companies,
+    };
   },
   setup(props) {
     const form = useForm({
       email: null,
-      // company_id: props.companies[0].id,
+      role: "user",
+      // company_id: null,
+      company_id: props.companies[0],
       // role: props.roles[0].id,
     });
 
     return { form };
   },
-  mounted: function () {
-    console.log(this.$page.props.co_id);
-    console.log(this.$page.props.yr_id);
-  },
 
   methods: {
-    coch() {
-      this.$inertia.get(route("companies.coch", this.co_id));
-    },
     // route() {
     //   // this.$inertia.post(route("companies.store"), this.form);
     //   this.$inertia.get(route("pd"));
