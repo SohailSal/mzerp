@@ -48,7 +48,8 @@
       <div class="">
         <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
           <thead>
-            <tr class="bg-indigo-100">
+            <!-- <tr class="bg-indigo-100"> -->
+            <tr class="bg-gray-600 text-white">
               <th class="py-2 px-4 border">
                 <span @click="sort('name')">
                   Name
@@ -275,8 +276,17 @@
               <td class="py-1 px-4 border">{{ item.phone }}</td>
               <!-- <td class="py-1 px-4 border" v-if="can['edit'] || can['delete']"> -->
               <td class="py-1 px-4 border text-center">
+                <!-- class="border bg-indigo-300 rounded-xl px-4 py-1 m-1" -->
                 <button
-                  class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                  class="
+                    border
+                    bg-purple-400
+                    rounded-xl
+                    px-4
+                    py-1
+                    m-1
+                    hover:text-white hover:bg-purple-500
+                  "
                   @click="edit(item.id)"
                 >
                   <!-- v-if="can['edit']" -->
@@ -284,7 +294,15 @@
                   <span>Edit</span>
                 </button>
                 <button
-                  class="border bg-red-500 rounded-xl px-4 py-1 m-1"
+                  class="
+                    border
+                    bg-red-400
+                    rounded-xl
+                    px-4
+                    py-1
+                    m-1
+                    hover:text-white hover:bg-red-500
+                  "
                   @click="destroy(item.id)"
                   v-if="item.deleteyear"
                 >
