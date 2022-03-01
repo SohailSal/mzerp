@@ -10,7 +10,7 @@ class AccountGroup extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name','type_id','enabled','company_id'
+        'name','type_id','enabled','company_id', 'parent_id'
     ];
 
     public function accountType()
