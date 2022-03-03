@@ -14,8 +14,8 @@ class AddColoumnToAccountGroups extends Migration
     public function up()
     {
         Schema::table('account_groups', function (Blueprint $table) {
-            $table->unsignedBigInteger('parent_id');
-            $table->foreign('parent_id')->references('id')->on('account_groups')->default(0);
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('account_groups');
         });
     }
 
