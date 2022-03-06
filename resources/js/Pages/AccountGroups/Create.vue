@@ -48,24 +48,12 @@
             <label class="my-2 mr-8 text-right w-36 font-bold"
               >Account Type :</label
             >
-            <!-- <select
-        v-model="co_id"
-        v-if="companies[0]"
-        class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right mt-2"
-        label="company"
-        placeholder="Select Company"
-        @change="coch"
-      >
-        <option v-for="type in companies" :key="type.id" :value="type.id">
-          {{ type.name }}
-        </option>
-      </select> -->
             <select
-              v-model="form.type"
+              v-model="form.type_id"
+              @change="account_type_ch"
               class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
               label="type"
               placeholder="Enter type"
-              @change="account_type_ch"
             >
               <option v-for="type in types" :key="type.id" :value="type.id">
                 {{ type.name }}
@@ -73,34 +61,19 @@
             </select>
             <div v-if="errors.type">{{ errors.type }}</div>
           </div>
-          <!-- Test Account Group -->
-          <!-- v-for="(accs, index) in form.acc_groups"
-            :key="accs.id" -->
-          <div v-for="(accs, index) in form.acc_groups" :key="accs.id">
-            <div
-              :v-if="account_groups[index][0] != null"
-              class="p-2 mr-2 mb-2 ml-6 flex flex-wrap"
+          <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Account Group :</label
             >
-              <label class="my-2 mr-8 text-right w-36 font-bold"
-                >Account Group :</label
-              >
-              <select
-                v-model="accs.acc_group"
-                class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-                label="type"
-                placeholder="Enter type"
-                @change="account_group_ch(index)"
-              >
-                <option
-                  v-for="acc_grp in account_groups[index]"
-                  :key="acc_grp.id"
-                  :value="acc_grp.id"
-                >
-                  {{ acc_grp.name }}
-                </option>
-              </select>
-              <!-- <div v-if="errors.acc_groups">{{ errors.acc_groups }}</div> -->
-            </div>
+            <treeselect
+              v-model="form.parent_id"
+              max-height="150"
+              :multiple="false"
+              :options="data"
+              :normalizer="normalizer"
+              v-on:select="treeChange"
+              style="max-width: 300px"
+            />
           </div>
 
           <div
@@ -128,83 +101,48 @@
   </app-layout>
 </template>
 
+
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import { useForm } from "@inertiajs/inertia-vue3";
-
+import Treeselect from "vue3-treeselect";
+import "vue3-treeselect/dist/vue3-treeselect.css";
 export default {
   components: {
     AppLayout,
+    Treeselect,
   },
   props: {
     errors: Object,
     types: Object,
     first: Object,
-    account_groups: Object,
-    account_group: Array,
+    name: String,
+    data: Array,
   },
-  // setup(props) {
-  //   const form = useForm({
-  //     name: null,
-  //     type: props.first.id,
-  //     acc_groups: props.account_group,
-  //   });
 
-  //   return { form };
-  // },
   data() {
     return {
       isError: null,
       form: this.$inertia.form({
-        name: null,
-        type: this.first.id,
-        // acc_groups: {
-        //   // acc_group: this.account_group,
-        //   // acc_group: this.account_group,
-        // },
-        acc_groups: this.account_group,
-        // acc_groups: null,
+        name: this.name,
+        type_id: this.first.id,
+        parent_id: null,
       }),
+      options: this.data,
+      normalizer(node) {
+        return {
+          label: node.name,
+        };
+      },
     };
   },
   methods: {
-    account_type_ch() {
-      console.log(this.form.type);
-      this.form.acc_groups.length = 1;
-      this.$inertia.post(route("account_type_ch"), this.form);
+    treeChange(node, instanceId) {
+      this.form.parent_id = node.id;
     },
-    account_group_ch(index) {
-      console.log(this.form.type);
-
-      console.log(this.form.acc_groups);
-      // for (var i = index + 1; i < this.form.acc_groups.length; i++) {
-      // if (this.form.acc_groups.length > index + 1) {
-      // this.form.acc_groups.splice(i, 1);
-      // }
-      // }
-
-      // this.form.acc_groups.length = index + 1;
-      this.form.acc_groups.splice(index + 1, 5);
-      this.$inertia.post(route("account_group_ch"), this.form);
-      this.form.acc_groups.push({
-        acc_group: this.account_groups[index].id,
-      });
-      count += 1;
-      // console.log(count);
+    account_type_ch() {
+      this.$inertia.post(route("accountgroups.create"), this.form);
     },
   },
-  // watch: {
-  //   acc_groups: {
-  //     handler: throttle(function () {
-  //       let acc_groups = pickBy(this.acc_groups);
-  //       this.$inertia.get(this.route("accountgroups.create"), acc_groups, {
-  //         // this.$inertia.get(this.route("companies"), params, {
-  //         replace: true,
-  //         preserveState: true,
-  //       });
-  //     }, 150),
-  //     deep: true,
-  //   },
-  // },
 };
 </script>
