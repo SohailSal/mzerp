@@ -149,13 +149,13 @@ import { useForm } from "@inertiajs/inertia-vue3";
 import Treeselect from "@riophae/vue-treeselect";
 // import the styles
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import MyDrop from "@/Components/Drop";
+// import MyDrop from "@/Components/Drop";
 
 export default {
   components: {
     AppLayout,
     Treeselect,
-    MyDrop,
+    // MyDrop,
   },
   props: {
     errors: Object,
@@ -246,4 +246,80 @@ export default {
   //   },
   // },
 };
+
+// -------------------------- Controller Code ---------------------------------
+// public function account_type_ch(Req $request)
+//     {
+//         dd($request);
+//         $accountgroups[0] =  AccountGroup::where('type_id', $request->type)->get();
+//         $accountgroup[0] =  AccountGroup::where('type_id', $request->type)->first();
+
+//         $types = AccountType::all()->map->only('id', 'name');
+//         $first = AccountType::where('id', $request->type)->first();
+
+//         return Inertia::render('AccountGroups/Create', [
+//             'types' => $types, 'first' => $first,
+//             'name' => $request->name,
+//             'account_groups' => $accountgroups,
+//             'account_group' => $accountgroup,
+//         ]);
+//     }
+//     public function account_group_ch(Req $request)
+//     {
+//         $types = AccountType::all()->map->only('id', 'name');
+//         $first = AccountType::where('id', $request->type)->first();
+
+//         $accountgroup[0] = AccountGroup::where('id', $request->acc_groups[0]['acc_group'])->first();
+//         // $accountgroups[0] = AccountGroup::where('type_id', $request->type)->where('parent_id', 0)->get();
+//         $accountgroups[0] = AccountGroup::where('type_id', $request->type)->where('parent_id', 0)->get()
+//                 ->map(function ($acc_grp) {
+//                     return [
+//                         'id' => $acc_grp->id,
+//                         'name' => $acc_grp->name,
+//                         'type_id' => $acc_grp->type_id,
+//                         'accountgroups' => $this->accGroups($acc_grp->id),
+//                      ];
+//                 });
+
+//         $types = AccountType::all()->map->only('id', 'name');
+//         $first = AccountType::where('id', $request->type)->first();
+
+//         $accountgroups[0] = AccountGroup::where('type_id', $request->type)->get();
+//         $accountgroup[0] = AccountGroup::where('id', $request->acc_groups[0]['acc_group'])->first();
+
+//         for ($i = 0; $i < count($request->acc_groups); $i++) {
+//             if(AccountGroup::where('parent_id', $request->acc_groups[$i]['acc_group'])->first())
+//             {
+//                 $accountgroups[$i + 1] =  \App\Models\AccountGroup::where('parent_id', $request->acc_groups[$i]['acc_group'])->get();
+//                 $accountgroup[$i + 1] =  \App\Models\AccountGroup::where('parent_id', $request->acc_groups[$i]['acc_group'])->first();
+//             }
+//         }
+//         return Inertia::render('AccountGroups/Create', [
+//             'types' => $types,
+//             'first' => $first,
+//             'account_groups' => $accountgroups,
+//             'account_group' => $accountgroup,
+//             'name' => $request->name,
+//         ]);
+//     }
+
+// // To create a herarchi of accountgroups ---- recursive function
+// public function accGroups(int $acc_grp_id)
+// {
+//     if(AccountGroup::where('parent_id', $acc_grp_id)->get())
+//     {
+//         return AccountGroup::where('parent_id', $acc_grp_id)->get()
+//             ->map(function ($acc_grp) {
+//             return [
+//                 'id' => $acc_grp->id,
+//                 'name' => $acc_grp->name,
+//                 'type_id' => $acc_grp->type_id,
+//                 // dd(count(AccountGroup::where('parent_id', $acc_grp->id)->get())),
+//                 'accountgroups' => (count(AccountGroup::where('parent_id', $acc_grp->id)->get()) >> 0) ? $this->accGroups($acc_grp->id) : null,
+//             ];
+//         });
+//     }else {
+//         return null;
+//     }
+// }
 </script>

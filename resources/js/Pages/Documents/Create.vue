@@ -9,7 +9,7 @@
       <div class="">
         <form
           @submit.prevent="
-            this.difference == 0 ? form.post(route('documents.store')) : ''
+            this.difference == 0 ? form.post(route('documents.store')) : func()
           "
         >
           <!-- DOCUMENT TYPE ID -->
@@ -55,7 +55,22 @@
               label="description"
               placeholder="Enter Description"
             />
-            <div v-if="errors.description">{{ errors.description }}</div>
+            <div
+              class="
+                ml-2
+                bg-red-100
+                border border-red-400
+                text-red-700
+                px-4
+                py-2
+                rounded
+                relative
+              "
+              role="alert"
+              v-if="errors.description"
+            >
+              {{ errors.description }}
+            </div>
           </div>
           <!-- DATE -->
           <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
@@ -117,7 +132,7 @@
                   <td>
                     <input
                       v-model="entry.debit"
-                      type="text"
+                      type="number"
                       @change="debitchange(index)"
                       class="rounded-md w-36"
                     />
@@ -125,7 +140,7 @@
                   <td>
                     <input
                       v-model="entry.credit"
-                      type="text"
+                      type="number"
                       @change="creditchange(index)"
                       class="rounded-md w-36"
                     />
@@ -152,7 +167,7 @@
                 <tr>
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       v-model="difference"
                       readonly
                       class="rounded-md w-72"
@@ -160,7 +175,7 @@
                   </td>
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       v-model="debit"
                       readonly
                       class="rounded-md w-36"
@@ -168,7 +183,7 @@
                   </td>
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       v-model="credit"
                       readonly
                       class="rounded-md w-36"
@@ -298,6 +313,9 @@ export default {
   },
 
   methods: {
+    func() {
+      alert("Please fill all Input fields");
+    },
     // submit() {
     //   if (this.difference === 0) {
     //     this.$inertia.post(route("documents.store"), this.form);
