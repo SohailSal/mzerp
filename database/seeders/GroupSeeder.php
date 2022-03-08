@@ -20,32 +20,46 @@ class GroupSeeder extends Seeder
         DB::transaction(function () {
 
             $type_id = \App\Models\AccountType::where('name', 'Assets')->first()->id;
-            AccountGroup::create([
+            $ass_fix = AccountGroup::create([
                 'name' => 'Fixed Assets',
                 'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
+
+            $ass_curr = AccountGroup::create([
+                'name' => 'Current Assets',
+                'type_id' => $type_id,
+                'parent_id' => null,
+                'company_id' => session('company_id'),
+            ]);
+
             AccountGroup::create([
                 'name' => 'Stock-in-Trade',
                 'type_id' => $type_id,
+                'parent_id' => $ass_curr->id,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Accounts Receivables',
                 'type_id' => $type_id,
+                'parent_id' => $ass_curr->id,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Loans & Advances',
+                'parent_id' => $ass_curr->id,
                 'type_id' => $type_id,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Deposits, Prepayments & Other Receivables',
+                'parent_id' => $ass_curr->id,
                 'type_id' => $type_id,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
+                'parent_id' => $ass_curr->id,
                 'name' => 'Cash & Bank',
                 'type_id' => $type_id,
                 'company_id' => session('company_id'),
@@ -64,23 +78,35 @@ class GroupSeeder extends Seeder
             ]);
 
             $type_id = \App\Models\AccountType::where('name', 'Liabilities')->first()->id;
-            AccountGroup::create([
+
+            $acc_l_t_liab = AccountGroup::create([
                 'name' => 'Long Term Liabilities',
                 'type_id' => $type_id,
+                'parent_id' => null,
+                'company_id' => session('company_id'),
+            ]);
+
+            $acc_s_t_liab =  AccountGroup::create([
+                'name' => 'Short Term Liabilities',
+                'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Short Term Loans',
                 'type_id' => $type_id,
+                'parent_id' => $acc_s_t_liab->id,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Advances, Deposits & Other Liabilities',
+                'parent_id' => $acc_s_t_liab->id,
                 'type_id' => $type_id,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Accounts Payables',
+                'parent_id' => $acc_s_t_liab->id,
                 'type_id' => $type_id,
                 'company_id' => session('company_id'),
             ]);

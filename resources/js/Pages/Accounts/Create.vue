@@ -68,7 +68,7 @@
             <div v-if="errors.number">{{ errors.number }}</div>
           </div>
 
-          <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+          <!-- <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
             <label class="my-2 mr-8 text-right w-36 font-bold"
               >Account Group :</label
             >
@@ -81,16 +81,6 @@
               track-by="id"
               style="width: 25%"
             ></multiselect>
-            <!-- <select
-              v-model="form.group"
-              class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-              label="group"
-              placeholder="Enter Group"
-            >
-              <option v-for="type in groups" :key="type.id" :value="type.id">
-                {{ type.name }}
-              </option>
-            </select> -->
             <div
               class="
                 ml-2
@@ -107,6 +97,20 @@
             >
               {{ errors.group }}
             </div>
+          </div> -->
+          <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Account Group :</label
+            >
+            <treeselect
+              v-model="form.group"
+              max-height="150"
+              :multiple="false"
+              :options="option"
+              :normalizer="normalizer"
+              v-on:select="treeChange"
+              style="max-width: 300px"
+            />
           </div>
           <div
             class="
@@ -137,11 +141,14 @@
 import AppLayout from "@/Layouts/AppLayout";
 import { useForm } from "@inertiajs/inertia-vue3";
 import Multiselect from "@suadelabs/vue3-multiselect";
+import Treeselect from "vue3-treeselect";
+import "vue3-treeselect/dist/vue3-treeselect.css";
 
 export default {
   components: {
     AppLayout,
     Multiselect,
+    Treeselect,
   },
 
   props: {
@@ -154,6 +161,11 @@ export default {
   data() {
     return {
       option: this.groups,
+      normalizer(node) {
+        return {
+          label: node.name,
+        };
+      },
     };
   },
   setup(props) {
@@ -161,7 +173,7 @@ export default {
       name: null,
       number: null,
       // group: props.group_first.id,
-      group: props.groups[0],
+      group: props.groups_first,
     });
 
     return { form };
