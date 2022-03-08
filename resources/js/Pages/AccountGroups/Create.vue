@@ -16,6 +16,7 @@
             <input
               type="text"
               v-model="form.name"
+              required
               class="
                 pr-2
                 pb-2
@@ -119,16 +120,24 @@ export default {
     name: String,
     data: Array,
   },
+  setup(props) {
+    const form = useForm({
+      name: props.name,
+      type_id: props.first.id,
+      parent_id: null,
+    });
+    return { form };
+  },
 
   data() {
     return {
       isError: null,
-      form: this.$inertia.form({
-        name: this.name,
-        type_id: this.first.id,
-        parent_id: null,
-      }),
-      options: this.data,
+      // form: this.$inertia.form({
+      //   name: this.name,
+      //   type_id: this.first.id,
+      //   parent_id: null,
+      // }),
+      // options: this.data,
       normalizer(node) {
         return {
           label: node.name,
