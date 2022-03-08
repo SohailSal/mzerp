@@ -17,41 +17,41 @@ class AccountController extends Controller
     public function index()
     {
         if (AccountGroup::where('company_id', session('company_id'))->first()) {
-            
-        //Validating request
-        request()->validate([
-            'direction' => ['in:asc,desc'],
-            'field' => ['in:name,email']
-        ]);
 
-        //Searching request
-        $query = Account::query();
-        if (request('search')) {
-            $query->where('name', 'LIKE', '%' . request('search') . '%');
-        }
-        // // Ordering request
-        // if (request()->has(['field', 'direction'])) {
-        //     $query->orderBy(
-        //         request('field'),
-        //         request('direction')
-        //     );
-        // }
+            //Validating request
+            request()->validate([
+                'direction' => ['in:asc,desc'],
+                'field' => ['in:name,email']
+            ]);
 
-        $balances = $query
-            ->where('company_id', session('company_id'))
-            ->paginate(12)
-            ->through(
-                function ($account) {
-                    return
-                        [
-                            'id' => $account->id,
-                            'name' => $account->name,
-                            'group_id' => $account->group_id,
-                            'group_name' => $account->accountGroup->name,
-                            'delete' => Entry::where('account_id', $account->id)->first() ? false : true,
-                        ];
-                }
-            );
+            //Searching request
+            $query = Account::query();
+            if (request('search')) {
+                $query->where('name', 'LIKE', '%' . request('search') . '%');
+            }
+            // // Ordering request
+            // if (request()->has(['field', 'direction'])) {
+            //     $query->orderBy(
+            //         request('field'),
+            //         request('direction')
+            //     );
+            // }
+
+            $balances = $query
+                ->where('company_id', session('company_id'))
+                ->paginate(12)
+                ->through(
+                    function ($account) {
+                        return
+                            [
+                                'id' => $account->id,
+                                'name' => $account->name,
+                                'group_id' => $account->group_id,
+                                'group_name' => $account->accountGroup->name,
+                                'delete' => Entry::where('account_id', $account->id)->first() ? false : true,
+                            ];
+                    }
+                );
             return Inertia::render('Accounts/Index', [
                 // 'data' => $query->paginate(6),
                 'filters' => request()->all(['search', 'field', 'direction']),
@@ -79,14 +79,16 @@ class AccountController extends Controller
 
     public function create()
     {
-        $groups = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name');
+        $groups = AccountGroup::where('company_id', session('company_id'))->tree()->get()->toTree();
+
+        // $groups = \App\Models\AccountGroup::where('company_id', session('company_id'))->map->only('id', 'name')->get();
         // $group_first = \App\Models\AccountGroup::all('id', 'name')->first();
         $group_first = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
 
         if ($group_first) {
 
             return Inertia::render('Accounts/Create', [
-                'groups' => $groups, 
+                'groups' => $groups,
                 'group_first' => $group_first,
             ]);
         } else {
@@ -96,7 +98,6 @@ class AccountController extends Controller
 
     public function store()
     {
-        // dd(Request::input('group'));
         Request::validate([
             'name' => ['required'],
             'number' => ['nullable'],
@@ -106,7 +107,7 @@ class AccountController extends Controller
         Account::create([
             'name' => Request::input('name'),
             'number' => Request::input('number'),
-            'group_id' => Request::input('group')['id'],
+            'group_id' => Request::input('group'),
             'company_id' => session('company_id'),
         ]);
 
@@ -120,14 +121,14 @@ class AccountController extends Controller
     public function edit(Account $account)
     {
         $groups = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name');
-    
+
         $group_first = AccountGroup::where('id', $account->group_id)->first();
-        
+
         return Inertia::render('Accounts/Edit', [
             'account' => [
                 'id' => $account->id,
                 'company_id' => $account->company_id,
-                'group_id' => $account->group_id,
+                'group_id' => $account->accountGroup->name,
                 'name' => $account->name,
                 'number' => $account->number,
             ],
@@ -138,14 +139,14 @@ class AccountController extends Controller
 
     public function update(Account $account)
     {
+
         Request::validate([
-            'group' => ['required'],
-            'number' => ['nullable'],
+
             'name' => ['required'],
         ]);
-        $account->group_id = Request::input('group')['id'];
+        // $account->group_id = Request::input('group_id');
         $account->company_id = session('company_id');
-        $account->number = Request::input('number');
+        // $account->number = Request::input('number');
         $account->name = Request::input('name');
         $account->save();
 

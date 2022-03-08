@@ -24,21 +24,63 @@
               label="name"
               placeholder="Enter name:"
             />
-            <div v-if="errors.name">{{ errors.name }}</div>
+            <div
+              class="
+                ml-2
+                bg-red-100
+                border border-red-400
+                text-red-700
+                px-4
+                py-2
+                rounded
+                relative
+              "
+              role="alert"
+              v-if="errors.name"
+            >
+              {{ errors.name }}
+            </div>
           </div>
           <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
             <label class="my-2 mr-8 text-right w-36 font-bold"
               >Account Type :</label
-            ><select
-              v-model="form.type"
-              class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
-              label="type"
-              placeholder="Enter type"
             >
-              <option v-for="type in types" :key="type.id" :value="type.id">
-                {{ type.name }}
-              </option>
-            </select>
+            <input
+              type="text"
+              readonly
+              v-model="form.type"
+              class="
+                pr-2
+                pb-2
+                w-full
+                lg:w-1/4
+                rounded-md
+                placeholder-indigo-300
+              "
+              label="name"
+              placeholder="Enter acc:"
+            />
+            <div v-if="errors.type">{{ errors.type }}</div>
+          </div>
+          <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Group Parent :</label
+            >
+            <input
+              type="text"
+              readonly
+              v-model="form.parent"
+              class="
+                pr-2
+                pb-2
+                w-full
+                lg:w-1/4
+                rounded-md
+                placeholder-indigo-300
+              "
+              label="name"
+              placeholder="Enter acc:"
+            />
             <div v-if="errors.type">{{ errors.type }}</div>
           </div>
           <div
@@ -76,14 +118,14 @@ export default {
   props: {
     errors: Object,
     accountgroup: Object,
-    types: Object,
   },
 
   data() {
     return {
       form: this.$inertia.form({
-        name: this.accountgroup.name,
-        type: this.accountgroup.type_id,
+        name: this.accountgroup[0].name,
+        type: this.accountgroup[0].type_id,
+        parent: this.accountgroup[0].parent_id,
       }),
     };
   },
@@ -91,7 +133,7 @@ export default {
   methods: {
     submit() {
       this.$inertia.put(
-        route("accountgroups.update", this.accountgroup.id),
+        route("accountgroups.update", this.accountgroup[0].id),
         this.form
       );
     },

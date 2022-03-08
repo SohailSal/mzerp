@@ -46,6 +46,13 @@ Route::get('/', function () {
     ]);
 });
 
+Route::post('accountgroups/create', [AccountGroupController::class, 'account_type_ch'])
+    ->name('account_type_ch');
+
+Route::post('accountgroups/creates', [AccountGroupController::class, 'account_group_ch'])
+    ->name('account_group_ch')
+    ->middleware('auth');
+
 Route::get('reports', [ReportController::class, 'index'])
     ->name('reports')
     ->middleware('auth');
@@ -123,6 +130,10 @@ Route::get('accountgroups', [AccountGroupController::class, 'index'])
     ->middleware('auth');
 
 Route::get('accountgroups/create', [AccountGroupController::class, 'create'])
+    ->name('accountgroups.create')
+    ->middleware('auth');
+
+Route::post('accountgroups/create', [AccountGroupController::class, 'create'])
     ->name('accountgroups.create')
     ->middleware('auth');
 

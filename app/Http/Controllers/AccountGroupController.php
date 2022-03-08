@@ -6,16 +6,17 @@ use App\Models\Account;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use App\Models\AccountGroup;
+use App\Models\AccountType;
 use App\Models\Company;
 use Database\Seeders\AccountSeeder;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request as Req;
 
 class AccountGroupController extends Controller
 {
     public function index()
     {
-
         //Validating request
         request()->validate([
             'direction' => ['in:asc,desc'],
@@ -97,24 +98,38 @@ class AccountGroupController extends Controller
     //     return Redirect::back()->with('success', 'Account Group deleted.');
     // }
 
-    public function create()
+    public function create(Req $request)
     {
+        if($request->type_id)
+        {
+            $first = \App\Models\AccountType::where('id', $request->type_id)->first();
+            $name = $request->name;
+        }
+        else{
+            $name = null;
+            $first = \App\Models\AccountType::all('id', 'name')->first();
+        }
         $types = \App\Models\AccountType::all()->map->only('id', 'name');
-        $first = \App\Models\AccountType::all('id', 'name')->first();
+        $data = AccountGroup::where('type_id', $first->id)->tree()->get()->toTree();
 
         return Inertia::render('AccountGroups/Create', [
-            'types' => $types, 'first' => $first,
+            'types' => $types,
+            'first' => $first,
+            'data' => $data,
+            'name' => $name,
         ]);
     }
 
-    public function store()
+    public function store(Req $request)
     {
         Request::validate([
-            'type' => ['required'],
+            'type_id' => ['required'],
             'name' => ['required'],
+            'parent_id' => [],
         ]);
         AccountGroup::create([
-            'type_id' => Request::input('type'),
+            'type_id' => Request::input('type_id'),
+            'parent_id' => Request::input('parent_id'),
             'name' => Request::input('name'),
             'company_id' => session('company_id'),
         ]);
@@ -128,27 +143,36 @@ class AccountGroupController extends Controller
 
     public function edit(AccountGroup $accountgroup)
     {
-        $types = \App\Models\AccountType::all()->map->only('id', 'name');
+        $accountgroup = AccountGroup::
+            where('id', $accountgroup->id)->get()
+            ->map(
+                function ($accountgroup) {
+                    return
+                        [
+                            'id' => $accountgroup->id,
+                            'type_id' => $accountgroup->accountType->name,
+                            // 'parent_id' => $accountgroup->parent_id,
+                            'parent_id' => $accountgroup->parent_id ? $accountgroup->accountGroup->name : null,
+                            'name' => $accountgroup->name,
+                            'company_id' => session('company_id'),
+                            'delete' => Account::where('group_id', $accountgroup->id)->first() ? false : true,
+                        ];
+                }
+            );
         return Inertia::render('AccountGroups/Edit', [
-            'accountgroup' => [
-                'id' => $accountgroup->id,
-                'type_id' => $accountgroup->type_id,
-                'name' => $accountgroup->name,
-                'company_id' => session('company_id'),
-            ],
-            'types' => $types,
+            'accountgroup' => $accountgroup,
         ]);
     }
 
     public function update(AccountGroup $accountgroup)
     {
         Request::validate([
-            'type' => ['required'],
+            // 'type' => ['required'],
             'name' => ['required'],
         ]);
-        $accountgroup->type_id = Request::input('type');
+        // $accountgroup->type_id = Request::input('type');
+        // $accountgroup->company_id = session('company_id');
         $accountgroup->name = Request::input('name');
-        $accountgroup->company_id = session('company_id');
         $accountgroup->save();
 
         return Redirect::route('accountgroups')->with('success', 'Account Group updated.');

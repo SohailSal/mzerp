@@ -16,6 +16,7 @@
             <input
               type="text"
               v-model="form.name"
+              required
               class="
                 pr-2
                 pb-2
@@ -27,14 +28,30 @@
               label="name"
               placeholder="Group name:"
             />
-            <div v-if="errors.name">{{ errors.name }}</div>
+            <div
+              class="
+                ml-2
+                bg-red-100
+                border border-red-400
+                text-red-700
+                px-4
+                py-2
+                rounded
+                relative
+              "
+              role="alert"
+              v-if="errors.name"
+            >
+              {{ errors.name }}
+            </div>
           </div>
           <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
             <label class="my-2 mr-8 text-right w-36 font-bold"
               >Account Type :</label
             >
             <select
-              v-model="form.type"
+              v-model="form.type_id"
+              @change="account_type_ch"
               class="pr-2 pb-2 w-full lg:w-1/4 rounded-md"
               label="type"
               placeholder="Enter type"
@@ -43,7 +60,21 @@
                 {{ type.name }}
               </option>
             </select>
-            <div v-if="errors.type">{{ errors.type }}</div>
+            <div v-if="errors.type_id">{{ errors.type_id }}</div>
+          </div>
+          <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Account Group :</label
+            >
+            <treeselect
+              v-model="form.parent_id"
+              max-height="150"
+              :multiple="false"
+              :options="data"
+              :normalizer="normalizer"
+              v-on:select="treeChange"
+              style="max-width: 300px"
+            />
           </div>
 
           <div
@@ -71,26 +102,57 @@
   </app-layout>
 </template>
 
+
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import { useForm } from "@inertiajs/inertia-vue3";
-
+import Treeselect from "vue3-treeselect";
+import "vue3-treeselect/dist/vue3-treeselect.css";
 export default {
   components: {
     AppLayout,
+    Treeselect,
   },
   props: {
     errors: Object,
     types: Object,
     first: Object,
+    name: String,
+    data: Array,
   },
   setup(props) {
     const form = useForm({
-      name: null,
-      type: props.first.id,
+      name: props.name,
+      type_id: props.first.id,
+      parent_id: null,
     });
-
     return { form };
+  },
+
+  data() {
+    return {
+      isError: null,
+      // form: this.$inertia.form({
+      //   name: this.name,
+      //   type_id: this.first.id,
+      //   parent_id: null,
+      // }),
+      // options: this.data,
+      normalizer(node) {
+        return {
+          label: node.name,
+        };
+      },
+    };
+  },
+  methods: {
+    treeChange(node, instanceId) {
+      this.form.parent_id = node.id;
+    },
+    account_type_ch() {
+      console.log(this.form.type_id + "------" + this.form.name);
+      this.$inertia.post(route("accountgroups.create"), this.form);
+    },
   },
 };
 </script>
