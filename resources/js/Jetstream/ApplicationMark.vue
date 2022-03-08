@@ -6,6 +6,7 @@
     version="1.1"
     viewBox="0 0 190 33.611"
     xmlns="http://www.w3.org/2000/svg"
+    class="block h-9 w-auto"
   >
     <g id="layer1" transform="translate(-8.6366 -101.9)">
       <rect
@@ -32,7 +33,7 @@
       >
         <tspan
           id="tspan835"
-          x="15.38962"
+          x="7.38962"
           y="130.41719"
           font-family="sans-serif"
           font-size="24.976px"
@@ -65,7 +66,7 @@
       >
         <tspan
           id="tspan835-5"
-          x="34.55349"
+          x="29.55349"
           y="130.41719"
           font-family="sans-serif"
           font-size="24.976px"
