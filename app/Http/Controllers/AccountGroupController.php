@@ -17,7 +17,6 @@ class AccountGroupController extends Controller
 {
     public function index()
     {
-
         //Validating request
         request()->validate([
             'direction' => ['in:asc,desc'],
@@ -101,16 +100,14 @@ class AccountGroupController extends Controller
 
     public function create(Req $request)
     {
-        
         if($request->type_id)
         {
             $first = \App\Models\AccountType::where('id', $request->type_id)->first();
             $name = $request->name;
-        }else{
+        }
+        else{
             $name = null;
             $first = \App\Models\AccountType::all('id', 'name')->first();
-            // $account_groups[0] = \App\Models\AccountGroup::where('type_id', $first->id)->get();
-            // $account_group[0] = \App\Models\AccountGroup::where('type_id', $first->id)->first();
         }
         $types = \App\Models\AccountType::all()->map->only('id', 'name');
         $data = AccountGroup::where('type_id', $first->id)->tree()->get()->toTree();
@@ -128,6 +125,7 @@ class AccountGroupController extends Controller
         Request::validate([
             'type_id' => ['required'],
             'name' => ['required'],
+            'parent_id' => [],
         ]);
         AccountGroup::create([
             'type_id' => Request::input('type_id'),
@@ -145,27 +143,36 @@ class AccountGroupController extends Controller
 
     public function edit(AccountGroup $accountgroup)
     {
-        $types = \App\Models\AccountType::all()->map->only('id', 'name');
+        $accountgroup = AccountGroup::
+            where('id', $accountgroup->id)->get()
+            ->map(
+                function ($accountgroup) {
+                    return
+                        [
+                            'id' => $accountgroup->id,
+                            'type_id' => $accountgroup->accountType->name,
+                            // 'parent_id' => $accountgroup->parent_id,
+                            'parent_id' => $accountgroup->parent_id ? $accountgroup->accountGroup->name : null,
+                            'name' => $accountgroup->name,
+                            'company_id' => session('company_id'),
+                            'delete' => Account::where('group_id', $accountgroup->id)->first() ? false : true,
+                        ];
+                }
+            );
         return Inertia::render('AccountGroups/Edit', [
-            'accountgroup' => [
-                'id' => $accountgroup->id,
-                'type_id' => $accountgroup->type_id,
-                'name' => $accountgroup->name,
-                'company_id' => session('company_id'),
-            ],
-            'types' => $types,
+            'accountgroup' => $accountgroup,
         ]);
     }
 
     public function update(AccountGroup $accountgroup)
     {
         Request::validate([
-            'type' => ['required'],
+            // 'type' => ['required'],
             'name' => ['required'],
         ]);
-        $accountgroup->type_id = Request::input('type');
+        // $accountgroup->type_id = Request::input('type');
+        // $accountgroup->company_id = session('company_id');
         $accountgroup->name = Request::input('name');
-        $accountgroup->company_id = session('company_id');
         $accountgroup->save();
 
         return Redirect::route('accountgroups')->with('success', 'Account Group updated.');
@@ -175,86 +182,5 @@ class AccountGroupController extends Controller
     {
         $accountgroup->delete();
         return Redirect::back()->with('success', 'Account Group deleted.');
-    }
-
-
-    public function account_type_ch(Req $request)
-    {
-        dd($request);
-        $accountgroups[0] =  AccountGroup::where('type_id', $request->type)->get();
-        $accountgroup[0] =  AccountGroup::where('type_id', $request->type)->first();
-    
-        $types = AccountType::all()->map->only('id', 'name');
-        $first = AccountType::where('id', $request->type)->first();
-
-
-        return Inertia::render('AccountGroups/Create', [
-            'types' => $types, 'first' => $first,
-            'name' => $request->name,
-            'account_groups' => $accountgroups,
-            'account_group' => $accountgroup,
-        ]);
-    }
-    public function account_group_ch(Req $request)
-    {
-        $types = AccountType::all()->map->only('id', 'name');
-        $first = AccountType::where('id', $request->type)->first();
-
-        
-        $accountgroup[0] = AccountGroup::where('id', $request->acc_groups[0]['acc_group'])->first();
-        // $accountgroups[0] = AccountGroup::where('type_id', $request->type)->where('parent_id', 0)->get();
-        $accountgroups[0] = AccountGroup::where('type_id', $request->type)->where('parent_id', 0)->get()
-                ->map(function ($acc_grp) {
-                    return [
-                        'id' => $acc_grp->id,
-                        'name' => $acc_grp->name,
-                        'type_id' => $acc_grp->type_id,
-                        'accountgroups' => $this->accGroups($acc_grp->id),
-                     ];
-                });
-        // dd($accountgroups);
-
-        
-        $types = AccountType::all()->map->only('id', 'name');
-        $first = AccountType::where('id', $request->type)->first();
-
-        $accountgroups[0] = AccountGroup::where('type_id', $request->type)->get();
-        $accountgroup[0] = AccountGroup::where('id', $request->acc_groups[0]['acc_group'])->first();
-        
-        for ($i = 0; $i < count($request->acc_groups); $i++) {
-            if(AccountGroup::where('parent_id', $request->acc_groups[$i]['acc_group'])->first())
-            {
-                $accountgroups[$i + 1] =  \App\Models\AccountGroup::where('parent_id', $request->acc_groups[$i]['acc_group'])->get();
-                $accountgroup[$i + 1] =  \App\Models\AccountGroup::where('parent_id', $request->acc_groups[$i]['acc_group'])->first();
-            }
-        }
-        
-        return Inertia::render('AccountGroups/Create', [
-            'types' => $types,
-            'first' => $first,
-            'account_groups' => $accountgroups,
-            'account_group' => $accountgroup,
-            'name' => $request->name,
-        ]);
-    }
-
-    //To create a herarchi of accountgroups ---- recursive function
-    public function accGroups(int $acc_grp_id)
-    {
-        if(AccountGroup::where('parent_id', $acc_grp_id)->get())
-        {
-            return AccountGroup::where('parent_id', $acc_grp_id)->get()
-                ->map(function ($acc_grp) {
-                return [
-                    'id' => $acc_grp->id,
-                    'name' => $acc_grp->name,
-                    'type_id' => $acc_grp->type_id,
-                    // dd(count(AccountGroup::where('parent_id', $acc_grp->id)->get())),
-                    'accountgroups' => (count(AccountGroup::where('parent_id', $acc_grp->id)->get()) >> 0) ? $this->accGroups($acc_grp->id) : null,
-                ];
-            });
-        }else {
-            return null;
-        }
     }
 }

@@ -132,7 +132,8 @@ Route::get('accountgroups', [AccountGroupController::class, 'index'])
 Route::get('accountgroups/create', [AccountGroupController::class, 'create'])
     ->name('accountgroups.create')
     ->middleware('auth');
-    Route::post('accountgroups/create', [AccountGroupController::class, 'create'])
+
+Route::post('accountgroups/create', [AccountGroupController::class, 'create'])
     ->name('accountgroups.create')
     ->middleware('auth');
 

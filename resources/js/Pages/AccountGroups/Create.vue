@@ -59,7 +59,7 @@
                 {{ type.name }}
               </option>
             </select>
-            <div v-if="errors.type">{{ errors.type }}</div>
+            <div v-if="errors.type_id">{{ errors.type_id }}</div>
           </div>
           <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
             <label class="my-2 mr-8 text-right w-36 font-bold"
@@ -141,6 +141,7 @@ export default {
       this.form.parent_id = node.id;
     },
     account_type_ch() {
+      console.log(this.form.type_id + "------" + this.form.name);
       this.$inertia.post(route("accountgroups.create"), this.form);
     },
   },
