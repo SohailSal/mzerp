@@ -77,8 +77,6 @@
         ->tree()
         ->get()
         ->ToTree();
-    // ->get();
-    // dd($grps1[0]->children);
     $gbalance1 = [];
     $gi = 0;
     foreach ($grps1 as $gr) {
@@ -86,9 +84,6 @@
         $balance = 0;
         $lastbalance = 0;
 
-        // foreach ($group->children as $key => $value) {
-        //     dd($value);
-        // }
         foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
@@ -109,9 +104,6 @@
             $balance = 0;
             $lastbalance = 0;
 
-            // foreach ($group->children as $key => $value) {
-            //     dd($value);
-            // }
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
@@ -126,22 +118,61 @@
                     $lastbalance = $balance;
                 }
             }
-            $gbalance1[$gi][$gite1++] = $balance;
+            $gbalance1[$gi][$gite1] = $balance;
+            if(count($group->children) > 0)
+            {
+                $gbalance1[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance);
+            }else{
+                $gite1++;
+            }
         }
         $gi++;
     }
-    // dd($gbalance1);
 
-    $id2 = \App\Models\AccountType::where('name', 'Liabilities')->first()->id;
+    // dd($gbalance1);
+    // =================== Recursive function ============================ 
+    function recurse($gr, $year, $balance, $lastbalance)
+    {
+        foreach ($gr->children as $group) {
+            
+            foreach ($group->accounts as $account) {
+                $entries = Illuminate\Support\Facades\DB::table('documents')
+                    ->join('entries', 'documents.id', '=', 'entries.document_id')
+                    ->whereDate('documents.date', '<=', $year->end)
+                    ->where('documents.company_id', session('company_id'))
+                    ->where('entries.account_id', '=', $account->id)
+                    ->select('entries.debit', 'entries.credit')
+                    ->get();
+
+                    // dd($entries);
+                foreach ($entries as $entry) {
+                    $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                    $lastbalance = $balance;
+                }
+            }
+            if(count($group->children) > 0)
+            {
+                recurse($group, $year, $balance, $lastbalance);
+            }
+        }
+        return $balance;
+    }
+    // ===============================================
+
+       $id2 = \App\Models\AccountType::where('name', 'Liabilities')->first()->id;
     $grps2 = \App\Models\AccountGroup::where('company_id', session('company_id'))
         ->where('type_id', $id2)
-        ->get();
+        ->tree()
+        ->get()
+        ->ToTree();
     $gbalance2 = [];
-    $gite2 = 0;
-    foreach ($grps2 as $group) {
+    $gi = 0;
+    foreach ($grps2 as $gr) {
+        $gite1 = 0;
         $balance = 0;
         $lastbalance = 0;
-        foreach ($group->accounts as $account) {
+
+        foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
                 ->whereDate('documents.date', '<=', $year->end)
@@ -155,7 +186,35 @@
                 $lastbalance = $balance;
             }
         }
-        $gbalance2[$gite2++] = $balance;
+        $gbalance22[$gi] = $balance;
+
+        foreach ($gr->children as $group) {
+            $balance = 0;
+            $lastbalance = 0;
+
+            foreach ($group->accounts as $account) {
+                $entries = Illuminate\Support\Facades\DB::table('documents')
+                    ->join('entries', 'documents.id', '=', 'entries.document_id')
+                    ->whereDate('documents.date', '<=', $year->end)
+                    ->where('documents.company_id', session('company_id'))
+                    ->where('entries.account_id', '=', $account->id)
+                    ->select('entries.debit', 'entries.credit')
+                    ->get();
+
+                foreach ($entries as $entry) {
+                    $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                    $lastbalance = $balance;
+                }
+            }
+            $gbalance2[$gi][$gite1] = $balance;
+            if(count($group->children) > 0)
+            {
+                $gbalance2[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance);
+            }else{
+                $gite1++;
+            }
+        }
+        $gi++;
     }
 
     $id3 = \App\Models\AccountType::where('name', 'Capital')->first()->id;
@@ -249,10 +308,10 @@
         <table width="100%" style="border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th align="left" style="width: 50%;">
+                    <th style="width: 50%;align:left">
                         <h3>Balance Sheet</h3>
                     </th>
-                    <th colspan='2' align="right" style="width: 30%;">
+                    <th colspan='2' style="width: 30%;align:right">
                         <h5>Generated on: {{ $dt }}</h5>
                     </th>
                 </tr>
@@ -271,17 +330,16 @@
                     <td><strong>ASSETS</strong></td>
                     <td></td>
                 </tr>
-                {{ $b_total_index = 0 }}
+                <?php
+                 $b_total_index = 0; $gbalance_total = [];
+                ?>
                 @foreach ($grps1 as $key => $group)
-                    @if (count($group->children) == 0)
-                        @continue
-                    @endif
                     <tr>
                         <td style="width: 15%; padding-left:10px">
                             <strong> {{ $group->name }}</strong>
                         </td>
-                        <td style=" width: 10%;" align="right">
-                            {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance11[$key], 'Rs.')) }}
+                        <td style="width:10%;" align="right">
+                            {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance11[$key], 'Rs.'))) }}
                         </td>
                     </tr>
                     <?php $gbalance_total[$b_total_index++] = $gbalance11[$key]; ?>
@@ -291,11 +349,11 @@
                             @continue
                         @endif
                         <tr>
-                            <td style="width: 15%; padding-left:10px"">
+                            <td style="width: 15%; padding-left:10px">
                                 {{ $value->name }}
                             </td>
-                            <td style=" width: 10%;" align="right">
-                                {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance1[$key][$loop->index], 'Rs.')) }}
+                            <td style="width: 10%;" align="right">
+                                {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance1[$key][$loop->index], 'Rs.'))) }}
                             </td>
                         </tr>
                         <?php $gbalance_total[$b_total_index++] = $gbalance1[$key][$loop->index]; ?>
@@ -306,8 +364,7 @@
                         Assets - Total
                     </td>
                     <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
-                        {{-- {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance1), 'Rs.')) }} --}}
-                        {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total), 'Rs.')) }}
+                        {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total), 'Rs.'))) }}
                     </td>
                 </tr>
 
@@ -315,19 +372,45 @@
                     <td><strong>LIABILITIES</strong></td>
                     <td></td>
                 </tr>
-                @foreach ($grps2 as $group)
-                    @if ($gbalance2[$loop->index] == 0)
+                {{ $b_total_index = 0 }}
+                @foreach ($grps2 as $key => $group)
+                    @if (count($group->children) == 0)
                         @continue
                     @endif
                     <tr>
-                        <td style="width: 15%;">
-                            {{ $group->name }}
+                        <td style="width: 15%; padding-left:10px">
+                            <strong> {{ $group->name }}</strong>
                         </td>
-                        <td style="width: 10%;" align="right">
-                            {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(abs($gbalance2[$loop->index]), 'Rs.')) }}
+                        <td style="width:10%;" align="right">
+                            {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance22[$key], 'Rs.'))) }}
                         </td>
                     </tr>
+                    <?php $gbalance_total[$b_total_index++] = $gbalance22[$key]; ?>
+
+                    @foreach ($group->children as $value)
+                        @if ($gbalance2[$key][$loop->index] == 0)
+                            @continue
+                        @endif
+                        <tr>
+                            <td style="width: 15%; padding-left:10px">
+                                {{ $value->name }}
+                            </td>
+                            <td style="width: 10%;" align="right">
+                                {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance2[$key][$loop->index], 'Rs.'))) }}
+                            </td>
+                        </tr>
+                        <?php $gbalance_total[$b_total_index++] = $gbalance2[$key][$loop->index]; ?>
+                    @endforeach
                 @endforeach
+                <tr>
+                    <td style="width: 15%;">
+                        Liabilities - Total
+                    </td>
+                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
+                        {{-- {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance1), 'Rs.')) }} --}}
+                        {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total), 'Rs.'))) }}
+                    </td>
+                </tr>
 
                 <tr>
                     <td><strong>CAPITAL</strong></td>
