@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App;
 use App\Models\Account;
+use App\Models\AccountGroup;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request as Req;
 use Illuminate\Support\Facades\Request;
@@ -255,8 +256,9 @@ class ReportController extends Controller
     // FOR trialbalance GENERATION -------------------------- --------
     public function trialbalance()
     {
-        $data['accounts'] = Account::where('company_id', session('company_id'))->get();
-        $data['entry_obj'] = Entry::all()->where('company_id', session('company_id'));
+        // $data['accounts'] = Account::where('company_id', session('company_id'))->get();
+        $data['account_groups'] = AccountGroup::where('company_id', session('company_id'))->get();
+        $data['entry_obj'] = Entry::where('company_id', session('company_id'))->get();
         $tb = App::make('dompdf.wrapper');
         // $pdf->loadView('pdf', compact('a'));
         $tb->loadView('trial', $data);
