@@ -119,10 +119,9 @@
                 }
             }
             $gbalance1[$gi][$gite1] = $balance;
-            if(count($group->children) > 0)
-            {
+            if (count($group->children) > 0) {
                 $gbalance1[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance);
-            }else{
+            } else {
                 $gite1++;
             }
         }
@@ -130,11 +129,10 @@
     }
 
     // dd($gbalance1);
-    // =================== Recursive function ============================ 
+    // =================== Recursive function ============================
     function recurse($gr, $year, $balance, $lastbalance)
     {
         foreach ($gr->children as $group) {
-            
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
@@ -144,14 +142,13 @@
                     ->select('entries.debit', 'entries.credit')
                     ->get();
 
-                    // dd($entries);
+                // dd($entries);
                 foreach ($entries as $entry) {
                     $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
                     $lastbalance = $balance;
                 }
             }
-            if(count($group->children) > 0)
-            {
+            if (count($group->children) > 0) {
                 recurse($group, $year, $balance, $lastbalance);
             }
         }
@@ -159,7 +156,7 @@
     }
     // ===============================================
 
-       $id2 = \App\Models\AccountType::where('name', 'Liabilities')->first()->id;
+    $id2 = \App\Models\AccountType::where('name', 'Liabilities')->first()->id;
     $grps2 = \App\Models\AccountGroup::where('company_id', session('company_id'))
         ->where('type_id', $id2)
         ->tree()
@@ -182,7 +179,7 @@
                 ->get();
 
             foreach ($entries as $entry) {
-                $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                $balance = $lastbalance + floatval($entry->credit) - floatval($entry->debit);
                 $lastbalance = $balance;
             }
         }
@@ -202,15 +199,14 @@
                     ->get();
 
                 foreach ($entries as $entry) {
-                    $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                    $balance = $lastbalance + floatval($entry->credit) - floatval($entry->debit);
                     $lastbalance = $balance;
                 }
             }
             $gbalance2[$gi][$gite1] = $balance;
-            if(count($group->children) > 0)
-            {
+            if (count($group->children) > 0) {
                 $gbalance2[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance);
-            }else{
+            } else {
                 $gite1++;
             }
         }
@@ -220,13 +216,17 @@
     $id3 = \App\Models\AccountType::where('name', 'Capital')->first()->id;
     $grps3 = \App\Models\AccountGroup::where('company_id', session('company_id'))
         ->where('type_id', $id3)
-        ->get();
+        ->tree()
+        ->get()
+        ->ToTree();
     $gbalance3 = [];
-    $gite3 = 0;
-    foreach ($grps3 as $group) {
+    $gi = 0;
+    foreach ($grps3 as $gr) {
+        $gite3 = 0;
         $balance = 0;
         $lastbalance = 0;
-        foreach ($group->accounts as $account) {
+
+        foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
                 ->whereDate('documents.date', '<=', $year->end)
@@ -236,23 +236,56 @@
                 ->get();
 
             foreach ($entries as $entry) {
-                $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                $balance = $lastbalance + floatval($entry->credit) - floatval($entry->debit);
                 $lastbalance = $balance;
             }
         }
-        $gbalance3[$gite3++] = $balance;
+        $gbalance33[$gi] = $balance;
+
+        foreach ($gr->children as $group) {
+            $balance = 0;
+            $lastbalance = 0;
+
+            foreach ($group->accounts as $account) {
+                $entries = Illuminate\Support\Facades\DB::table('documents')
+                    ->join('entries', 'documents.id', '=', 'entries.document_id')
+                    ->whereDate('documents.date', '<=', $year->end)
+                    ->where('documents.company_id', session('company_id'))
+                    ->where('entries.account_id', '=', $account->id)
+                    ->select('entries.debit', 'entries.credit')
+                    ->get();
+
+                foreach ($entries as $entry) {
+                    $balance = $lastbalance + floatval($entry->credit) - floatval($entry->debit);
+                    $lastbalance = $balance;
+                }
+            }
+            $gbalance3[$gi][$gite3] = $balance;
+            if (count($group->children) > 0) {
+                $gbalance3[$gi][$gite3++] = recurse($group, $year, $balance, $lastbalance);
+            } else {
+                $gite3++;
+            }
+        }
+        $gi++;
     }
+    // dd($gbalance2);
 
     $id4 = \App\Models\AccountType::where('name', 'Revenue')->first()->id;
     $grps4 = \App\Models\AccountGroup::where('company_id', session('company_id'))
         ->where('type_id', $id4)
-        ->get();
+        ->tree()
+        ->get()
+        ->ToTree();
     $gbalance4 = [];
-    $gite4 = 0;
-    foreach ($grps4 as $group) {
+    $gi = 0;
+    $balance4_inc = 0;
+    foreach ($grps4 as $gr) {
+        $gite4 = 0;
         $balance = 0;
         $lastbalance = 0;
-        foreach ($group->accounts as $account) {
+
+        foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
                 ->whereDate('documents.date', '<=', $year->end)
@@ -261,26 +294,62 @@
                 ->select('entries.debit', 'entries.credit')
                 ->get();
 
-            $cnt = count($entries);
             foreach ($entries as $entry) {
-                $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                $balance = $lastbalance + floatval($entry->credit) - floatval($entry->debit);
                 $lastbalance = $balance;
             }
         }
-        $gbalance4[$gite4++] = $balance;
+        $gbalance44[$gi] = $balance;
+
+        $balance_total4[$balance4_inc++] = $balance;
+
+        // dd($gbalance44);
+        foreach ($gr->children as $group) {
+            $balance = 0;
+            $lastbalance = 0;
+
+            foreach ($group->accounts as $account) {
+                $entries = Illuminate\Support\Facades\DB::table('documents')
+                    ->join('entries', 'documents.id', '=', 'entries.document_id')
+                    ->whereDate('documents.date', '<=', $year->end)
+                    ->where('documents.company_id', session('company_id'))
+                    ->where('entries.account_id', '=', $account->id)
+                    ->select('entries.debit', 'entries.credit')
+                    ->get();
+
+                foreach ($entries as $entry) {
+                    $balance = $lastbalance + floatval($entry->credit) - floatval($entry->debit);
+                    $lastbalance = $balance;
+                }
+            }
+            $gbalance4[$gi][$gite4] = $balance;
+            $balance_total4[$balance4_inc++] = $balance;
+
+            if (count($group->children) > 0) {
+                $gbalance4[$gi][$gite4++] = recurse($group, $year, $balance, $lastbalance);
+            } else {
+                $gite4++;
+            }
+        }
+        $gi++;
     }
 
     $id5 = \App\Models\AccountType::where('name', 'Expenses')->first()->id;
     $grps5 = \App\Models\AccountGroup::where('company_id', session('company_id'))
         ->where('type_id', $id5)
-        ->get();
+        ->tree()
+        ->get()
+        ->ToTree();
+
     $gbalance5 = [];
-    $gite5 = 0;
-    foreach ($grps5 as $group) {
+    $gi = 0;
+    $balance5_inc = 0;
+
+    foreach ($grps5 as $gr) {
+        $gite5 = 0;
         $balance = 0;
         $lastbalance = 0;
-
-        foreach ($group->accounts as $account) {
+        foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
                 ->whereDate('documents.date', '<=', $year->end)
@@ -289,18 +358,43 @@
                 ->select('entries.debit', 'entries.credit')
                 ->get();
 
-            $cnt = count($entries);
             foreach ($entries as $entry) {
                 $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
                 $lastbalance = $balance;
             }
         }
-        $gbalance5[$gite5++] = $balance;
+        $gbalance55[$gi] = $balance;
+        $balance_total5[$balance5_inc++] = $balance;
+
+        foreach ($gr->children as $group) {
+            $balance = 0;
+            $lastbalance = 0;
+
+            foreach ($group->accounts as $account) {
+                $entries = Illuminate\Support\Facades\DB::table('documents')
+                    ->join('entries', 'documents.id', '=', 'entries.document_id')
+                    ->whereDate('documents.date', '<=', $year->end)
+                    ->where('documents.company_id', session('company_id'))
+                    ->where('entries.account_id', '=', $account->id)
+                    ->select('entries.debit', 'entries.credit')
+                    ->get();
+
+                foreach ($entries as $entry) {
+                    $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                    $lastbalance = $balance;
+                }
+            }
+            $gbalance5[$gi][$gite5] = $balance;
+            $balance_total5[$balance5_inc++] = $balance;
+
+            if (count($group->children) > 0) {
+                $gbalance5[$gi][$gite5++] = recurse($group, $year, $balance, $lastbalance);
+            } else {
+                $gite5++;
+            }
+        }
+        $gi++;
     }
-
-    $profit = array_sum($gbalance4) * -1 - array_sum($gbalance5);
-    $equity = abs(array_sum($gbalance2)) + abs(array_sum($gbalance3)) + $profit;
-
     ?>
 
 
@@ -331,7 +425,8 @@
                     <td></td>
                 </tr>
                 <?php
-                 $b_total_index = 0; $gbalance_total = [];
+                $b_total_index = 0;
+                $gbalance_total = [];
                 ?>
                 @foreach ($grps1 as $key => $group)
                     <tr>
@@ -339,7 +434,7 @@
                             <strong> {{ $group->name }}</strong>
                         </td>
                         <td style="width:10%;" align="right">
-                            {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance11[$key], 'Rs.'))) }}
+                            {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance11[$key], 'Rs.')) }}
                         </td>
                     </tr>
                     <?php $gbalance_total[$b_total_index++] = $gbalance11[$key]; ?>
@@ -353,7 +448,7 @@
                                 {{ $value->name }}
                             </td>
                             <td style="width: 10%;" align="right">
-                                {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance1[$key][$loop->index], 'Rs.'))) }}
+                                {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance1[$key][$loop->index], 'Rs.')) }}
                             </td>
                         </tr>
                         <?php $gbalance_total[$b_total_index++] = $gbalance1[$key][$loop->index]; ?>
@@ -361,10 +456,11 @@
                 @endforeach
                 <tr>
                     <td style="width: 15%;">
-                        Assets - Total
+                        <strong> Assets - Total</strong>
                     </td>
                     <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
-                        {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total), 'Rs.'))) }}
+                        <strong>
+                            {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total), 'Rs.')) }}</strong>
                     </td>
                 </tr>
 
@@ -372,7 +468,10 @@
                     <td><strong>LIABILITIES</strong></td>
                     <td></td>
                 </tr>
-                {{ $b_total_index = 0 }}
+                <?php
+
+                $gbalance_total2 = [];
+                ?>
                 @foreach ($grps2 as $key => $group)
                     @if (count($group->children) == 0)
                         @continue
@@ -382,10 +481,10 @@
                             <strong> {{ $group->name }}</strong>
                         </td>
                         <td style="width:10%;" align="right">
-                            {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance22[$key], 'Rs.'))) }}
+                            {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance22[$key], 'Rs.')) }}
                         </td>
                     </tr>
-                    <?php $gbalance_total[$b_total_index++] = $gbalance22[$key]; ?>
+                    <?php $gbalance_total2[$b_total_index++] = $gbalance22[$key]; ?>
 
                     @foreach ($group->children as $value)
                         @if ($gbalance2[$key][$loop->index] == 0)
@@ -396,10 +495,10 @@
                                 {{ $value->name }}
                             </td>
                             <td style="width: 10%;" align="right">
-                                {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance2[$key][$loop->index], 'Rs.'))) }}
+                                {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance2[$key][$loop->index], 'Rs.')) }}
                             </td>
                         </tr>
-                        <?php $gbalance_total[$b_total_index++] = $gbalance2[$key][$loop->index]; ?>
+                        <?php $gbalance_total2[$b_total_index++] = $gbalance2[$key][$loop->index]; ?>
                     @endforeach
                 @endforeach
                 <tr>
@@ -408,27 +507,65 @@
                     </td>
                     <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
                         {{-- {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance1), 'Rs.')) }} --}}
-                        {{ abs(str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total), 'Rs.'))) }}
+                        {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total2), 'Rs.')) }}
                     </td>
                 </tr>
+                <?php
+                $b_total_index = 0;
+                $gbalance_total3 = [];
+                ?>
 
                 <tr>
                     <td><strong>CAPITAL</strong></td>
                     <td></td>
                 </tr>
-                @foreach ($grps3 as $group)
-                    @if ($gbalance3[$loop->index] == 0)
+                {{ $b_total_index = 0 }}
+                @foreach ($grps3 as $key => $group)
+                    @if (count($group->children) == 0)
                         @continue
                     @endif
                     <tr>
-                        <td style="width: 15%;">
-                            {{ $group->name }}
+                        <td style="width: 15%; padding-left:10px">
+                            <strong> {{ $group->name }}</strong>
                         </td>
-                        <td style="width: 10%; " align="right">
-                            {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(abs($gbalance3[$loop->index]), 'Rs.')) }}
+                        <td style="width:10%;" align="right">
+                            {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance33[$key], 'Rs.')) }}
                         </td>
                     </tr>
+                    <?php $gbalance_total3[$b_total_index++] = $gbalance33[$key]; ?>
+
+                    @foreach ($group->children as $value)
+                        @if ($gbalance3[$key][$loop->index] == 0)
+                            @continue
+                        @endif
+                        <tr>
+                            <td style="width: 15%; padding-left:10px">
+                                {{ $value->name }}
+                            </td>
+                            <td style="width: 10%;" align="right">
+                                {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($gbalance3[$key][$loop->index], 'Rs.')) }}
+                            </td>
+                        </tr>
+                        <?php $gbalance_total3[$b_total_index++] = $gbalance3[$key][$loop->index]; ?>
+                    @endforeach
                 @endforeach
+                <tr>
+                    <td style="width: 15%;">
+                        Capital - Total
+                    </td>
+                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
+                        {{-- {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance1), 'Rs.')) }} --}}
+                        {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total3), 'Rs.')) }}
+                    </td>
+                </tr>
+
+                <?php
+
+                $profit = array_sum($balance_total4) - array_sum($balance_total5);
+
+                $equity = array_sum($gbalance_total2) + array_sum($gbalance_total3) + $profit;
+                // dd($equity);
+                ?>
                 @if ($profit != 0)
                     <tr>
                         <td style="width: 15%;">
@@ -441,10 +578,10 @@
                 @endif
                 <tr>
                     <td style="width: 15%;">
-                        Equity - Total
+                        <strong> Equity - Total</strong>
                     </td>
                     <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
-                        {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($equity, 'Rs.')) }}
+                        <strong>{{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($equity, 'Rs.')) }}</strong>
                     </td>
                 </tr>
 
@@ -454,17 +591,26 @@
     <br />
     <script type="text/php">
         if (isset($pdf)) {
-                    $x = 500;
-                    $y = 820;
-                    $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
-                    $font = null;
-                    $size = 10;
-                    $word_space = 0.0;  //  default
-                    $char_space = 0.0;  //  default
-                    $angle = 0.0;   //  default
-                    $pdf->page_text($x, $y, $text, $font, $size, $word_space, $char_space, $angle);
-                }
-        </script>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $x = 500;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $y = 820;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $font = null;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $size = 10;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $word_space = 0.0;  //  default
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $char_space = 0.0;  //  default
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $angle = 0.0;   //  default
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $pdf->page_text($x, $y, $text, $font, $size, $word_space, $char_space, $angle);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+
+
+
+
+
+
+
+
+
+                                                                                                        </script>
 </body>
 
 </html>
