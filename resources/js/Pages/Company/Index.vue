@@ -293,7 +293,7 @@
                   <!-- v-if="can.edit" -->
                   <span>Edit</span>
                 </button>
-                <button
+                <!-- <button
                   class="
                     border
                     bg-red-400
@@ -304,12 +304,10 @@
                     hover:text-white hover:bg-red-500
                   "
                   @click="destroy(item.id)"
-                  v-if="item.deleteyear"
+                  :v-if="item.delete"
                 >
-                  <!-- v-if="!item.years[0]" -->
-                  <!-- v-if="!item.years[0] && can['delete']" -->
                   <span>Delete</span>
-                </button>
+                </button> -->
               </td>
             </tr>
             <tr v-if="balances.data.length === 0">

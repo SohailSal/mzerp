@@ -110,7 +110,7 @@ class AccountGroupController extends Controller
             $first = \App\Models\AccountType::all('id', 'name')->first();
         }
         $types = \App\Models\AccountType::all()->map->only('id', 'name');
-        $data = AccountGroup::where('type_id', $first->id)->tree()->get()->toTree();
+        $data = AccountGroup::where('company_id', session('company_id'))->where('type_id', $first->id)->tree()->get()->toTree();
 
         return Inertia::render('AccountGroups/Create', [
             'types' => $types,
@@ -124,7 +124,7 @@ class AccountGroupController extends Controller
     {
         Request::validate([
             'type_id' => ['required'],
-            'name' => ['required'],
+            'name' => ['required', 'unique:account_groups'],
             'parent_id' => [],
         ]);
         AccountGroup::create([

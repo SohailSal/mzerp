@@ -48,56 +48,6 @@
             </div>
           </div>
 
-          <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-            <label class="my-2 mr-8 text-right w-36 font-bold"
-              >Account Number :</label
-            ><input
-              type="text"
-              v-model="form.number"
-              class="
-                pr-2
-                pb-2
-                w-full
-                lg:w-1/4
-                rounded-md
-                placeholder-indigo-300
-              "
-              label="number"
-              placeholder="Enter number:"
-            />
-            <div v-if="errors.number">{{ errors.number }}</div>
-          </div>
-
-          <!-- <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
-            <label class="my-2 mr-8 text-right w-36 font-bold"
-              >Account Group :</label
-            >
-            <multiselect
-              class="rounded-md border border-black"
-              v-model="form.group"
-              :options="option"
-              placeholder="Select account group"
-              label="name"
-              track-by="id"
-              style="width: 25%"
-            ></multiselect>
-            <div
-              class="
-                ml-2
-                bg-red-100
-                border border-red-400
-                text-red-700
-                px-4
-                py-2
-                rounded
-                relative
-              "
-              role="alert"
-              v-if="errors.group"
-            >
-              {{ errors.group }}
-            </div>
-          </div> -->
           <div class="p-2 mr-2 mb-2 ml-6 flex flex-wrap">
             <label class="my-2 mr-8 text-right w-36 font-bold"
               >Account Group :</label
@@ -172,7 +122,6 @@ export default {
     const form = useForm({
       name: null,
       number: null,
-      // group: props.group_first.id,
       group: props.groups_first,
     });
 

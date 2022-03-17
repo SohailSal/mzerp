@@ -104,7 +104,7 @@
                   hover:bg-gray-600 hover:text-white
                 "
               >
-                <a :href="'pd/' + item.id">Voucher in PDF</a>
+                <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>
               </div>
             </td>
           </tr>

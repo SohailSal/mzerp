@@ -11,6 +11,7 @@ use App\Models\AccountGroup;
 use Inertia\Inertia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {
@@ -100,16 +101,17 @@ class AccountController extends Controller
     {
         Request::validate([
             'name' => ['required'],
-            'number' => ['nullable'],
+            // 'number' => ['nullable'],
             'group' => ['required'],
         ]);
 
-        Account::create([
+        $account = Account::create([
             'name' => Request::input('name'),
-            'number' => Request::input('number'),
+            // 'number' => Request::input('number'),
             'group_id' => Request::input('group'),
             'company_id' => session('company_id'),
         ]);
+        $account->update(['number' => $this->snum($account)]);
 
         return Redirect::route('accounts')->with('success', 'Account created.');
     }
@@ -157,5 +159,33 @@ class AccountController extends Controller
     {
         $account->delete();
         return Redirect::back()->with('success', 'Account deleted.');
+    }
+
+
+
+    // TO generate account number automatically
+    function snum($account)
+    {
+        $ty = $account->accountGroup->accountType;
+        $grs = $ty->accountGroups->where('company_id', session('company_id'));
+        $grindex = 1;
+        $grselindex = 0;
+        $grsel = null;
+        $number = 0;
+        foreach ($grs as $gr) {
+            if ($gr->name == $account->accountGroup->name) {
+                $grselindex = $grindex;
+                $grsel = $gr;
+            }
+            ++$grindex;
+        }
+        if (count($grsel->accounts) == 1) {
+            $number = $ty->id . sprintf("%'.03d", $grselindex) . sprintf("%'.03d", 1);
+        } else {
+            $lastac = Account::orderBy('id', 'desc')->where('company_id', session('company_id'))->where('group_id', $grsel->id)->skip(1)->first()->number;
+            $lastst = Str::substr($lastac, 4, 3);
+            $number = $ty->id . sprintf("%'.03d", $grselindex) . sprintf("%'.03d", ++$lastst);
+        }
+        return $number;
     }
 }
