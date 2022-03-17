@@ -25,7 +25,7 @@
             text-xs text-white
             uppercase
             tracking-widest
-            hover:bg-red-400 hover:text-black
+            hover:bg-gray-700
             active:bg-gray-900
             focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
             transition
