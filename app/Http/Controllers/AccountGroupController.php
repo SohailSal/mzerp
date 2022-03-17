@@ -124,7 +124,7 @@ class AccountGroupController extends Controller
     {
         Request::validate([
             'type_id' => ['required'],
-            'name' => ['required'],
+            'name' => ['required', 'unique:account_groups'],
             'parent_id' => [],
         ]);
         AccountGroup::create([

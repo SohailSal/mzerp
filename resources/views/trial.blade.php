@@ -69,19 +69,20 @@
         ->first();
     $obalance = [];
     $acc_groups = [];
-    $grp_count = 0;
     $acc_count = 0;
-    $oite = 0;
+    $debit = 0;
+            $credit = 0;
     foreach ($account_groups as $key => $account_group) {
         $grp = \App\Models\Account::where('company_id', session('company_id'))
             ->where('group_id', $account_group->id)
             ->first() ? true : false;
-                // dd($grp);
         if ($grp)
         {
             $accounts[$acc_count] = \App\Models\Account::where('company_id', session('company_id'))
                 ->where('group_id', $account_group->id)
                 ->get();
+            $obalance[$acc_count] = [];
+            $oite = 0;
 
             foreach ($accounts[$acc_count] as $account) {
                 $balance = 0;
@@ -104,22 +105,20 @@
                     $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
                     $lastbalance = $balance;
                 }
-                $obalance[$oite++] = $balance;
-                $acc_groups[$grp_count++] = $account_group->name;
+                $obalance[$acc_count][$oite++] = $balance;
+                $acc_groups[$acc_count] = $account_group->name;
             }
-            $debit = 0;
-            $credit = 0;
-            for ($i = 0; $i < count($obalance); $i++) {
-                if ($obalance[$i] > 0) {
-                    $debit = $debit + $obalance[$i];
+
+            for ($i = 0; $i < count($obalance[$acc_count]); $i++) {
+                if ($obalance[$acc_count][$i] > 0) {
+                    $debit = $debit + $obalance[$acc_count][$i];
                 } else {
-                    $credit = $credit + $obalance[$i];
+                    $credit = $credit + $obalance[$acc_count][$i];
                 }
             }
             $acc_count++;
         }
     }
-// dd($obalance, $acc_groups);
     $dt = \Carbon\Carbon::now(new DateTimeZone('Asia/Karachi'))->format('M d, Y - h:m a');
     ?>
 
@@ -162,27 +161,24 @@
                         <td style="width: 10%; border-left: 1pt solid black;border-right: 1pt solid black;" align="right">
                         </td>
                     </tr>
-                    {{-- @dd($accounts, $acc_groups, $obalance); --}}
                     @if(count($accounts) > $key)
-                    @foreach ($accounts[$key] as $account)
-                        @if ($obalance[$key] == 0)
+                    @foreach ($accounts[$key] as $key2 => $account)
+                        @if ($obalance[$key][$key2] == 0)
                             @continue
                         @endif
-                    {{-- @dd($obalance[$loop->index]) --}}
-
                         <tr>
                             <td style="width: 15%;padding-left:10px;">
-                                {{ $account->name }}
+                                <span style="padding: 0 5 0 5">{{ $account->number }}</span> {{ $account->name }}
                             </td>
                             <td style="width: 10%; border-left: 1pt solid black;" align="right">
-                                @if ($obalance[$key] > 0)
-                                    {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($obalance[$key], 'Rs.')) }}
+                                @if ($obalance[$key][$key2] > 0)
+                                    {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($obalance[$key][$key2], 'Rs.')) }}
                                 @endif
                             </td>
                             <td style="width: 10%; border-left: 1pt solid black; border-right: 1pt solid black;"
                                 align="right">
-                                @if ($obalance[$key] < 0)
-                                    {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(abs($obalance[$key]), 'Rs.')) }}
+                                @if ($obalance[$key][$key2] < 0)
+                                    {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(abs($obalance[$key][$key2]), 'Rs.')) }}
                                 @endif
                             </td>
                         </tr>

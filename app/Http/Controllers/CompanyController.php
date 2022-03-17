@@ -35,17 +35,11 @@ class CompanyController extends Controller
             'field' => ['in:name,email']
         ]);
 
-
-        // $query = Company::query();
         $query = auth()->user()->companies()->getQuery()->paginate(10)
             ->withQueryString()
-            // 'data' => Company::paginate(3)->withQueryString()
             ->through(
                 fn ($comp) =>
                 [
-                    //             all()
-                    // ->map(function ($comp) {
-                    //     return [
                     'id' => $comp->id,
                     'name' => $comp->name,
                     'address' => $comp->address,
@@ -54,10 +48,9 @@ class CompanyController extends Controller
                     'phone' => $comp->phone,
                     'fiscal' => $comp->fiscal,
                     'incorp' => $comp->incorp,
-                    'deleteyear' => Year::where('company_id', $comp->id)->first() ? true : false,
+                    'delete' => Year::where('company_id', $comp->id)->first() != null ? true : false,
                 ],
             );
-
 
         if (request('search')) {
             $query->where('name', 'LIKE', '%' . request('search') . '%');
@@ -111,7 +104,7 @@ class CompanyController extends Controller
     public function store()
     {
         Request::validate([
-            'name' => ['required'],
+            'name' => ['required', 'unique:companies'],
             'fiscal' => ['required'],
         ]);
         DB::transaction(function () {
