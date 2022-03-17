@@ -120,7 +120,7 @@
             }
             $gbalance1[$gi][$gite1] = $balance;
             if (count($group->children) > 0) {
-                $gbalance1[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance);
+                $gbalance1[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance, 1);
             } else {
                 $gite1++;
             }
@@ -130,7 +130,7 @@
 
     // dd($gbalance1);
     // =================== Recursive function ============================
-    function recurse($gr, $year, $balance, $lastbalance)
+    function recurse($gr, $year, $balance, $lastbalance, $for_total)
     {
         foreach ($gr->children as $group) {
             foreach ($group->accounts as $account) {
@@ -143,9 +143,16 @@
                     ->get();
 
                 // dd($entries);
-                foreach ($entries as $entry) {
-                    $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
-                    $lastbalance = $balance;
+                if ($for_total == 1) {
+                    foreach ($entries as $entry) {
+                        $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                        $lastbalance = $balance;
+                    }
+                } else {
+                    foreach ($entries as $entry) {
+                        $balance = $lastbalance + floatval($entry->credit) - floatval($entry->debit);
+                        $lastbalance = $balance;
+                    }
                 }
             }
             if (count($group->children) > 0) {
@@ -184,6 +191,7 @@
             }
         }
         $gbalance22[$gi] = $balance;
+        // dd($gbalance22);
 
         foreach ($gr->children as $group) {
             $balance = 0;
@@ -205,7 +213,7 @@
             }
             $gbalance2[$gi][$gite1] = $balance;
             if (count($group->children) > 0) {
-                $gbalance2[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance);
+                $gbalance2[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance, 0);
             } else {
                 $gite1++;
             }
@@ -262,14 +270,13 @@
             }
             $gbalance3[$gi][$gite3] = $balance;
             if (count($group->children) > 0) {
-                $gbalance3[$gi][$gite3++] = recurse($group, $year, $balance, $lastbalance);
+                $gbalance3[$gi][$gite3++] = recurse($group, $year, $balance, $lastbalance, 0);
             } else {
                 $gite3++;
             }
         }
         $gi++;
     }
-    // dd($gbalance2);
 
     $id4 = \App\Models\AccountType::where('name', 'Revenue')->first()->id;
     $grps4 = \App\Models\AccountGroup::where('company_id', session('company_id'))
@@ -326,7 +333,7 @@
             $balance_total4[$balance4_inc++] = $balance;
 
             if (count($group->children) > 0) {
-                $gbalance4[$gi][$gite4++] = recurse($group, $year, $balance, $lastbalance);
+                $gbalance4[$gi][$gite4++] = recurse($group, $year, $balance, $lastbalance, 0);
             } else {
                 $gite4++;
             }
@@ -388,7 +395,7 @@
             $balance_total5[$balance5_inc++] = $balance;
 
             if (count($group->children) > 0) {
-                $gbalance5[$gi][$gite5++] = recurse($group, $year, $balance, $lastbalance);
+                $gbalance5[$gi][$gite5++] = recurse($group, $year, $balance, $lastbalance, 1);
             } else {
                 $gite5++;
             }
@@ -429,6 +436,9 @@
                 $gbalance_total = [];
                 ?>
                 @foreach ($grps1 as $key => $group)
+                    @if (count($group->children) == 0 && $gbalance11[$key] < 1)
+                        @continue
+                    @endif
                     <tr>
                         <td style="width: 15%; padding-left:10px">
                             <strong> {{ $group->name }}</strong>
@@ -473,7 +483,7 @@
                 $gbalance_total2 = [];
                 ?>
                 @foreach ($grps2 as $key => $group)
-                    @if (count($group->children) == 0)
+                    @if (count($group->children) == 0 && $gbalance22[$key] < 1)
                         @continue
                     @endif
                     <tr>
@@ -519,12 +529,14 @@
                     <td><strong>CAPITAL</strong></td>
                     <td></td>
                 </tr>
-                {{ $b_total_index = 0 }}
+
+                {{-- @dd($gbalance33, $grps3); --}}
                 @foreach ($grps3 as $key => $group)
-                    @if (count($group->children) == 0)
+                    @if (count($group->children) == 0 && $gbalance33[$key] < 1)
                         @continue
                     @endif
                     <tr>
+
                         <td style="width: 15%; padding-left:10px">
                             <strong> {{ $group->name }}</strong>
                         </td>
@@ -591,16 +603,16 @@
     <br />
     <script type="text/php">
         if (isset($pdf)) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $x = 500;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $y = 820;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $font = null;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $size = 10;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $word_space = 0.0;  //  default
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $char_space = 0.0;  //  default
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $angle = 0.0;   //  default
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $pdf->page_text($x, $y, $text, $font, $size, $word_space, $char_space, $angle);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $x = 500;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $y = 820;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $font = null;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $size = 10;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $word_space = 0.0;  //  default
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $char_space = 0.0;  //  default
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $angle = 0.0;   //  default
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $pdf->page_text($x, $y, $text, $font, $size, $word_space, $char_space, $angle);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
 
 
 
@@ -610,7 +622,9 @@
 
 
 
-                                                                                                        </script>
+
+
+                                                    </script>
 </body>
 
 </html>
