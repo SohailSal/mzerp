@@ -2,8 +2,8 @@
   <div>
     <jet-banner />
 
-    <div class="min-h-screen bg-gray-100">
-      <nav class="bg-white border-b border-gray-100">
+    <div class="min-h-screen bg-gray-200">
+      <nav class="bg-gray-200 border-b border-gray-100">
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
@@ -241,9 +241,9 @@
                           leading-4
                           font-medium
                           rounded-md
-                          text-gray-500
-                          bg-white
-                          hover:text-gray-700
+                          text-gray-700
+                          bg-gray-200
+                          hover:text-black
                           focus:outline-none
                           transition
                           ease-in-out
@@ -481,7 +481,7 @@
       </nav>
 
       <!-- Page Heading -->
-      <header class="bg-white shadow" v-if="$slots.header">
+      <header class="bg-gray-800 shadow" v-if="$slots.header">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <slot name="header"></slot>
         </div>

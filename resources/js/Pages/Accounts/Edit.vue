@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      <h2 class="font-semibold text-xl text-white leading-tight">
         Edit Accounts
       </h2>
     </template>
@@ -101,7 +101,7 @@
             class="
               px-4
               py-2
-              bg-gray-100
+              bg-gray-200
               border-t border-gray-200
               flex
               justify-center
@@ -109,7 +109,16 @@
             "
           >
             <button
-              class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
+              class="
+                border
+                bg-green-500
+                rounded-xl
+                px-4
+                py-2
+                ml-4
+                mt-4
+                hover:text-white hover:bg-green-600
+              "
               type="submit"
             >
               Update Account

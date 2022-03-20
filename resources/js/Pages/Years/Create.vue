@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Years</h2>
+      <h2 class="font-semibold text-xl text-white leading-tight">Years</h2>
     </template>
     <div v-if="$page.props.flash.success" class="bg-yellow-300 text-white">
       {{ $page.props.flash.success }}
@@ -9,6 +9,9 @@
     <div class="">
       <form @submit.prevent="form.post(route('years.store'))">
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <label class="my-2 mr-8 text-right w-36 font-bold"
+            >Begin Date :</label
+          >
           <input
             type="date"
             v-model="form.begin"
@@ -20,6 +23,7 @@
         </div>
 
         <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <label class="my-2 mr-8 text-right w-36 font-bold">End Date :</label>
           <input
             type="date"
             v-model="form.end"
@@ -31,7 +35,15 @@
         </div>
 
         <div
-          class="px-4 py-2 bg-gray-100 border-t border-gray-200 flex justify-start items-center"
+          class="
+            px-4
+            py-2
+            bg-gray-100
+            border-t border-gray-200
+            flex
+            justify-start
+            items-center
+          "
         >
           <button
             class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"

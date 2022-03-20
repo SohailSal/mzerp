@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      <h2 class="font-semibold text-xl text-white leading-tight">
         Reports
         <div
           style="display: inline-block; min-width: 25%"
@@ -30,12 +30,14 @@
       <div
         class="
           border
-          rounded-lg
+          rounded-xl
           shadow-md
           p-2
           m-2
+          bg-gray-800
+          text-white
           inline-block
-          hover:bg-gray-600 hover:text-white
+          hover:bg-gray-700 hover:text-white
         "
       >
         <a href="trialbalance" target="_blank">Trial Balance</a>
@@ -44,12 +46,14 @@
       <div
         class="
           border
-          rounded-lg
+          rounded-xl
           shadow-md
           p-2
           m-2
+          bg-gray-800
+          text-white
           inline-block
-          hover:bg-gray-600 hover:text-white
+          hover:bg-gray-700 hover:text-white
         "
       >
         <a href="bs" target="_blank">Balance Sheet</a>
@@ -60,10 +64,12 @@
           border
           rounded-lg
           shadow-md
+          bg-gray-800
+          text-white
           p-2
           m-2
           inline-block
-          hover:bg-gray-600 hover:text-white
+          hover:bg-gray-700 hover:text-white
         "
       >
         <a href="pl" target="_blank">Profit or Loss A/C</a>
