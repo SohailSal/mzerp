@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      <h2 class="font-semibold text-xl text-white leading-tight">
         Create Voucher
       </h2>
     </template>
@@ -61,7 +61,16 @@
             "
           >
             <button
-              class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
+              class="
+                border
+                bg-green-500
+                rounded-xl
+                px-4
+                py-2
+                ml-4
+                mt-4
+                hover:text-white hover:bg-green-600
+              "
               type="submit"
               :disabled="form.processing"
             >

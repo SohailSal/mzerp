@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      <h2 class="font-semibold text-xl text-white leading-tight">
         Ledgers
         <div
           style="display: inline-block; min-width: 25%"
@@ -75,14 +75,15 @@
         <div
           class="
             border
-            rounded-lg
+            rounded-xl
             shadow-md
             p-2
             mt-1
+            bg-gray-800
+            text-white
             ml-2
             inline-block
-            hover:bg-gray-600 hover:text-white
-            bg-indigo-300
+            hover:bg-gray-700 hover:text-white
           "
         >
           <button type="submit">Ledger Report</button>
@@ -90,7 +91,7 @@
 
         <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
           <thead>
-            <tr class="bg-indigo-100">
+            <tr class="bg-gray-800 text-white">
               <th class="py-2 px-4 border">Reference</th>
               <th class="py-2 px-4 border">Date</th>
               <th class="py-2 px-4 border">Decription</th>
@@ -100,7 +101,7 @@
             </tr>
           </thead>
           <tbody v-if="this.account_id != 0">
-            <tr>
+            <tr class="bg-gray-100">
               <td class="py-1 px-4 border"></td>
               <td class="py-1 px-4 border"></td>
               <td class="py-1 px-4 border font-bold">Opening Balance</td>
@@ -110,7 +111,11 @@
                 {{ prebal }}
               </td>
             </tr>
-            <tr v-for="(item, index) in entries" :key="item.id">
+            <tr
+              class="bg-gray-100"
+              v-for="(item, index) in entries"
+              :key="item.id"
+            >
               <td class="py-1 px-4 border">{{ item.ref }}</td>
               <td class="py-1 px-4 border text-center">{{ item.date }}</td>
               <td class="py-1 px-4 border">{{ item.description }}</td>
@@ -118,7 +123,7 @@
               <td class="py-1 px-4 border text-center">{{ item.credit }}</td>
               <td class="py-1 px-4 border text-center">{{ balance[index] }}</td>
             </tr>
-            <tr>
+            <tr class="bg-gray-100">
               <td class="py-1 px-4 border"></td>
               <td class="py-1 px-4 border"></td>
               <td class="py-1 px-4 border font-bold">Totals</td>

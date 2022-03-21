@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      <h2 class="font-semibold text-xl text-white leading-tight">
         Voucher
         <div
           style="display: inline-block; min-width: 25%"
@@ -41,25 +41,41 @@
       <div class="">
         <table class="shadow-lg w-full border mt-4 ml-2 rounded-xl">
           <thead>
-            <tr class="bg-indigo-100">
+            <tr class="text-white bg-gray-800">
               <th class="py-2 px-4 border">Voucher Name</th>
               <th class="py-2 px-4 border w-2/5">Prefix</th>
               <th class="py-2 px-4 border">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in data" :key="item.id">
+            <tr class="bg-gray-100" v-for="item in data" :key="item.id">
               <td class="py-1 px-4 border w-2/5">{{ item.name }}</td>
               <td class="py-1 px-4 border text-center">{{ item.prefix }}</td>
               <td class="py-1 px-4 border text-center">
                 <button
-                  class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                  class="
+                    border
+                    bg-indigo-300
+                    rounded-xl
+                    px-4
+                    py-1
+                    m-1
+                    hover:text-white hover:bg-indigo-400
+                  "
                   @click="edit(item.id)"
                 >
                   <span>Edit</span>
                 </button>
                 <button
-                  class="border bg-red-500 rounded-xl px-4 py-1 m-1"
+                  class="
+                    border
+                    bg-red-500
+                    rounded-xl
+                    px-4
+                    py-1
+                    m-1
+                    hover:text-white hover:bg-red-600
+                  "
                   @click="destroy(item.id)"
                   v-if="item.delete"
                 >

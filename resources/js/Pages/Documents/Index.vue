@@ -1,11 +1,20 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      <h2 class="font-semibold text-xl text-white leading-tight">
         Transactions
         <select
           v-model="yr_id"
-          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
+          class="
+            pr-2
+            ml-2
+            pb-2
+            text-gray-700
+            w-full
+            lg:w-1/4
+            rounded-md
+            float-right
+          "
           label="year"
           @change="yrch"
         >
@@ -66,7 +75,7 @@
       <!-- ml-8 mr-8 -->
       <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
         <thead>
-          <tr class="bg-indigo-100">
+          <tr class="text-white bg-gray-800">
             <th class="py-2 px-4 border">Reference</th>
             <th class="py-2 px-4 border">Date</th>
             <th class="py-2 px-4 border w-2/5">Description</th>
@@ -74,20 +83,36 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data.data" :key="item.id">
+          <tr class="bg-gray-100" v-for="item in data.data" :key="item.id">
             <td class="py-1 px-4 border text-center">{{ item.ref }}</td>
             <td class="py-1 px-4 border text-center">{{ item.date }}</td>
             <td class="py-1 px-4 border w-2/5">{{ item.description }}</td>
             <td class="py-1 px-4 border text-center">
               <button
-                class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                class="
+                  border
+                  bg-indigo-300
+                  rounded-xl
+                  px-4
+                  py-1
+                  m-1
+                  hover:text-white hover:bg-indigo-400
+                "
                 @click="edit(item.id)"
                 v-if="yearclosed"
               >
                 <span>Edit</span>
               </button>
               <button
-                class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                class="
+                  border
+                  bg-red-500
+                  rounded-xl
+                  px-4
+                  py-1
+                  m-1
+                  hover:text-white hover:bg-red-600
+                "
                 @click="destroy(item.id)"
                 v-if="item.delete"
               >
@@ -96,12 +121,14 @@
               <div
                 class="
                   border
-                  rounded-lg
+                  bg-gray-800
+                  text-white
+                  rounded-xl
                   shadow-md
                   p-2
                   m-2
                   inline-block
-                  hover:bg-gray-600 hover:text-white
+                  hover:bg-gray-700
                 "
               >
                 <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>
