@@ -51,9 +51,9 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" v-if="yearclosed" class="ml-2 mt-1 float-left"
+      <jet-button @click="create" v-if="yearclosed" class="mt-4 ml-2 float-left"
         >Create</jet-button
       >
       <input
@@ -61,13 +61,21 @@
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
-        class="pr-2 pb-2 w-full lg:w-1/4 ml-2 rounded-md placeholder-indigo-300"
+        class="
+          h-9
+          w-full
+          lg:w-1/4
+          ml-4
+          mt-4
+          rounded-full
+          placeholder-indigo-300
+        "
       />
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
 
-      <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
+      <!--   <div v-if="errors.type">{{ errors.type }}</div> -->
 
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <!-- </div> -->
@@ -84,17 +92,16 @@
         </thead>
         <tbody>
           <tr class="bg-gray-100" v-for="item in data.data" :key="item.id">
-            <td class="py-1 px-4 border text-center">{{ item.ref }}</td>
-            <td class="py-1 px-4 border text-center">{{ item.date }}</td>
-            <td class="py-1 px-4 border w-2/5">{{ item.description }}</td>
-            <td class="py-1 px-4 border text-center">
+            <td class="px-4 border text-center">{{ item.ref }}</td>
+            <td class="px-4 border text-center">{{ item.date }}</td>
+            <td class="px-4 border w-2/5">{{ item.description }}</td>
+            <td class="px-4 border text-center">
               <button
                 class="
                   border
                   bg-indigo-300
                   rounded-xl
                   px-4
-                  py-1
                   m-1
                   hover:text-white hover:bg-indigo-400
                 "
@@ -109,7 +116,6 @@
                   bg-red-500
                   rounded-xl
                   px-4
-                  py-1
                   m-1
                   hover:text-white hover:bg-red-600
                 "
@@ -122,11 +128,10 @@
                 class="
                   border
                   bg-gray-800
-                  text-white
-                  rounded-xl
+                  text-md text-white
+                  rounded-full
                   shadow-md
-                  p-2
-                  m-2
+                  px-2
                   inline-block
                   hover:bg-gray-700
                 "

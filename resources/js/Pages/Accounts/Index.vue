@@ -32,14 +32,14 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-      <jet-button @click="create" class="mt-2 ml-2">Create Account</jet-button>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <jet-button @click="create" class="mt-4 ml-2">Create Account</jet-button>
       <input
         type="search"
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
-        class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
+        class="h-9 w-full lg:w-1/4 ml-4 rounded-full placeholder-indigo-300"
       />
 
       <div class="">
@@ -59,17 +59,16 @@
               :key="item.id"
             >
               <!-- <td class="py-1 px-4 border text-center">{{ item.id }}</td> -->
-              <td class="py-1 px-4 border">{{ item.name }}</td>
-              <td class="py-1 px-4 border">{{ item.group_name }}</td>
-              <!-- <td class="py-1 px-4 border">{{ item.accountGroup.name }}</td> -->
-              <td class="py-1 px-4 border text-center">
+              <td class="px-4 border">{{ item.name }}</td>
+              <td class="px-4 border">{{ item.group_name }}</td>
+              <!-- <td class=" px-4 border">{{ item.accountGroup.name }}</td> -->
+              <td class="px-4 border text-center">
                 <button
                   class="
                     border
                     bg-indigo-300
                     rounded-xl
                     px-4
-                    py-1
                     m-1
                     hover:text-white hover:bg-indigo-400
                   "
@@ -83,7 +82,6 @@
                     bg-red-500
                     rounded-xl
                     px-4
-                    py-1
                     m-1
                     hover:text-white hover:bg-red-600
                   "

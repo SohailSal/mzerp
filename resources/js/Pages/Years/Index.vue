@@ -27,12 +27,12 @@
       <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
       <form @submit.prevent="form.get(route('years.create'))">
-        <jet-button type="submit" @click="create" class="mt-4 ml-2"
+        <jet-button type="submit" @click="create" class="ml-2"
           >Add Year</jet-button
         >
 
         <!-- <button
-          class="border bg-indigo-300 rounded-xl px-4 py-1 m-1 ml-2 mt-4"
+          class="border bg-indigo-300 rounded-xl px-4  m-1 ml-2 mt-4"
           type="submit"
           :disabled="form.processing"
         >
@@ -65,19 +65,18 @@
                 v-for="item in balances.data"
                 :key="item.id"
               >
-                <td class="py-1 px-4 border w-2/5">
+                <td class="px-4 border w-2/5">
                   {{ item.company_name }}
                 </td>
-                <td class="py-1 px-4 border text-center">{{ item.begin }}</td>
-                <td class="py-1 px-4 border text-center">{{ item.end }}</td>
-                <td class="py-1 px-4 border text-center">
+                <td class="px-4 border text-center">{{ item.begin }}</td>
+                <td class="px-4 border text-center">{{ item.end }}</td>
+                <td class="px-4 border text-center">
                   <button
                     class="
                       border
                       bg-indigo-300
                       rounded-xl
                       px-4
-                      py-1
                       m-1
                       hover:text-white hover:bg-indigo-400
                     "
@@ -92,7 +91,6 @@
                       bg-red-500
                       rounded-xl
                       px-4
-                      py-1
                       m-1
                       hover:text-white hover:bg-red-600
                     "
@@ -109,7 +107,6 @@
                       bg-gray-300
                       rounded-xl
                       px-4
-                      py-1
                       m-1
                       hover:bg-gray-700 hover:text-white
                     "
