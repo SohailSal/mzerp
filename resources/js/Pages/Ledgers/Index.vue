@@ -75,9 +75,10 @@
         <div
           class="
             border
-            rounded-xl
+            rounded-full
             shadow-md
-            p-2
+            p-1
+            px-4
             mt-1
             bg-gray-800
             text-white

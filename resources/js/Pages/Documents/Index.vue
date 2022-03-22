@@ -127,13 +127,13 @@
               <div
                 class="
                   border
-                  bg-gray-800
-                  text-md text-white
+                  bg-gray-300
+                  text-md
                   rounded-full
                   shadow-md
-                  px-2
+                  px-4
                   inline-block
-                  hover:bg-gray-700
+                  hover:bg-gray-700 hover:text-white
                 "
               >
                 <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>

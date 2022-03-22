@@ -30,9 +30,10 @@
       <div
         class="
           border
-          rounded-xl
+          rounded-full
           shadow-md
-          p-2
+          p-1
+          px-4
           m-2
           bg-gray-800
           text-white
@@ -46,9 +47,10 @@
       <div
         class="
           border
-          rounded-xl
+          rounded-full
           shadow-md
-          p-2
+          p-1
+          px-4
           m-2
           bg-gray-800
           text-white
@@ -62,11 +64,12 @@
       <div
         class="
           border
-          rounded-lg
+          rounded-full
           shadow-md
           bg-gray-800
           text-white
-          p-2
+          p-1
+          px-4
           m-2
           inline-block
           hover:bg-gray-700 hover:text-white
