@@ -187,13 +187,13 @@
           </thead>
           <tbody>
             <tr class="bg-gray-50" v-for="item in balances.data" :key="item.id">
-              <td class="px-4 border">{{ item.name }}</td>
-              <td class="px-4 border">{{ item.address }}</td>
-              <td class="px-4 border">{{ item.email }}</td>
-              <td class="px-4 border">{{ item.web }}</td>
-              <td class="px-4 border">{{ item.phone }}</td>
+              <td style="width: 20%" class="px-4 border">{{ item.name }}</td>
+              <td style="width: 20%" class="px-4 border">{{ item.address }}</td>
+              <td style="width: 15%" class="px-4 border">{{ item.email }}</td>
+              <td style="width: 15%" class="px-4 border">{{ item.web }}</td>
+              <td style="width: 15%" class="px-4 border">{{ item.phone }}</td>
               <!-- <td class="py-1 px-4 border" v-if="can['edit'] || can['delete']"> -->
-              <td class="px-4 border text-center">
+              <td style="width: 15%" class="px-4 border text-center">
                 <!-- class="border bg-indigo-300 rounded-xl px-4 py-1 m-1" -->
                 <button
                   class="

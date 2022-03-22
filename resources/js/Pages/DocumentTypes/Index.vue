@@ -49,9 +49,13 @@
           </thead>
           <tbody>
             <tr class="bg-gray-100" v-for="item in data" :key="item.id">
-              <td class="px-4 border w-2/5">{{ item.name }}</td>
-              <td class="px-4 border text-center">{{ item.prefix }}</td>
-              <td class="px-4 border text-center">
+              <td style="width: 30%" class="px-4 border w-2/5">
+                {{ item.name }}
+              </td>
+              <td style="widht: 30%" class="px-4 border text-center">
+                {{ item.prefix }}
+              </td>
+              <td style="widht: 40%" class="px-4 border text-center">
                 <button
                   class="
                     border

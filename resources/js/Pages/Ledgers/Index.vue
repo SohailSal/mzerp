@@ -103,12 +103,17 @@
           </thead>
           <tbody v-if="this.account_id != 0">
             <tr class="bg-gray-100">
-              <td class="py-1 px-4 border"></td>
-              <td class="py-1 px-4 border"></td>
-              <td class="py-1 px-4 border font-bold">Opening Balance</td>
-              <td class="py-1 px-4 border"></td>
-              <td class="py-1 px-4 border"></td>
-              <td class="py-1 px-4 border font-bold text-center">
+              <td style="widht: 15%" class="py-1 px-4 border"></td>
+              <td style="widht: 15%" class="py-1 px-4 border"></td>
+              <td style="widht: 25%" class="py-1 px-4 border font-bold">
+                Opening Balance
+              </td>
+              <td style="widht: 15%" class="py-1 px-4 border"></td>
+              <td style="widht: 15%" class="py-1 px-4 border"></td>
+              <td
+                style="widht: 15%"
+                class="py-1 px-4 border font-bold text-center"
+              >
                 {{ prebal }}
               </td>
             </tr>
@@ -117,24 +122,44 @@
               v-for="(item, index) in entries"
               :key="item.id"
             >
-              <td class="py-1 px-4 border">{{ item.ref }}</td>
-              <td class="py-1 px-4 border text-center">{{ item.date }}</td>
-              <td class="py-1 px-4 border">{{ item.description }}</td>
-              <td class="py-1 px-4 border text-center">{{ item.debit }}</td>
-              <td class="py-1 px-4 border text-center">{{ item.credit }}</td>
-              <td class="py-1 px-4 border text-center">{{ balance[index] }}</td>
+              <td style="width: 15%" class="py-1 px-4 border">
+                {{ item.ref }}
+              </td>
+              <td style="width: 10%" class="py-1 px-4 border text-center">
+                {{ item.date }}
+              </td>
+              <td style="width: 30%" class="py-1 px-4 border">
+                {{ item.description }}
+              </td>
+              <td style="width: 15%" class="py-1 px-4 border text-center">
+                {{ item.debit }}
+              </td>
+              <td style="width: 15%" class="py-1 px-4 border text-center">
+                {{ item.credit }}
+              </td>
+              <td style="width: 15%" class="py-1 px-4 border text-center">
+                {{ balance[index] }}
+              </td>
             </tr>
             <tr class="bg-gray-100">
-              <td class="py-1 px-4 border"></td>
-              <td class="py-1 px-4 border"></td>
-              <td class="py-1 px-4 border font-bold">Totals</td>
-              <td class="py-1 px-4 border font-bold text-center">
+              <td style="width: 15%" class="py-1 px-4 border"></td>
+              <td style="width: 15%" class="py-1 px-4 border"></td>
+              <td style="width: 25%" class="py-1 px-4 border font-bold">
+                Totals
+              </td>
+              <td
+                style="width: 15%"
+                class="py-1 px-4 border font-bold text-center"
+              >
                 {{ debits }}
               </td>
-              <td class="py-1 px-4 border font-bold text-center">
+              <td
+                style="width: 15%"
+                class="py-1 px-4 border font-bold text-center"
+              >
                 {{ credits }}
               </td>
-              <td class="py-1 px-4 border"></td>
+              <td style="width: 15%" class="py-1 px-4 border"></td>
             </tr>
           </tbody>
         </table>
