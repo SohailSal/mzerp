@@ -92,10 +92,16 @@
         </thead>
         <tbody>
           <tr class="bg-gray-100" v-for="item in data.data" :key="item.id">
-            <td class="px-4 border text-center">{{ item.ref }}</td>
-            <td class="px-4 border text-center">{{ item.date }}</td>
-            <td class="px-4 border w-2/5">{{ item.description }}</td>
-            <td class="px-4 border text-center">
+            <td style="width: 15%" class="px-4 border text-center">
+              {{ item.ref }}
+            </td>
+            <td style="width: 15%" class="px-4 border text-center">
+              {{ item.date }}
+            </td>
+            <td style="width: 40%" class="px-4 border w-2/5">
+              {{ item.description }}
+            </td>
+            <td style="width: 30%" class="px-4 border text-center">
               <button
                 class="
                   border
@@ -133,7 +139,7 @@
                   shadow-md
                   px-4
                   inline-block
-                  hover:bg-gray-700 hover:text-white
+                  hover:bg-gray-700 hover:text-700
                 "
               >
                 <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>

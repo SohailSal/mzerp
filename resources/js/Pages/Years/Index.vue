@@ -50,7 +50,9 @@
         </select> -->
         <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
         <div class="">
-          <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
+          <table
+            class="table-auto w-full shadow-lg border mt-4 ml-2 rounded-xl"
+          >
             <thead>
               <tr class="bg-gray-800 text-white">
                 <th class="py-2 px-4 border">Company</th>
@@ -68,9 +70,9 @@
                 <td class="px-4 border w-2/5">
                   {{ item.company_name }}
                 </td>
-                <td class="px-4 border text-center">{{ item.begin }}</td>
-                <td class="px-4 border text-center">{{ item.end }}</td>
-                <td class="px-4 border text-center">
+                <td class="px-4 border w-2/6 text-center">{{ item.begin }}</td>
+                <td class="px-4 border w-2/6 text-center">{{ item.end }}</td>
+                <td class="px-4 border w-2/6 text-center">
                   <button
                     class="
                       border

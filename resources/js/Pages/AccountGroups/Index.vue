@@ -73,9 +73,11 @@
               v-for="item in balances.data"
               :key="item.id"
             >
-              <td class="px-4 border">{{ item.name }}</td>
-              <td class="px-4 border text-center">{{ item.type_name }}</td>
-              <td class="px-4 border text-center">
+              <td style="width: 30%" class="px-4 border">{{ item.name }}</td>
+              <td style="width: 30%" class="px-4 border text-center">
+                {{ item.type_name }}
+              </td>
+              <td style="width: 40%" class="px-4 border text-center">
                 <button
                   class="
                     border
