@@ -33,8 +33,8 @@
       {{ $page.props.flash.warning }}
     </div>
     <!-- <div class=""> -->
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-      <jet-button @click="create" class="mt-2 ml-2">Create</jet-button>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
 
       <!-- </div> -->
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
@@ -49,16 +49,15 @@
           </thead>
           <tbody>
             <tr class="bg-gray-100" v-for="item in data" :key="item.id">
-              <td class="py-1 px-4 border w-2/5">{{ item.name }}</td>
-              <td class="py-1 px-4 border text-center">{{ item.prefix }}</td>
-              <td class="py-1 px-4 border text-center">
+              <td class="px-4 border w-2/5">{{ item.name }}</td>
+              <td class="px-4 border text-center">{{ item.prefix }}</td>
+              <td class="px-4 border text-center">
                 <button
                   class="
                     border
                     bg-indigo-300
                     rounded-xl
                     px-4
-                    py-1
                     m-1
                     hover:text-white hover:bg-indigo-400
                   "
@@ -72,7 +71,6 @@
                     bg-red-500
                     rounded-xl
                     px-4
-                    py-1
                     m-1
                     hover:text-white hover:bg-red-600
                   "

@@ -9,9 +9,10 @@
     >
       {{ $page.props.flash.success }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-      <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
+
+      <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
       <!-- <input
         type="search"
         v-if="balances"
@@ -186,13 +187,13 @@
           </thead>
           <tbody>
             <tr class="bg-gray-50" v-for="item in balances.data" :key="item.id">
-              <td class="py-1 px-4 border">{{ item.name }}</td>
-              <td class="py-1 px-4 border">{{ item.address }}</td>
-              <td class="py-1 px-4 border">{{ item.email }}</td>
-              <td class="py-1 px-4 border">{{ item.web }}</td>
-              <td class="py-1 px-4 border">{{ item.phone }}</td>
+              <td class="px-4 border">{{ item.name }}</td>
+              <td class="px-4 border">{{ item.address }}</td>
+              <td class="px-4 border">{{ item.email }}</td>
+              <td class="px-4 border">{{ item.web }}</td>
+              <td class="px-4 border">{{ item.phone }}</td>
               <!-- <td class="py-1 px-4 border" v-if="can['edit'] || can['delete']"> -->
-              <td class="py-1 px-4 border text-center">
+              <td class="px-4 border text-center">
                 <!-- class="border bg-indigo-300 rounded-xl px-4 py-1 m-1" -->
                 <button
                   class="
@@ -200,9 +201,8 @@
                     bg-indigo-300
                     rounded-xl
                     px-4
-                    py-1
-                    m-1
                     hover:text-white hover:bg-indigo-400
+                    m-1
                   "
                   @click="edit(item.id)"
                 >
