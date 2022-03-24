@@ -1,14 +1,12 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">
-        Accounts
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Accounts</h2>
+        <div class="justify-end">
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%; float: right"
+            class="rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -18,7 +16,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div
       v-if="$page.props.flash.success"
