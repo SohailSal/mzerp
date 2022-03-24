@@ -1,14 +1,31 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">
-        Reports
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Reports</h2>
+        <div class="justify-end">
+          <select
+            v-model="yr_id"
+            class="
+              pr-2
+              ml-2
+              pb-2
+              text-gray-700
+              w-full
+              lg:w-5/12
+              rounded-md
+              float-right
+            "
+            label="year"
+            @change="yrch"
+          >
+            <option v-for="type in years" :key="type.id" :value="type.id">
+              {{ type.name }}
+            </option>
+          </select>
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -18,7 +35,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
@@ -101,11 +118,13 @@ export default {
     company: Object,
     accounts: Object,
     account_first: Object,
+    years: Object,
   },
 
   data() {
     return {
       co_id: this.company,
+      yr_id: this.$page.props.yr_id,
       options: this.companies,
       //   form: this.$inertia.form({
       //     account_id: this.account_first.id,
@@ -183,6 +202,10 @@ export default {
     },
     coch() {
       this.$inertia.get(route("companies.coch", this.co_id["id"]));
+    },
+
+    yrch() {
+      this.$inertia.get(route("years.yrch", this.yr_id));
     },
   },
 };

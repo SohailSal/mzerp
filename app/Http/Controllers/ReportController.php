@@ -37,6 +37,17 @@ class ReportController extends Controller
             'accounts' => $accounts,
             'company' => Company::where('id', session('company_id'))->first(),
             'companies' => Auth::user()->companies,
+            'years' => Year::all()
+                ->where('company_id', session('company_id'))
+                ->map(function ($year) {
+                    $begin = new Carbon($year->begin);
+                    $end = new Carbon($year->end);
+
+                    return [
+                        'id' => $year->id,
+                        'name' => $begin->format('M d, Y') . ' - ' . $end->format('M d, Y'),
+                    ];
+                }),
         ]);
     }
 
@@ -240,8 +251,7 @@ class ReportController extends Controller
                 $i++;
             }
         }
-        if($data['entries'] != [])
-        {
+        if ($data['entries'] != []) {
             $data['doc'] = Document::all()->where('id', $data['entries'][0]->document_id)->first();
             $data['doc_type'] = DocumentType::all()->where('id', $data['doc']->type_id)->first();
         }
@@ -268,7 +278,7 @@ class ReportController extends Controller
 
     public function bs()
     {
-        // $pdf = app('dompdf.wrapper');   
+        // $pdf = app('dompdf.wrapper');
         // $pdf->getDomPDF()->set_option("enable_php", true);
         // $pdf->loadView('balanceSheet');
         // return $pdf->stream('branches.pdf');
@@ -279,8 +289,6 @@ class ReportController extends Controller
         // $bs->getDomPDF()->set_option("enable_php", true);
         $bs->loadView('balanceSheet');
         return $bs->stream('bs.pdf');
-
-        
     }
 
     public function pl()
