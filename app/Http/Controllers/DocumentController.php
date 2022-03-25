@@ -345,7 +345,7 @@ class DocumentController extends Controller
                     Entry::create([
                         // 'company_id' => $document->company_id,
                         'company_id' => session('company_id'),
-                        'account_id' => $entry['account_id'],
+                        'account_id' => $entry['account_id']['id'],
                         'year_id' => session('year_id'),
                         // 'year_id' => $document->year_id,
                         'document_id' => $document->id,
