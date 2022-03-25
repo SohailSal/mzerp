@@ -27,6 +27,11 @@ class Document extends Model
         return $this->belongsTo('App\Models\Year', 'year_id');
     }
 
+    public function account()
+    {
+        return $this->belongsTo('App\Models\Account', 'account_id');
+    }
+
     public function entries()
     {
         return $this->hasMany('App\Models\Entry', 'document_id');

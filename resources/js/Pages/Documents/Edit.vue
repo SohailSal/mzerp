@@ -1,9 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">
-        Edit Transactions
-      </h2>
+      <h2 class="font-semibold text-xl text-white my-2">Edit Transactions</h2>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div class="">
@@ -24,6 +22,9 @@
               {{ type.name }}
             </option>
           </select> -->
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Select Voucher :</label
+            >
             <input
               type="text"
               v-model="document.type_name"
@@ -40,30 +41,48 @@
               readonly
             />
             <div v-if="errors.type">{{ errors.type }}</div>
-            <!-- </div> -->
-            <!-- DESCRIPTION -->
-            <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"> -->
-            <input
+          </div>
+          <!-- DESCRIPTION -->
+          <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Reference :</label
+            ><input
               type="text"
               v-model="document.ref"
               class="
                 pr-2
                 pb-2
-                ml-6
                 w-full
                 lg:w-1/4
                 rounded-md
                 placeholder-indigo-300
               "
               label="ref"
-              placeholder="Enter Refernce"
+              placeholder="Enter Reference"
               readonly
             />
-            <div v-if="errors.ref">{{ errors.ref }}</div>
+            <div
+              class="
+                ml-2
+                bg-red-100
+                border border-red-400
+                text-red-700
+                px-4
+                py-2
+                rounded
+                relative
+              "
+              v-if="errors.ref"
+              role="alert"
+            >
+              {{ errors.ref }}
+            </div>
           </div>
           <!-- DESCRIPTION -->
           <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
-            <input
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Description :</label
+            ><input
               type="text"
               v-model="form.description"
               class="
@@ -93,15 +112,18 @@
             >
               {{ errors.description }}
             </div>
-            <!-- </div> -->
-            <!-- DATE -->
-            <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap"> -->
-            <input
+          </div>
+          <!-- DATE -->
+          <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+            <label class="my-2 mr-8 text-right w-36 font-bold"
+              >Select Date :</label
+            ><input
               type="date"
               v-model="form.date"
-              class="pr-2 pb-2 ml-6 rounded-md placeholder-indigo-300"
+              class="pr-2 pb-2 rounded-md placeholder-indigo-300"
               label="date"
               placeholder="Date:"
+              name="date"
             />
             <!-- <datepicker
             v-model="form.date"
@@ -113,24 +135,8 @@
           </div>
 
           <!-- TABLE FOR ENTRIES ---- START ------------- -->
-          <div class="panel-body">
-            <button
-              class="
-                border
-                bg-indigo-300
-                rounded-xl
-                px-4
-                py-2
-                m-4
-                hover:text-white hover:bg-indigo-400
-              "
-              type="button"
-              @click.prevent="addRow"
-            >
-              Add row
-            </button>
-            <div v-if="isError">{{ firstError }}</div>
-            <table class="table border">
+          <div class="panel-body flex justify-center items-start">
+            <table class="table border flex">
               <thead class="">
                 <tr>
                   <th>Account:</th>
@@ -142,7 +148,15 @@
                 <tr v-for="(entry, index) in form.entries" :key="entry.id">
                   <!-- <tr v-for="(entry, index) in entries" :key="entry.id"> -->
                   <td>
-                    <select v-model="entry.account_id" class="rounded-md w-36">
+                    <multiselect
+                      class="w-full rounded-md border border-black"
+                      v-model="entry.account_id"
+                      :options="option"
+                      placeholder="Select account"
+                      label="name"
+                      track-by="id"
+                    ></multiselect>
+                    <!-- <select v-model="entry.account_id" class="rounded-md w-36">
                       <option
                         v-for="account in accounts"
                         :key="account.id"
@@ -150,12 +164,12 @@
                       >
                         {{ account.name }}
                       </option>
-                    </select>
+                    </select> -->
                   </td>
                   <td>
                     <input
                       v-model="entry.debit"
-                      type="text"
+                      type="number"
                       @change="debitchange(index)"
                       class="rounded-md w-36"
                     />
@@ -163,7 +177,7 @@
                   <td>
                     <input
                       v-model="entry.credit"
-                      type="text"
+                      type="number"
                       @change="creditchange(index)"
                       class="rounded-md w-36"
                     />
@@ -175,16 +189,33 @@
                       class="
                         border
                         bg-red-500
-                        rounded-xl
-                        px-4
-                        py-2
-                        m-4
+                        rounded-full
+                        px-6
+                        py-1
+                        m-1
                         hover:text-white hover:bg-red-600
                       "
                     >
                       Delete
                     </button>
-                    <div v-else class="border rounded-xl px-4 py-2 m-4"></div>
+                    <button
+                      v-else-if="index == 0"
+                      class="
+                        border
+                        bg-indigo-300
+                        rounded-full
+                        px-4
+                        py-1
+                        m-1
+                        hover:text-white hover:bg-indigo-400
+                      "
+                      type="button"
+                      @click.prevent="addRow"
+                    >
+                      Add row
+                    </button>
+                    <!-- <div v-if="isError">{{ firstError }}</div> -->
+                    <div v-else class="border rounded-full px-4 py-1 m-1"></div>
                   </td>
                 </tr>
 
@@ -192,20 +223,21 @@
                   <th>Difference:</th>
                   <th>Debit:</th>
                   <th>Credit:</th>
+                  <th></th>
                 </tr>
 
                 <tr>
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       v-model="difference"
                       readonly
-                      class="rounded-md w-36"
+                      class="rounded-md w-72"
                     />
                   </td>
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       v-model="debit"
                       readonly
                       class="rounded-md w-36"
@@ -213,15 +245,17 @@
                   </td>
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       v-model="credit"
                       readonly
                       class="rounded-md w-36"
                     />
                   </td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
+            <div v-if="isError">{{ firstError }}</div>
           </div>
           <!-- TABLE FOR ENTRIES ---- END ------------- -->
 
@@ -232,20 +266,23 @@
               bg-gray-200
               border-t border-gray-200
               flex
-              justify-start
+              justify-center
               items-center
             "
           >
             <button
               class="
                 border
-                bg-green-500
                 rounded-xl
+                shadow-md
+                p-1
                 px-4
-                py-2
-                ml-4
                 mt-4
-                hover:text-white hover:bg-green-600
+                bg-gray-800
+                text-white
+                ml-2
+                inline-block
+                hover:bg-gray-700 hover:text-white
               "
               type="submit"
             >
@@ -265,12 +302,14 @@ import { useForm } from "@inertiajs/inertia-vue3";
 // import Label from "../../Jetstream/Label.vue";
 import Datepicker from "vue3-datepicker";
 import format from "date-fns/format";
+import Multiselect from "@suadelabs/vue3-multiselect";
 
 export default {
   components: {
     AppLayout,
     Datepicker,
     format,
+    Multiselect,
   },
 
   props: {
@@ -311,6 +350,8 @@ export default {
 
   data() {
     return {
+      option: this.accounts,
+
       difference: 0,
       credit: 0,
       debit: 0,
@@ -414,7 +455,7 @@ export default {
     addRow() {
       this.form.entries.push({
         // account_id: this.account_first.id,
-        account_id: this.accounts[0].id,
+        account_id: this.accounts[0],
         debit: 0,
         credit: 0,
       });
