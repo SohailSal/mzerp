@@ -1,14 +1,12 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">
-        Years
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Years</h2>
+        <div class="justify-end">
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -18,7 +16,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
@@ -51,7 +49,16 @@
         <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
         <div class="">
           <table
-            class="table-auto w-full shadow-lg border mt-4 ml-2 rounded-xl"
+            class="
+              table-auto
+              w-full
+              shadow-lg
+              border
+              mt-4
+              ml-2
+              overflow-visible
+              rounded-lg
+            "
           >
             <thead>
               <tr class="bg-gray-800 text-white">
@@ -67,12 +74,16 @@
                 v-for="item in balances.data"
                 :key="item.id"
               >
-                <td class="px-4 border w-2/5">
+                <td class="w-4/12 px-4 border w-2/5">
                   {{ item.company_name }}
                 </td>
-                <td class="px-4 border w-2/6 text-center">{{ item.begin }}</td>
-                <td class="px-4 border w-2/6 text-center">{{ item.end }}</td>
-                <td class="px-4 border w-2/6 text-center">
+                <td class="w-2/12 px-4 border w-2/6 text-center">
+                  {{ item.begin }}
+                </td>
+                <td class="w-2/12 px-4 border w-2/6 text-center">
+                  {{ item.end }}
+                </td>
+                <td class="w-4/12px-4 border w-2/6 text-center">
                   <button
                     class="
                       border
