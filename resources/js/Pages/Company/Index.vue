@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">Company</h2>
+      <h2 class="font-semibold text-xl text-white my-2">Company</h2>
     </template>
     <div
       v-if="$page.props.flash.success"
@@ -187,7 +187,9 @@
           </thead>
           <tbody>
             <tr class="bg-gray-50" v-for="item in balances.data" :key="item.id">
-              <td style="width: 20%" class="px-4 border">{{ item.name }}</td>
+              <td style="width: 20%" class="w-3/12 px-4 border">
+                {{ item.name }}
+              </td>
               <td style="width: 20%" class="px-4 border">{{ item.address }}</td>
               <td style="width: 15%" class="px-4 border">{{ item.email }}</td>
               <td style="width: 15%" class="px-4 border">{{ item.web }}</td>

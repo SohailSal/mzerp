@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">Year</h2>
+      <h2 class="font-semibold text-xl text-white my-2">Year</h2>
     </template>
     <div class="">
       <form @submit.prevent="submit">
@@ -44,13 +44,16 @@
           <button
             class="
               border
-              bg-green-500
               rounded-xl
+              shadow-md
+              p-1
               px-4
-              py-2
-              ml-4
-              mt-4
-              hover:text-white hover:bg-green-600
+              mt-1
+              bg-gray-800
+              text-white
+              ml-2
+              inline-block
+              hover:bg-gray-700 hover:text-white
             "
             type="submit"
           >

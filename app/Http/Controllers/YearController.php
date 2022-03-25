@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Http\Request as Req;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Year;
 use App\Models\Setting;
 use App\Models\Company;
 use App\Models\Document;
-use App\Models\DocumentType;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -35,20 +33,20 @@ class YearController extends Controller
                 ->paginate(12)
                 ->through(
                     function ($year) {
-                    return [
-                        $begin = new Carbon($year->begin),
-                        $end = new Carbon($year->end),
-                        'id' => $year->id,
-                        'closed' => $year->closed,
-                        'begin' => $begin->format('F,j Y'),
-                        'end' => $end->format('F,j Y'),
-                        'company_name' => $year->company->name,
-                        'company_id' => $year->company_id,
-                        'delete' => Document::where('year_id', $year->id)->first() || $year->id == Year::where('company_id', session('company_id'))->first()->id ? false : true,
-                        // 'delete' => Document::where('year_id', $year->id)->first() || $year == Year::where('company_id', session('company_id'))->first() ? false : true,
-                    ];
-                },
-            ),
+                        return [
+                            $begin = new Carbon($year->begin),
+                            $end = new Carbon($year->end),
+                            'id' => $year->id,
+                            'closed' => $year->closed,
+                            'begin' => $begin->format('F,j Y'),
+                            'end' => $end->format('F,j Y'),
+                            'company_name' => $year->company->name,
+                            'company_id' => $year->company_id,
+                            'delete' => Document::where('year_id', $year->id)->first() || $year->id == Year::where('company_id', session('company_id'))->first()->id ? false : true,
+                            // 'delete' => Document::where('year_id', $year->id)->first() || $year == Year::where('company_id', session('company_id'))->first() ? false : true,
+                        ];
+                    },
+                ),
             'company' => Company::where('id', session('company_id'))->first(),
             // 'companies' => Company::all()
             //     ->map(function ($com) {

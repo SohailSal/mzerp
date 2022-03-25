@@ -1,14 +1,12 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">
-        Voucher
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Voucher</h2>
+        <div class="justify-end">
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -18,7 +16,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div
       v-if="$page.props.flash.success"
@@ -48,7 +46,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="bg-gray-100" v-for="item in data" :key="item.id">
+            <tr
+              class="bg-gray-100"
+              v-for="item in balances.data"
+              :key="item.id"
+            >
               <td style="width: 30%" class="px-4 border w-2/5">
                 {{ item.name }}
               </td>
@@ -85,8 +87,12 @@
                 </button>
               </td>
             </tr>
+            <tr v-if="balances.data.length === 0">
+              <td class="border-t px-6 py-4" colspan="4">No Record found.</td>
+            </tr>
           </tbody>
         </table>
+        <paginator class="mt-6" :balances="balances" />
       </div>
     </div>
   </app-layout>
@@ -96,15 +102,17 @@
 import AppLayout from "@/Layouts/AppLayout";
 import JetButton from "@/Jetstream/Button";
 import Multiselect from "@suadelabs/vue3-multiselect";
+import Paginator from "@/Layouts/Paginator";
 
 export default {
   components: {
     AppLayout,
     JetButton,
+    Paginator,
     Multiselect,
   },
 
-  props: ["data", "companies", "company"],
+  props: ["balances", "companies", "company"],
 
   data() {
     return {

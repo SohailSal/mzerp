@@ -1,33 +1,31 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">
-        Transactions
-        <select
-          v-model="yr_id"
-          class="
-            pr-2
-            ml-2
-            pb-2
-            text-gray-700
-            w-full
-            lg:w-1/4
-            rounded-md
-            float-right
-          "
-          label="year"
-          @change="yrch"
-        >
-          <option v-for="type in years" :key="type.id" :value="type.id">
-            {{ type.name }}
-          </option>
-        </select>
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Transactions</h2>
+        <div class="justify-end">
+          <select
+            v-model="yr_id"
+            class="
+              pr-2
+              ml-2
+              pb-2
+              text-gray-700
+              w-full
+              lg:w-5/12
+              rounded-md
+              float-right
+            "
+            label="year"
+            @change="yrch"
+          >
+            <option v-for="type in years" :key="type.id" :value="type.id">
+              {{ type.name }}
+            </option>
+          </select>
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -37,7 +35,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div
       v-if="$page.props.flash.success"
@@ -139,7 +137,7 @@
                   shadow-md
                   px-4
                   inline-block
-                  hover:bg-gray-700 hover:text-700
+                  hover:bg-gray-700 hover:text-white
                 "
               >
                 <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>

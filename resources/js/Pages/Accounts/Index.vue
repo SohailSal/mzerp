@@ -5,8 +5,8 @@
         <h2 class="font-semibold text-xl text-white my-2">Accounts</h2>
         <div class="justify-end">
           <multiselect
-            style="width: 50%; float: right"
-            class="rounded-md border border-black float-right"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
