@@ -49,7 +49,16 @@
         <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
         <div class="">
           <table
-            class="table-auto w-full shadow-lg border mt-4 ml-2 rounded-xl"
+            class="
+              table-auto
+              w-full
+              shadow-lg
+              border
+              mt-4
+              ml-2
+              overflow-visible
+              rounded-lg
+            "
           >
             <thead>
               <tr class="bg-gray-800 text-white">
@@ -65,12 +74,16 @@
                 v-for="item in balances.data"
                 :key="item.id"
               >
-                <td class="px-4 border w-2/5">
+                <td class="w-4/12 px-4 border w-2/5">
                   {{ item.company_name }}
                 </td>
-                <td class="px-4 border w-2/6 text-center">{{ item.begin }}</td>
-                <td class="px-4 border w-2/6 text-center">{{ item.end }}</td>
-                <td class="px-4 border w-2/6 text-center">
+                <td class="w-2/12 px-4 border w-2/6 text-center">
+                  {{ item.begin }}
+                </td>
+                <td class="w-2/12 px-4 border w-2/6 text-center">
+                  {{ item.end }}
+                </td>
+                <td class="w-4/12px-4 border w-2/6 text-center">
                   <button
                     class="
                       border

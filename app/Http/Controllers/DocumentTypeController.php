@@ -13,15 +13,15 @@ class DocumentTypeController extends Controller
 {
     public function index()
     {
-        // $data = DocumentType::all()
-        //     ->where('company_id', session('company_id'));
-        // 'data' => $data,
+
+        $query = DocumentType::query();
 
         return Inertia::render('DocumentTypes/Index', [
 
-            'data' => DocumentType::all()
-                ->where('company_id', session('company_id'))
-                ->map(function ($doc_type) {
+            'balances' => $query->where('company_id', session('company_id'))
+                // ->map(
+                ->paginate(12)
+                ->through(function ($doc_type) {
                     return [
                         'id' => $doc_type->id,
                         'name' => $doc_type->name,
