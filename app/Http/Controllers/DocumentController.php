@@ -88,7 +88,7 @@ class DocumentController extends Controller
                     request('direction')
                 );
             }
-            
+
             return Inertia::render(
                 'Documents/Index',
                 [
@@ -144,12 +144,12 @@ class DocumentController extends Controller
         $accounts = \App\Models\Account::where('company_id', session('company_id'))
         // ->map('id', 'name')
         ->get();
-        
-   
+
+
         if($account_first && $doc_type_first){
 
             return Inertia::render('Documents/Create', [
-           
+
                 'accounts' => $accounts,
                 'account_first' => $account_first,
                 'doc_type_first' => $doc_type_first,
@@ -162,7 +162,7 @@ class DocumentController extends Controller
         } else {
             return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
         }
-    
+
     }
 }
 
@@ -186,7 +186,7 @@ class DocumentController extends Controller
                 $date = $date->format('Y-m-d');
                 $ref_date_parts = explode("-", $date);
                 $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2];
-     
+
                 $doc = Document::create([
                     'type_id' => Request::input('type_id')['id'],
                     'company_id' => session('company_id'),
@@ -224,7 +224,20 @@ class DocumentController extends Controller
         $doc = \App\Models\Document::all()->where('id', $document->id)->map->only('id', 'ref')->first();
 
         $ref = Entry::all()->where('document_id', $document->id);
-        $entrie = \App\Models\Entry::all()->where('document_id', $document->id)->toArray();
+        $entrie = \App\Models\Entry::all()->where('document_id', $document->id)
+                // ->toArray();
+            ->map(function ($entry) {
+                    return [
+                        "id" => $entry->id,
+                        "company_id" => $entry->company_id,
+                        "document_id" => $entry->document_id,
+                        "account_id" => $entry->account,
+                        "year_id" => $entry->year_id,
+                        "debit" => $entry->debit,
+                        "credit" => $entry->credit,
+                    ];
+                });
+
         // $ref = Document::all()->where('document_id', $document->id);
         // // $entrie = Document::all()->where('document_id', $document->id);
         // $entrie = Document::all()->where('document_id', 1);
@@ -254,6 +267,7 @@ class DocumentController extends Controller
         // ]
         // dd($document);
         // $document = Document::all()->where('document_id', $document->id);
+        // dd($entries);
         return Inertia::render(
             'Documents/Edit',
             [
@@ -331,7 +345,7 @@ class DocumentController extends Controller
                     Entry::create([
                         // 'company_id' => $document->company_id,
                         'company_id' => session('company_id'),
-                        'account_id' => $entry['account_id'],
+                        'account_id' => $entry['account_id']['id'],
                         'year_id' => session('year_id'),
                         // 'year_id' => $document->year_id,
                         'document_id' => $document->id,

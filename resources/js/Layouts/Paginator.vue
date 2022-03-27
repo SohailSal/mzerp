@@ -160,7 +160,7 @@
               text-sm
               font-medium
               text-gray-500
-              bg-gray-100
+              bg-gray-200
               border border-gray-300
               cursor-default
               rounded-l-md
@@ -187,7 +187,7 @@
               text-sm
               font-medium
               text-gray-500
-              bg-white
+              bg-gray-100
               border border-gray-300
               rounded-l-md
               leading-5
@@ -217,7 +217,7 @@
                 v-if="
                   !isFirstOrLastOrDots(index, balances.links.length, link.label)
                 "
-                :class="{ 'bg-blue-200': link.active === true }"
+                :class="{ 'bg-indigo-300': link.active === true }"
                 :href="link.url"
                 class="
                   relative
@@ -229,7 +229,7 @@
                   text-sm
                   font-medium
                   text-gray-700
-                  bg-white
+                  bg-gray-100
                   border border-gray-300
                   leading-5
                   hover:text-gray-500
@@ -257,7 +257,7 @@
                   text-sm
                   font-medium
                   text-gray-700
-                  bg-white
+                  bg-gray-100
                   border border-gray-300
                   cursor-default
                   leading-5
@@ -280,7 +280,7 @@
               text-sm
               font-medium
               text-gray-500
-              bg-white
+              bg-gray-100
               border border-gray-300
               rounded-r-md
               leading-5
@@ -316,7 +316,7 @@
               text-sm
               font-medium
               text-gray-500
-              bg-gray-100
+              bg-gray-200
               border border-gray-300
               cursor-default
               rounded-r-md

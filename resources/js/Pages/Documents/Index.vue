@@ -1,24 +1,31 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Transactions
-        <select
-          v-model="yr_id"
-          class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right"
-          label="year"
-          @change="yrch"
-        >
-          <option v-for="type in years" :key="type.id" :value="type.id">
-            {{ type.name }}
-          </option>
-        </select>
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Transactions</h2>
+        <div class="justify-end">
+          <select
+            v-model="yr_id"
+            class="
+              pr-2
+              ml-2
+              pb-2
+              text-gray-700
+              w-full
+              lg:w-5/12
+              rounded-md
+              float-right
+            "
+            label="year"
+            @change="yrch"
+          >
+            <option v-for="type in years" :key="type.id" :value="type.id">
+              {{ type.name }}
+            </option>
+          </select>
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -28,7 +35,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div
       v-if="$page.props.flash.success"
@@ -42,9 +49,9 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" v-if="yearclosed" class="ml-2 mt-1 float-left"
+      <jet-button @click="create" v-if="yearclosed" class="mt-4 ml-2 float-left"
         >Create</jet-button
       >
       <input
@@ -52,13 +59,21 @@
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
-        class="pr-2 pb-2 w-full lg:w-1/4 ml-2 rounded-md placeholder-indigo-300"
+        class="
+          h-9
+          w-full
+          lg:w-1/4
+          ml-4
+          mt-4
+          rounded-full
+          placeholder-indigo-300
+        "
       />
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
 
-      <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
+      <!--   <div v-if="errors.type">{{ errors.type }}</div> -->
 
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <!-- </div> -->
@@ -66,7 +81,7 @@
       <!-- ml-8 mr-8 -->
       <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
         <thead>
-          <tr class="bg-indigo-100">
+          <tr class="text-white bg-gray-800">
             <th class="py-2 px-4 border">Reference</th>
             <th class="py-2 px-4 border">Date</th>
             <th class="py-2 px-4 border w-2/5">Description</th>
@@ -74,20 +89,40 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data.data" :key="item.id">
-            <td class="py-1 px-4 border text-center">{{ item.ref }}</td>
-            <td class="py-1 px-4 border text-center">{{ item.date }}</td>
-            <td class="py-1 px-4 border w-2/5">{{ item.description }}</td>
-            <td class="py-1 px-4 border text-center">
+          <tr class="bg-gray-100" v-for="item in data.data" :key="item.id">
+            <td style="width: 15%" class="px-4 border text-center">
+              {{ item.ref }}
+            </td>
+            <td style="width: 15%" class="px-4 border text-center">
+              {{ item.date }}
+            </td>
+            <td style="width: 40%" class="px-4 border w-2/5">
+              {{ item.description }}
+            </td>
+            <td style="width: 30%" class="px-4 border text-center">
               <button
-                class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                class="
+                  border
+                  bg-indigo-300
+                  rounded-xl
+                  px-4
+                  m-1
+                  hover:text-white hover:bg-indigo-400
+                "
                 @click="edit(item.id)"
                 v-if="yearclosed"
               >
                 <span>Edit</span>
               </button>
               <button
-                class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                class="
+                  border
+                  bg-red-500
+                  rounded-xl
+                  px-4
+                  m-1
+                  hover:text-white hover:bg-red-600
+                "
                 @click="destroy(item.id)"
                 v-if="item.delete"
               >
@@ -96,12 +131,13 @@
               <div
                 class="
                   border
-                  rounded-lg
+                  bg-gray-300
+                  text-md
+                  rounded-full
                   shadow-md
-                  p-2
-                  m-2
+                  px-4
                   inline-block
-                  hover:bg-gray-600 hover:text-white
+                  hover:bg-gray-700 hover:text-white
                 "
               >
                 <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>

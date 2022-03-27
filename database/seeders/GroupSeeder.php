@@ -19,6 +19,7 @@ class GroupSeeder extends Seeder
     {
         DB::transaction(function () {
 
+// ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Assets')->first()->id;
             $ass_fix = AccountGroup::create([
                 'name' => 'Fixed Assets',
@@ -65,20 +66,23 @@ class GroupSeeder extends Seeder
                 'company_id' => session('company_id'),
             ]);
 
+// ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Capital')->first()->id;
-            AccountGroup::create([
+            $equity = AccountGroup::create([
                 'name' => 'Equity',
                 'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Reserves',
                 'type_id' => $type_id,
+                'parent_id' => $equity->id,
                 'company_id' => session('company_id'),
             ]);
 
+// ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Liabilities')->first()->id;
-
             $acc_l_t_liab = AccountGroup::create([
                 'name' => 'Long Term Liabilities',
                 'type_id' => $type_id,
@@ -111,32 +115,39 @@ class GroupSeeder extends Seeder
                 'company_id' => session('company_id'),
             ]);
 
+// ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Revenue')->first()->id;
             AccountGroup::create([
                 'name' => 'Sales & Service',
                 'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Other Income',
                 'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
 
+// ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Expenses')->first()->id;
             AccountGroup::create([
                 'name' => 'Operating Expenses',
                 'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Administrative Expenses',
                 'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
             AccountGroup::create([
                 'name' => 'Taxes',
                 'type_id' => $type_id,
+                'parent_id' => null,
                 'company_id' => session('company_id'),
             ]);
         });

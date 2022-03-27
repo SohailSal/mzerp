@@ -1,9 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Edit Account Groups
-      </h2>
+      <h2 class="font-semibold text-xl text-white my-2">Edit Account Groups</h2>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div class="">
@@ -87,7 +85,7 @@
             class="
               px-4
               py-2
-              bg-gray-100
+              bg-gray-200
               border-t border-gray-200
               flex
               justify-center
@@ -95,7 +93,19 @@
             "
           >
             <button
-              class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
+              class="
+                border
+                rounded-xl
+                shadow-md
+                p-1
+                px-4
+                mt-1
+                bg-gray-800
+                text-white
+                ml-2
+                inline-block
+                hover:bg-gray-700 hover:text-white
+              "
               type="submit"
             >
               Update Account Group

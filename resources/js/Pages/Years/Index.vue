@@ -1,14 +1,12 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Years
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Years</h2>
+        <div class="justify-end">
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -18,7 +16,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
@@ -27,12 +25,12 @@
       <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
       <form @submit.prevent="form.get(route('years.create'))">
-        <jet-button type="submit" @click="create" class="mt-4 ml-2"
+        <jet-button type="submit" @click="create" class="ml-2"
           >Add Year</jet-button
         >
 
         <!-- <button
-          class="border bg-indigo-300 rounded-xl px-4 py-1 m-1 ml-2 mt-4"
+          class="border bg-indigo-300 rounded-xl px-4  m-1 ml-2 mt-4"
           type="submit"
           :disabled="form.processing"
         >
@@ -50,9 +48,20 @@
         </select> -->
         <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
         <div class="">
-          <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
+          <table
+            class="
+              table-auto
+              w-full
+              shadow-lg
+              border
+              mt-4
+              ml-2
+              overflow-visible
+              rounded-lg
+            "
+          >
             <thead>
-              <tr class="bg-indigo-100">
+              <tr class="bg-gray-800 text-white">
                 <th class="py-2 px-4 border">Company</th>
                 <th class="py-2 px-4 border">Begin</th>
                 <th class="py-2 px-4 border">End</th>
@@ -60,22 +69,44 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in balances.data" :key="item.id">
-                <td class="py-1 px-4 border w-2/5">
+              <tr
+                class="bg-gray-50"
+                v-for="item in balances.data"
+                :key="item.id"
+              >
+                <td class="w-4/12 px-4 border w-2/5">
                   {{ item.company_name }}
                 </td>
-                <td class="py-1 px-4 border text-center">{{ item.begin }}</td>
-                <td class="py-1 px-4 border text-center">{{ item.end }}</td>
-                <td class="py-1 px-4 border text-center">
+                <td class="w-2/12 px-4 border w-2/6 text-center">
+                  {{ item.begin }}
+                </td>
+                <td class="w-2/12 px-4 border w-2/6 text-center">
+                  {{ item.end }}
+                </td>
+                <td class="w-4/12px-4 border w-2/6 text-center">
                   <button
-                    class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                    class="
+                      border
+                      bg-indigo-300
+                      rounded-xl
+                      px-4
+                      m-1
+                      hover:text-white hover:bg-indigo-400
+                    "
                     @click="edit(item.id)"
                     type="button"
                   >
                     <span>Edit</span>
                   </button>
                   <button
-                    class="border bg-red-500 rounded-xl px-4 py-1 m-1"
+                    class="
+                      border
+                      bg-red-500
+                      rounded-xl
+                      px-4
+                      m-1
+                      hover:text-white hover:bg-red-600
+                    "
                     @click="destroy(item.id)"
                     type="button"
                     v-if="item.delete"
@@ -84,7 +115,14 @@
                   </button>
                   <button
                     v-if="item.closed == 0"
-                    class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                    class="
+                      border
+                      bg-gray-300
+                      rounded-xl
+                      px-4
+                      m-1
+                      hover:bg-gray-700 hover:text-white
+                    "
                     @click="close(item.id)"
                     type="button"
                   >

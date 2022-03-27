@@ -1,9 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Create Transactions
-      </h2>
+      <h2 class="font-semibold text-xl text-white my-2">Create Transactions</h2>
     </template>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div class="">
@@ -98,7 +96,7 @@
         </div> -->
 
           <!-- TABLE FOR ENTRIES ---- START ------------- -->
-          <div class="panel-body flex justify-center items-center">
+          <div class="panel-body flex justify-center items-start">
             <table class="table flex">
               <thead class="">
                 <tr>
@@ -149,12 +147,34 @@
                     <button
                       @click.prevent="deleteRow(index)"
                       v-if="index > 1"
-                      class="border bg-indigo-300 rounded-xl px-4 py-2 m-1"
+                      class="
+                        border
+                        bg-red-500
+                        rounded-full
+                        px-6
+                        py-1
+                        m-1
+                        hover:text-white hover:bg-red-600
+                      "
                     >
                       Delete
                     </button>
-
-                    <div v-else class="px-8 py-2 m-4"></div>
+                    <button
+                      v-else-if="index == 0"
+                      class="
+                        border
+                        bg-indigo-300
+                        rounded-full
+                        px-4
+                        py-1
+                        m-1
+                        hover:text-white hover:bg-indigo-400
+                      "
+                      @click.prevent="addRow"
+                    >
+                      Add Row
+                    </button>
+                    <div v-else class="border rounded-full px-4 py-1 m-1"></div>
                   </td>
                 </tr>
 
@@ -162,6 +182,7 @@
                   <th>Difference:</th>
                   <th>Debit:</th>
                   <th>Credit:</th>
+                  <th></th>
                 </tr>
 
                 <tr>
@@ -189,26 +210,34 @@
                       class="rounded-md w-36"
                     />
                   </td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
-            <div class="flex justify-start">
+            <!-- <div class="flex justify-start items-start">
               <button
-                class="border bg-indigo-300 rounded-xl px-4 py-2 m-4"
+                class="
+                  border
+                  bg-indigo-300
+                  rounded-xl
+                  px-4
+                  py-2
+                  m-4
+                  hover:text-white hover:bg-indigo-400
+                "
                 @click.prevent="addRow"
               >
                 Add row
               </button>
-            </div>
+            </div> -->
             <div v-if="isError">{{ firstError }}</div>
           </div>
           <!-- TABLE FOR ENTRIES ---- END ------------- -->
-
           <div
             class="
               px-4
               py-2
-              bg-gray-100
+              bg-gray-200
               border-t border-gray-200
               flex
               justify-center
@@ -216,7 +245,19 @@
             "
           >
             <button
-              class="border bg-indigo-300 rounded-xl px-4 py-2 ml-4 mt-4"
+              class="
+                border
+                rounded-xl
+                shadow-md
+                p-1
+                px-4
+                mt-4
+                bg-gray-800
+                text-white
+                ml-2
+                inline-block
+                hover:bg-gray-700 hover:text-white
+              "
               type="submit"
               :disabled="form.processing"
             >

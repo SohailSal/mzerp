@@ -1,14 +1,12 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Accounts
-        <div
-          style="display: inline-block; min-width: 25%"
-          class="flex-1 inline-block float-right"
-        >
+      <div class="grid grid-cols-2">
+        <h2 class="font-semibold text-xl text-white my-2">Accounts</h2>
+        <div class="justify-end">
           <multiselect
-            class="rounded-md border border-black"
+            style="width: 50%"
+            class="float-right rounded-md border border-black float-right"
             placeholder="Select Company."
             v-model="co_id"
             track-by="id"
@@ -18,7 +16,7 @@
           >
           </multiselect>
         </div>
-      </h2>
+      </div>
     </template>
     <div
       v-if="$page.props.flash.success"
@@ -32,20 +30,20 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-      <jet-button @click="create" class="mt-2 ml-2">Create Account</jet-button>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <jet-button @click="create" class="mt-4 ml-2">Create Account</jet-button>
       <input
         type="search"
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
-        class="pr-2 pb-2 w-full lg:w-1/4 ml-6 rounded-md placeholder-indigo-300"
+        class="h-9 w-full lg:w-1/4 ml-4 rounded-full placeholder-indigo-300"
       />
 
       <div class="">
         <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
           <thead>
-            <tr class="bg-indigo-100">
+            <tr class="bg-gray-900 text-white">
               <!-- <th class="py-2 px-4 border">ID</th> -->
               <th class="py-2 px-4 border">Name of Account</th>
               <th class="py-2 px-4 border">Group of Account</th>
@@ -53,20 +51,38 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in balances.data" :key="item.id">
+            <tr
+              class="bg-gray-100"
+              v-for="item in balances.data"
+              :key="item.id"
+            >
               <!-- <td class="py-1 px-4 border text-center">{{ item.id }}</td> -->
-              <td class="py-1 px-4 border">{{ item.name }}</td>
-              <td class="py-1 px-4 border">{{ item.group_name }}</td>
-              <!-- <td class="py-1 px-4 border">{{ item.accountGroup.name }}</td> -->
-              <td class="py-1 px-4 border text-center">
+              <td class="px-4 border">{{ item.name }}</td>
+              <td class="px-4 border">{{ item.group_name }}</td>
+              <!-- <td class=" px-4 border">{{ item.accountGroup.name }}</td> -->
+              <td class="px-4 border text-center">
                 <button
-                  class="border bg-indigo-300 rounded-xl px-4 py-1 m-1"
+                  class="
+                    border
+                    bg-indigo-300
+                    rounded-xl
+                    px-4
+                    m-1
+                    hover:text-white hover:bg-indigo-400
+                  "
                   @click="edit(item.id)"
                 >
                   <span>Edit</span>
                 </button>
                 <button
-                  class="border bg-red-500 rounded-xl px-4 py-1 m-1"
+                  class="
+                    border
+                    bg-red-500
+                    rounded-xl
+                    px-4
+                    m-1
+                    hover:text-white hover:bg-red-600
+                  "
                   @click="destroy(item.id)"
                   v-if="item.delete"
                 >
