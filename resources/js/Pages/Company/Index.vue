@@ -9,8 +9,8 @@
     >
       {{ $page.props.flash.success }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
+      <jet-button @click="create" class="ml-2">Create</jet-button>
 
       <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
       <!-- <input
@@ -47,11 +47,11 @@
         </option>
       </select> -->
       <div class="">
-        <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
+        <table class="w-full shadow-lg border mt-2 ml-2 rounded-xl">
           <thead>
             <!-- <tr class="bg-indigo-100"> -->
             <tr class="bg-gray-800 text-white">
-              <th class="py-2 px-4 border">
+              <th class="py-1 px-4 border">
                 <span @click="sort('name')">
                   Name
                   <!-- Email Descending  Starts-->
@@ -177,12 +177,12 @@
                   <!-- Email Ascending Ends-->
                 </span>
               </th>
-              <th class="py-2 px-4 border">Address</th>
-              <th class="py-2 px-4 border">Email</th>
-              <th class="py-2 px-4 border">Website</th>
-              <th class="py-2 px-4 border">Phone</th>
+              <th class="py-1 px-4 border">Address</th>
+              <th class="py-1 px-4 border">Email</th>
+              <th class="py-1 px-4 border">Website</th>
+              <th class="py-1 px-4 border">Phone</th>
               <!-- <th v-if="can['edit'] || can['delete']" class="py-2 px-4 border"> -->
-              <th class="py-2 px-4 border">Action</th>
+              <th class="py-1 px-4 border">Action</th>
             </tr>
           </thead>
           <tbody>

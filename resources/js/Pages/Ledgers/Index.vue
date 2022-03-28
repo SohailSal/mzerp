@@ -19,7 +19,7 @@
       </div>
     </template>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
         {{ $page.props.flash.success }}
       </div>
@@ -73,7 +73,7 @@
         <div
           class="
             border
-            rounded-full
+            rounded-lg
             shadow-md
             p-1
             px-4
@@ -88,15 +88,15 @@
           <button type="submit">Ledger Report</button>
         </div>
 
-        <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
+        <table class="shadow-lg w-full border mt-2 mx-2 rounded-xl">
           <thead>
             <tr class="bg-gray-800 text-white">
-              <th class="py-2 px-4 border">Reference</th>
-              <th class="py-2 px-4 border">Date</th>
-              <th class="py-2 px-4 border">Decription</th>
-              <th class="py-2 px-4 border">Debit</th>
-              <th class="py-2 px-4 border">Credit</th>
-              <th class="py-2 px-4 border">Balance</th>
+              <th class="py-1 px-4 border">Reference</th>
+              <th class="py-1 px-4 border">Date</th>
+              <th class="py-1 px-4 border">Decription</th>
+              <th class="py-1 px-4 border">Debit</th>
+              <th class="py-1 px-4 border">Credit</th>
+              <th class="py-1 px-4 border">Balance</th>
             </tr>
           </thead>
           <tbody v-if="this.account_id != 0">

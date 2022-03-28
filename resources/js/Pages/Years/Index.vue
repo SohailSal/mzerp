@@ -18,7 +18,7 @@
         </div>
       </div>
     </template>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
         {{ $page.props.flash.success }}
       </div>
@@ -54,7 +54,7 @@
               w-full
               shadow-lg
               border
-              mt-4
+              mt-2
               ml-2
               overflow-visible
               rounded-lg
@@ -62,10 +62,10 @@
           >
             <thead>
               <tr class="bg-gray-800 text-white">
-                <th class="py-2 px-4 border">Company</th>
-                <th class="py-2 px-4 border">Begin</th>
-                <th class="py-2 px-4 border">End</th>
-                <th class="py-2 px-4 border">Action</th>
+                <th class="py-1 px-4 border">Company</th>
+                <th class="py-1 px-4 border">Begin</th>
+                <th class="py-1 px-4 border">End</th>
+                <th class="py-1 px-4 border">Action</th>
               </tr>
             </thead>
             <tbody>

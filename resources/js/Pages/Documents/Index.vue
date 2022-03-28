@@ -49,9 +49,9 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" v-if="yearclosed" class="mt-4 ml-2 float-left"
+      <jet-button @click="create" v-if="yearclosed" class="ml-2 float-left"
         >Create</jet-button
       >
       <input
@@ -59,15 +59,7 @@
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
-        class="
-          h-9
-          w-full
-          lg:w-1/4
-          ml-4
-          mt-4
-          rounded-full
-          placeholder-indigo-300
-        "
+        class="h-9 w-full lg:w-1/4 ml-4 rounded-full placeholder-indigo-300"
       />
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
@@ -79,13 +71,13 @@
       <!-- </div> -->
       <!-- <div class="w-full px-8"> -->
       <!-- ml-8 mr-8 -->
-      <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
+      <table class="shadow-lg w-full border mt-2 mx-2 rounded-xl">
         <thead>
           <tr class="text-white bg-gray-800">
-            <th class="py-2 px-4 border">Reference</th>
-            <th class="py-2 px-4 border">Date</th>
-            <th class="py-2 px-4 border w-2/5">Description</th>
-            <th class="py-2 px-4 border">Actions</th>
+            <th class="py-1 px-4 border">Reference</th>
+            <th class="py-1 px-4 border">Date</th>
+            <th class="py-1 px-4 border w-2/5">Description</th>
+            <th class="py-1 px-4 border">Actions</th>
           </tr>
         </thead>
         <tbody>
