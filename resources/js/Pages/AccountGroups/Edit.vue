@@ -60,7 +60,7 @@
             />
             <div v-if="errors.type">{{ errors.type }}</div>
           </div>
-          <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
+          <!-- <div class="p-2 mr-2 mb-2 mt-4 ml-6 flex flex-wrap">
             <label class="my-2 mr-8 text-right w-36 font-bold"
               >Group Parent :</label
             >
@@ -80,7 +80,7 @@
               placeholder="Enter acc:"
             />
             <div v-if="errors.type">{{ errors.type }}</div>
-          </div>
+          </div> -->
           <div
             class="
               px-4
