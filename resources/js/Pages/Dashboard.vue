@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #header>
-      <h2 class="font-semibold text-xl text-white leading-tight">
+      <h2 class="font-semibold text-xl text-white my-2">
         Dashboard
         <!-- - {{ this.$page.props.co_id }} - {{ this.$page.props.yr_id }} -->
       </h2>
@@ -30,15 +30,15 @@
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div
           class="
-            bg-gray-700
-            text-white text-3xl
-            p-2
+            bg-gray-800
+            text-white text-center text-3xl
+            p-4
             overflow-hidden
             shadow-xl
             sm:rounded-lg
           "
         >
-          Welcome to MZ ERP
+          Welcome to SA-accounting
         </div>
 
         <!-- <welcome /> -->

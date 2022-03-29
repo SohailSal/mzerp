@@ -491,6 +491,22 @@
       <main>
         <slot></slot>
       </main>
+      <footer class="static">
+        <!-- w-full -->
+        <div
+          class="
+            px-4
+            font-semibold
+            absolute
+            bottom-0
+            bg-gray-800
+            text-white text-sm text-center
+          "
+        >
+          <!-- commit 80 date 3 year 2022 -->
+          <p>Beta-Version 0.80.3.22</p>
+        </div>
+      </footer>
     </div>
   </div>
 </template>

@@ -49,9 +49,9 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" v-if="yearclosed" class="mt-4 ml-2 float-left"
+      <jet-button @click="create" v-if="yearclosed" class="ml-2 float-left"
         >Create</jet-button
       >
       <input
@@ -59,15 +59,7 @@
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
-        class="
-          h-9
-          w-full
-          lg:w-1/4
-          ml-4
-          mt-4
-          rounded-full
-          placeholder-indigo-300
-        "
+        class="h-9 w-full lg:w-1/4 ml-4 rounded-full placeholder-indigo-300"
       />
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
@@ -79,76 +71,80 @@
       <!-- </div> -->
       <!-- <div class="w-full px-8"> -->
       <!-- ml-8 mr-8 -->
-      <table class="shadow-lg w-full border mt-4 mx-2 rounded-xl">
-        <thead>
-          <tr class="text-white bg-gray-800">
-            <th class="py-2 px-4 border">Reference</th>
-            <th class="py-2 px-4 border">Date</th>
-            <th class="py-2 px-4 border w-2/5">Description</th>
-            <th class="py-2 px-4 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="bg-gray-100" v-for="item in data.data" :key="item.id">
-            <td style="width: 15%" class="px-4 border text-center">
-              {{ item.ref }}
-            </td>
-            <td style="width: 15%" class="px-4 border text-center">
-              {{ item.date }}
-            </td>
-            <td style="width: 40%" class="px-4 border w-2/5">
-              {{ item.description }}
-            </td>
-            <td style="width: 30%" class="px-4 border text-center">
-              <button
-                class="
-                  border
-                  bg-indigo-300
-                  rounded-xl
-                  px-4
-                  m-1
-                  hover:text-white hover:bg-indigo-400
-                "
-                @click="edit(item.id)"
-                v-if="yearclosed"
-              >
-                <span>Edit</span>
-              </button>
-              <button
-                class="
-                  border
-                  bg-red-500
-                  rounded-xl
-                  px-4
-                  m-1
-                  hover:text-white hover:bg-red-600
-                "
-                @click="destroy(item.id)"
-                v-if="item.delete"
-              >
-                <span>Delete</span>
-              </button>
-              <div
-                class="
-                  border
-                  bg-gray-300
-                  text-md
-                  rounded-full
-                  shadow-md
-                  px-4
-                  inline-block
-                  hover:bg-gray-700 hover:text-white
-                "
-              >
-                <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>
-              </div>
-            </td>
-          </tr>
-          <tr v-if="data.data.length === 0">
-            <td class="border-t px-6 py-4" colspan="4">No Record found.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="relative overflow-x-auto mt-2 ml-2 sm:rounded-2xl">
+        <table class="w-full shadow-lg border rounded-2xl">
+          <thead>
+            <tr class="text-white bg-gray-800">
+              <th class="py-1 px-4 border">Reference</th>
+              <th class="py-1 px-4 border">Date</th>
+              <th class="py-1 px-4 border w-2/5">Description</th>
+              <th class="py-1 px-4 border">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-gray-100" v-for="item in data.data" :key="item.id">
+              <td style="width: 15%" class="px-4 border text-center">
+                {{ item.ref }}
+              </td>
+              <td style="width: 15%" class="px-4 border text-center">
+                {{ item.date }}
+              </td>
+              <td style="width: 40%" class="px-4 border w-2/5">
+                {{ item.description }}
+              </td>
+              <td style="width: 30%" class="px-4 border text-center">
+                <button
+                  class="
+                    border
+                    bg-indigo-300
+                    rounded-xl
+                    px-4
+                    m-1
+                    hover:text-white hover:bg-indigo-400
+                  "
+                  @click="edit(item.id)"
+                  v-if="yearclosed"
+                >
+                  <span>Edit</span>
+                </button>
+                <button
+                  class="
+                    border
+                    bg-red-500
+                    rounded-xl
+                    px-4
+                    m-1
+                    hover:text-white hover:bg-red-600
+                  "
+                  @click="destroy(item.id)"
+                  v-if="item.delete"
+                >
+                  <span>Delete</span>
+                </button>
+                <div
+                  class="
+                    border
+                    bg-gray-300
+                    text-md
+                    rounded-full
+                    shadow-md
+                    px-4
+                    inline-block
+                    hover:bg-gray-700 hover:text-white
+                  "
+                >
+                  <a :href="'pd/' + item.id" target="_blank">Voucher in PDF</a>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="data.data.length === 0">
+              <td class="border-t px-6 py-4 bg-gray-100" colspan="4">
+                No Record found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <paginator class="mt-6" :balances="data" />
       <!-- </div> -->
     </div>

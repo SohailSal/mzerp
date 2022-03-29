@@ -59,6 +59,22 @@
               v-on:select="treeChange"
               style="max-width: 300px"
             />
+            <div
+              class="
+                ml-2
+                bg-red-100
+                border border-red-400
+                text-red-700
+                px-4
+                py-2
+                rounded
+                relative
+              "
+              role="alert"
+              v-if="errors.group"
+            >
+              {{ errors.group }}
+            </div>
           </div>
           <div
             class="

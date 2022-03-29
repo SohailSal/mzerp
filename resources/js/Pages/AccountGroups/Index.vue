@@ -30,9 +30,9 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
-      <jet-button @click="generate" v-if="exists" class="mt-4 ml-2"
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
+      <jet-button @click="create" class="ml-2">Create</jet-button>
+      <jet-button @click="generate" v-if="exists" class="ml-2"
         >Auto Generate Groups</jet-button
       >
 
@@ -56,60 +56,64 @@
         placeholder="Search..."
         class="h-9 w-full lg:w-1/4 ml-4 rounded-full placeholder-indigo-300"
       />
-      <div class="">
-        <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
-          <thead>
-            <tr class="bg-gray-800 text-white">
-              <th class="py-2 px-4 border w-2/5">Group Name</th>
-              <th class="py-2 px-4 border">Group Type</th>
-              <th class="py-2 px-4 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              class="bg-gray-100"
-              v-for="item in balances.data"
-              :key="item.id"
-            >
-              <td style="width: 30%" class="px-4 border">{{ item.name }}</td>
-              <td style="width: 30%" class="px-4 border text-center">
-                {{ item.type_name }}
-              </td>
-              <td style="width: 40%" class="px-4 border text-center">
-                <button
-                  class="
-                    border
-                    bg-indigo-300
-                    rounded-xl
-                    px-4
-                    m-1
-                    hover:text-white hover:bg-indigo-400
-                  "
-                  @click="edit(item.id)"
-                >
-                  <span>Edit</span>
-                </button>
-                <button
-                  class="
-                    border
-                    bg-red-500
-                    rounded-xl
-                    px-4
-                    m-1
-                    hover:text-white hover:bg-red-600
-                  "
-                  @click="destroy(item.id)"
-                  v-if="item.delete"
-                >
-                  <span>Delete</span>
-                </button>
-              </td>
-            </tr>
-            <tr v-if="balances.data.length === 0">
-              <td class="border-t px-6 py-4" colspan="4">No Record found.</td>
-            </tr>
-          </tbody>
-        </table>
+      <div>
+        <div class="relative overflow-x-auto mt-2 ml-2 sm:rounded-2xl">
+          <table class="w-full shadow-lg border rounded-2xl">
+            <thead>
+              <tr class="bg-gray-800 text-white">
+                <th class="py-1 px-4 border w-2/5">Group Name</th>
+                <th class="py-1 px-4 border">Group Type</th>
+                <th class="py-1 px-4 border">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="bg-gray-100"
+                v-for="item in balances.data"
+                :key="item.id"
+              >
+                <td style="width: 30%" class="px-4 border">{{ item.name }}</td>
+                <td style="width: 30%" class="px-4 border text-center">
+                  {{ item.type_name }}
+                </td>
+                <td style="width: 40%" class="px-4 border text-center">
+                  <button
+                    class="
+                      border
+                      bg-indigo-300
+                      rounded-xl
+                      px-4
+                      m-1
+                      hover:text-white hover:bg-indigo-400
+                    "
+                    @click="edit(item.id)"
+                  >
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    class="
+                      border
+                      bg-red-500
+                      rounded-xl
+                      px-4
+                      m-1
+                      hover:text-white hover:bg-red-600
+                    "
+                    @click="destroy(item.id)"
+                    v-if="item.delete"
+                  >
+                    <span>Delete</span>
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="balances.data.length === 0">
+                <td class="border-t px-6 py-4 bg-gray-100" colspan="4">
+                  No Record found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <paginator class="mt-6" :balances="balances" />
       </div>
     </div>

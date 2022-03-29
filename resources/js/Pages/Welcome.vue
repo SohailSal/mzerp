@@ -288,7 +288,7 @@
           style="text-shadow: #1f2937 2px 2px 5px"
           class="text-sm font-bold bg-blend-screen text-black ml-5"
         >
-          Copyright @ 2021, Tulip Industries (Pvt) Limited.
+          Copyright © 2022, SA-accounting.
         </p>
       </div>
     </div>

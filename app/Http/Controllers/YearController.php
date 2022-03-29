@@ -30,7 +30,7 @@ class YearController extends Controller
             'balances' => $query
                 ->where('company_id', session('company_id'))
                 // ->map(
-                ->paginate(12)
+                ->paginate(10)
                 ->through(
                     function ($year) {
                         return [

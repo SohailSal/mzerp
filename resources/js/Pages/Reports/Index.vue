@@ -47,7 +47,7 @@
       <div
         class="
           border
-          rounded-full
+          rounded-lg
           shadow-md
           p-1
           px-4
@@ -64,7 +64,7 @@
       <div
         class="
           border
-          rounded-full
+          rounded-lg
           shadow-md
           p-1
           px-4
@@ -81,7 +81,7 @@
       <div
         class="
           border
-          rounded-full
+          rounded-lg
           shadow-md
           bg-gray-800
           text-white
