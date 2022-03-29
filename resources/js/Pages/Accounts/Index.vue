@@ -30,8 +30,8 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <jet-button @click="create" class="mt-4 ml-2">Create Account</jet-button>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
+      <jet-button @click="create" class="ml-2">Create Account</jet-button>
       <input
         type="search"
         v-model="params.search"
@@ -41,13 +41,13 @@
       />
 
       <div class="">
-        <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
+        <table class="w-full shadow-lg border mt-2 ml-2 rounded-xl">
           <thead>
             <tr class="bg-gray-900 text-white">
               <!-- <th class="py-2 px-4 border">ID</th> -->
-              <th class="py-2 px-4 border">Name of Account</th>
-              <th class="py-2 px-4 border">Group of Account</th>
-              <th class="py-2 px-4 border">Action</th>
+              <th class="py-1 px-4 border">Name of Account</th>
+              <th class="py-1 px-4 border">Group of Account</th>
+              <th class="py-1 px-4 border">Action</th>
             </tr>
           </thead>
           <tbody>

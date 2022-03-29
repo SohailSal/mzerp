@@ -61,7 +61,7 @@ class DocumentController extends Controller
             $query
                 ->where('company_id', session('company_id'))
                 ->where('year_id', session('year_id'))
-                ->paginate(12)
+                ->paginate(10)
                 ->withQueryString()
                 ->through(
                     fn ($document) =>
@@ -92,7 +92,7 @@ class DocumentController extends Controller
             return Inertia::render(
                 'Documents/Index',
                 [
-                    'data' => $query->paginate(6),
+                    'data' => $query->paginate(10),
                     'yearclosed' => $yearclosed,
                     'filters' => request()->all(['search', 'field', 'direction']),
                     // 'data' => Document::all()
@@ -129,9 +129,9 @@ class DocumentController extends Controller
                         }),
                 ]
             );
-        } elseif($acc) {
+        } elseif ($acc) {
             return Redirect::route('documenttypes')->with('warning', 'VOUCHER NOT FOUND, Please create voucher first.');
-        }else{
+        } else {
             return Redirect::route('accounts')->with('warning', 'ACCOUNT NOT FOUND, Please create an account first.');
         }
     }
@@ -142,11 +142,11 @@ class DocumentController extends Controller
         $doc_type_first = \App\Models\DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
         // $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
         $accounts = \App\Models\Account::where('company_id', session('company_id'))
-        // ->map('id', 'name')
-        ->get();
+            // ->map('id', 'name')
+            ->get();
 
 
-        if($account_first && $doc_type_first){
+        if ($account_first && $doc_type_first) {
 
             return Inertia::render('Documents/Create', [
 
@@ -156,15 +156,14 @@ class DocumentController extends Controller
                 'doc_types' => DocumentType::where('company_id', session('company_id'))->get(),
                 // 'doc_types' => DocumentType::all()->where('company_id', session('company_id')),
             ]);
-        }else {
-        if ($doc_type_first) {
-            return Redirect::route('accounts.create')->with('success', 'ACCOUNTS NOT FOUND, Please create an account first');
         } else {
-            return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
+            if ($doc_type_first) {
+                return Redirect::route('accounts.create')->with('success', 'ACCOUNTS NOT FOUND, Please create an account first');
+            } else {
+                return Redirect::route('documenttypes.create')->with('success', 'VOUCHER NOT FOUND, Please create a voucher first');
+            }
         }
-
     }
-}
 
     public function store(Req $request)
     {
@@ -225,18 +224,18 @@ class DocumentController extends Controller
 
         $ref = Entry::all()->where('document_id', $document->id);
         $entrie = \App\Models\Entry::all()->where('document_id', $document->id)
-                // ->toArray();
+            // ->toArray();
             ->map(function ($entry) {
-                    return [
-                        "id" => $entry->id,
-                        "company_id" => $entry->company_id,
-                        "document_id" => $entry->document_id,
-                        "account_id" => $entry->account,
-                        "year_id" => $entry->year_id,
-                        "debit" => $entry->debit,
-                        "credit" => $entry->credit,
-                    ];
-                });
+                return [
+                    "id" => $entry->id,
+                    "company_id" => $entry->company_id,
+                    "document_id" => $entry->document_id,
+                    "account_id" => $entry->account,
+                    "year_id" => $entry->year_id,
+                    "debit" => $entry->debit,
+                    "credit" => $entry->credit,
+                ];
+            });
 
         // $ref = Document::all()->where('document_id', $document->id);
         // // $entrie = Document::all()->where('document_id', $document->id);

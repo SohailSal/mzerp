@@ -31,18 +31,18 @@
       {{ $page.props.flash.warning }}
     </div>
     <!-- <div class=""> -->
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
+      <jet-button @click="create" class="ml-2">Create</jet-button>
 
       <!-- </div> -->
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
       <div class="">
-        <table class="shadow-lg w-full border mt-4 ml-2 rounded-xl">
+        <table class="shadow-lg w-full border mt-2 ml-2 rounded-xl">
           <thead>
             <tr class="text-white bg-gray-800">
-              <th class="py-2 px-4 border">Voucher Name</th>
-              <th class="py-2 px-4 border w-2/5">Prefix</th>
-              <th class="py-2 px-4 border">Actions</th>
+              <th class="py-1 px-4 border">Voucher Name</th>
+              <th class="py-1 px-4 border w-2/5">Prefix</th>
+              <th class="py-1 px-4 border">Actions</th>
             </tr>
           </thead>
           <tbody>

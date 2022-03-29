@@ -39,18 +39,18 @@ class AccountGroupController extends Controller
 
         $balances = $query
             ->where('company_id', session('company_id'))
-            ->paginate(15)
+            ->paginate(10)
             ->through(
                 function ($accountgroup) {
                     return
                         [
                             'id' => $accountgroup->id,
-                        'name' => $accountgroup->name,
-                        'type_id' => $accountgroup->type_id,
-                        'type_name' => $accountgroup->accountType->name,
-                        'company_id' => $accountgroup->company_id,
-                        'company_name' => $accountgroup->company->name,
-                        'delete' => Account::where('group_id', $accountgroup->id)->first() ? false : true,
+                            'name' => $accountgroup->name,
+                            'type_id' => $accountgroup->type_id,
+                            'type_name' => $accountgroup->accountType->name,
+                            'company_id' => $accountgroup->company_id,
+                            'company_name' => $accountgroup->company->name,
+                            'delete' => Account::where('group_id', $accountgroup->id)->first() ? false : true,
                         ];
                 }
             );
@@ -100,12 +100,10 @@ class AccountGroupController extends Controller
 
     public function create(Req $request)
     {
-        if($request->type_id)
-        {
+        if ($request->type_id) {
             $first = \App\Models\AccountType::where('id', $request->type_id)->first();
             $name = $request->name;
-        }
-        else{
+        } else {
             $name = null;
             $first = \App\Models\AccountType::all('id', 'name')->first();
         }
@@ -143,8 +141,7 @@ class AccountGroupController extends Controller
 
     public function edit(AccountGroup $accountgroup)
     {
-        $accountgroup = AccountGroup::
-            where('id', $accountgroup->id)->get()
+        $accountgroup = AccountGroup::where('id', $accountgroup->id)->get()
             ->map(
                 function ($accountgroup) {
                     return

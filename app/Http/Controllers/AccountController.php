@@ -40,7 +40,7 @@ class AccountController extends Controller
 
             $balances = $query
                 ->where('company_id', session('company_id'))
-                ->paginate(12)
+                ->paginate(10)
                 ->through(
                     function ($account) {
                         return
@@ -54,7 +54,7 @@ class AccountController extends Controller
                     }
                 );
             return Inertia::render('Accounts/Index', [
-                // 'data' => $query->paginate(6),
+
                 'filters' => request()->all(['search', 'field', 'direction']),
                 'balances' => $balances,
                 'company' => Company::where('id', session('company_id'))->first(),

@@ -30,9 +30,9 @@
     >
       {{ $page.props.flash.warning }}
     </div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <jet-button @click="create" class="mt-4 ml-2">Create</jet-button>
-      <jet-button @click="generate" v-if="exists" class="mt-4 ml-2"
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
+      <jet-button @click="create" class="ml-2">Create</jet-button>
+      <jet-button @click="generate" v-if="exists" class="ml-2"
         >Auto Generate Groups</jet-button
       >
 
@@ -57,12 +57,12 @@
         class="h-9 w-full lg:w-1/4 ml-4 rounded-full placeholder-indigo-300"
       />
       <div class="">
-        <table class="w-full shadow-lg border mt-4 ml-2 rounded-xl">
+        <table class="w-full shadow-lg border mt-2 ml-2 rounded-xl">
           <thead>
             <tr class="bg-gray-800 text-white">
-              <th class="py-2 px-4 border w-2/5">Group Name</th>
-              <th class="py-2 px-4 border">Group Type</th>
-              <th class="py-2 px-4 border">Actions</th>
+              <th class="py-1 px-4 border w-2/5">Group Name</th>
+              <th class="py-1 px-4 border">Group Type</th>
+              <th class="py-1 px-4 border">Actions</th>
             </tr>
           </thead>
           <tbody>
