@@ -65,9 +65,10 @@
               >Account Group :</label
             ><input
               type="text"
-              readonly
+              disabled
               v-model="form.group"
               class="
+                disabled:opacity-50
                 pr-2
                 pb-2
                 w-full

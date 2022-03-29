@@ -87,80 +87,81 @@
         >
           <button type="submit">Ledger Report</button>
         </div>
-
-        <table class="shadow-lg w-full border mt-2 mx-2 rounded-xl">
-          <thead>
-            <tr class="bg-gray-800 text-white">
-              <th class="py-1 px-4 border">Reference</th>
-              <th class="py-1 px-4 border">Date</th>
-              <th class="py-1 px-4 border">Decription</th>
-              <th class="py-1 px-4 border">Debit</th>
-              <th class="py-1 px-4 border">Credit</th>
-              <th class="py-1 px-4 border">Balance</th>
-            </tr>
-          </thead>
-          <tbody v-if="this.account_id != 0">
-            <tr class="bg-gray-100">
-              <td style="widht: 15%" class="py-1 px-4 border"></td>
-              <td style="widht: 15%" class="py-1 px-4 border"></td>
-              <td style="widht: 25%" class="py-1 px-4 border font-bold">
-                Opening Balance
-              </td>
-              <td style="widht: 15%" class="py-1 px-4 border"></td>
-              <td style="widht: 15%" class="py-1 px-4 border"></td>
-              <td
-                style="widht: 15%"
-                class="py-1 px-4 border font-bold text-center"
+        <div class="relative overflow-x-auto mt-2 ml-2 sm:rounded-2xl">
+          <table class="w-full shadow-lg border rounded-2xl">
+            <thead>
+              <tr class="bg-gray-800 text-white">
+                <th class="py-1 px-4 border">Reference</th>
+                <th class="py-1 px-4 border">Date</th>
+                <th class="py-1 px-4 border">Decription</th>
+                <th class="py-1 px-4 border">Debit</th>
+                <th class="py-1 px-4 border">Credit</th>
+                <th class="py-1 px-4 border">Balance</th>
+              </tr>
+            </thead>
+            <tbody v-if="this.account_id != 0">
+              <tr class="bg-gray-100">
+                <td style="widht: 15%" class="py-1 px-4 border"></td>
+                <td style="widht: 15%" class="py-1 px-4 border"></td>
+                <td style="widht: 25%" class="py-1 px-4 border font-bold">
+                  Opening Balance
+                </td>
+                <td style="widht: 15%" class="py-1 px-4 border"></td>
+                <td style="widht: 15%" class="py-1 px-4 border"></td>
+                <td
+                  style="widht: 15%"
+                  class="py-1 px-4 border font-bold text-center"
+                >
+                  {{ prebal }}
+                </td>
+              </tr>
+              <tr
+                class="bg-gray-100"
+                v-for="(item, index) in entries"
+                :key="item.id"
               >
-                {{ prebal }}
-              </td>
-            </tr>
-            <tr
-              class="bg-gray-100"
-              v-for="(item, index) in entries"
-              :key="item.id"
-            >
-              <td style="width: 15%" class="py-1 px-4 border">
-                {{ item.ref }}
-              </td>
-              <td style="width: 10%" class="py-1 px-4 border text-center">
-                {{ item.date }}
-              </td>
-              <td style="width: 30%" class="py-1 px-4 border">
-                {{ item.description }}
-              </td>
-              <td style="width: 15%" class="py-1 px-4 border text-center">
-                {{ item.debit }}
-              </td>
-              <td style="width: 15%" class="py-1 px-4 border text-center">
-                {{ item.credit }}
-              </td>
-              <td style="width: 15%" class="py-1 px-4 border text-center">
-                {{ balance[index] }}
-              </td>
-            </tr>
-            <tr class="bg-gray-100">
-              <td style="width: 15%" class="py-1 px-4 border"></td>
-              <td style="width: 15%" class="py-1 px-4 border"></td>
-              <td style="width: 25%" class="py-1 px-4 border font-bold">
-                Totals
-              </td>
-              <td
-                style="width: 15%"
-                class="py-1 px-4 border font-bold text-center"
-              >
-                {{ debits }}
-              </td>
-              <td
-                style="width: 15%"
-                class="py-1 px-4 border font-bold text-center"
-              >
-                {{ credits }}
-              </td>
-              <td style="width: 15%" class="py-1 px-4 border"></td>
-            </tr>
-          </tbody>
-        </table>
+                <td style="width: 15%" class="py-1 px-4 border">
+                  {{ item.ref }}
+                </td>
+                <td style="width: 10%" class="py-1 px-4 border text-center">
+                  {{ item.date }}
+                </td>
+                <td style="width: 30%" class="py-1 px-4 border">
+                  {{ item.description }}
+                </td>
+                <td style="width: 15%" class="py-1 px-4 border text-center">
+                  {{ item.debit }}
+                </td>
+                <td style="width: 15%" class="py-1 px-4 border text-center">
+                  {{ item.credit }}
+                </td>
+                <td style="width: 15%" class="py-1 px-4 border text-center">
+                  {{ balance[index] }}
+                </td>
+              </tr>
+              <tr class="bg-gray-100">
+                <td style="width: 15%" class="py-1 px-4 border"></td>
+                <td style="width: 15%" class="py-1 px-4 border"></td>
+                <td style="width: 25%" class="py-1 px-4 border font-bold">
+                  Totals
+                </td>
+                <td
+                  style="width: 15%"
+                  class="py-1 px-4 border font-bold text-center"
+                >
+                  {{ debits }}
+                </td>
+                <td
+                  style="width: 15%"
+                  class="py-1 px-4 border font-bold text-center"
+                >
+                  {{ credits }}
+                </td>
+                <td style="width: 15%" class="py-1 px-4 border"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </form>
     </div>
   </app-layout>

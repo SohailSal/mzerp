@@ -48,93 +48,86 @@
         </select> -->
         <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
         <div class="">
-          <table
-            class="
-              table-auto
-              w-full
-              shadow-lg
-              border
-              mt-2
-              ml-2
-              overflow-visible
-              rounded-lg
-            "
-          >
-            <thead>
-              <tr class="bg-gray-800 text-white">
-                <th class="py-1 px-4 border">Company</th>
-                <th class="py-1 px-4 border">Begin</th>
-                <th class="py-1 px-4 border">End</th>
-                <th class="py-1 px-4 border">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class="bg-gray-50"
-                v-for="item in balances.data"
-                :key="item.id"
-              >
-                <td class="w-4/12 px-4 border w-2/5">
-                  {{ item.company_name }}
-                </td>
-                <td class="w-2/12 px-4 border w-2/6 text-center">
-                  {{ item.begin }}
-                </td>
-                <td class="w-2/12 px-4 border w-2/6 text-center">
-                  {{ item.end }}
-                </td>
-                <td class="w-4/12px-4 border w-2/6 text-center">
-                  <button
-                    class="
-                      border
-                      bg-indigo-300
-                      rounded-xl
-                      px-4
-                      m-1
-                      hover:text-white hover:bg-indigo-400
-                    "
-                    @click="edit(item.id)"
-                    type="button"
-                  >
-                    <span>Edit</span>
-                  </button>
-                  <button
-                    class="
-                      border
-                      bg-red-500
-                      rounded-xl
-                      px-4
-                      m-1
-                      hover:text-white hover:bg-red-600
-                    "
-                    @click="destroy(item.id)"
-                    type="button"
-                    v-if="item.delete"
-                  >
-                    <span>Delete</span>
-                  </button>
-                  <button
-                    v-if="item.closed == 0"
-                    class="
-                      border
-                      bg-gray-300
-                      rounded-xl
-                      px-4
-                      m-1
-                      hover:bg-gray-700 hover:text-white
-                    "
-                    @click="close(item.id)"
-                    type="button"
-                  >
-                    <span>Close Fiscal</span>
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="balances.data.length === 0">
-                <td class="border-t px-6 py-4" colspan="4">No Record found.</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="relative overflow-x-auto mt-2 ml-2 sm:rounded-2xl">
+            <table class="w-full shadow-lg border rounded-2xl">
+              <thead>
+                <tr class="bg-gray-800 text-white">
+                  <th class="py-1 px-4 border">Company</th>
+                  <th class="py-1 px-4 border">Begin</th>
+                  <th class="py-1 px-4 border">End</th>
+                  <th class="py-1 px-4 border">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-gray-50"
+                  v-for="item in balances.data"
+                  :key="item.id"
+                >
+                  <td class="w-4/12 px-4 border w-2/5">
+                    {{ item.company_name }}
+                  </td>
+                  <td class="w-2/12 px-4 border w-2/6 text-center">
+                    {{ item.begin }}
+                  </td>
+                  <td class="w-2/12 px-4 border w-2/6 text-center">
+                    {{ item.end }}
+                  </td>
+                  <td class="w-4/12px-4 border w-2/6 text-center">
+                    <button
+                      class="
+                        border
+                        bg-indigo-300
+                        rounded-xl
+                        px-4
+                        m-1
+                        hover:text-white hover:bg-indigo-400
+                      "
+                      @click="edit(item.id)"
+                      type="button"
+                    >
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      class="
+                        border
+                        bg-red-500
+                        rounded-xl
+                        px-4
+                        m-1
+                        hover:text-white hover:bg-red-600
+                      "
+                      @click="destroy(item.id)"
+                      type="button"
+                      v-if="item.delete"
+                    >
+                      <span>Delete</span>
+                    </button>
+                    <button
+                      v-if="item.closed == 0"
+                      class="
+                        border
+                        bg-gray-300
+                        rounded-xl
+                        px-4
+                        m-1
+                        hover:bg-gray-700 hover:text-white
+                      "
+                      @click="close(item.id)"
+                      type="button"
+                    >
+                      <span>Close Fiscal</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr v-if="balances.data.length === 0">
+                  <td class="border-t px-6 py-4 bg-gray-100" colspan="4">
+                    No Record found.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <paginator class="mt-6" :balances="balances" />
         </div>
       </form>

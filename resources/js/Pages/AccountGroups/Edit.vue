@@ -45,9 +45,10 @@
             >
             <input
               type="text"
-              readonly
+              disabled
               v-model="form.type"
               class="
+                disabled:opacity-50
                 pr-2
                 pb-2
                 w-full

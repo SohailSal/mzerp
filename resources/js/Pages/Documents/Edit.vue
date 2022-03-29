@@ -28,7 +28,9 @@
             <input
               type="text"
               v-model="document.type_name"
+              disabled
               class="
+                disabled:opacity-50
                 pr-2
                 pb-2
                 w-full
@@ -38,7 +40,6 @@
               "
               label="ref"
               placeholder="Enter Voucher"
-              readonly
             />
             <div v-if="errors.type">{{ errors.type }}</div>
           </div>
@@ -48,8 +49,10 @@
               >Reference :</label
             ><input
               type="text"
+              disabled
               v-model="document.ref"
               class="
+                disabled:opacity-50
                 pr-2
                 pb-2
                 w-full
@@ -59,7 +62,6 @@
               "
               label="ref"
               placeholder="Enter Reference"
-              readonly
             />
             <div
               class="

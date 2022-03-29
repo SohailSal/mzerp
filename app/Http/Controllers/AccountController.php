@@ -47,7 +47,7 @@ class AccountController extends Controller
                             [
                                 'id' => $account->id,
                                 'name' => $account->name,
-                                'group_id' => $account->group_id,
+                                // 'group_id' => $account->parent_id,
                                 'group_name' => $account->accountGroup->name,
                                 'delete' => Entry::where('account_id', $account->id)->first() ? false : true,
                             ];
