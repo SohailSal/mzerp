@@ -55,12 +55,35 @@
         >Create</jet-button
       >
       <input
-        type="search"
+        type="text"
+        class="
+          ml-4
+          h-8
+          px-2
+          w-80
+          border-gray-800
+          ring-gray-800 ring-1
+          outline-none
+        "
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."
-        class="h-9 w-full lg:w-1/4 ml-4 rounded-full placeholder-indigo-300"
       />
+      <button
+        @click="search_data"
+        class="border-2 pb-2.5 pt-1 border-gray-800 px-1"
+      >
+        <svg
+          class="w-8 h-4 text-gray-600"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 25 20"
+        >
+          <path
+            d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"
+          />
+        </svg>
+      </button>
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
@@ -222,30 +245,24 @@ export default {
       this.params.field = field;
       this.params.direction = this.params.direction === "asc" ? "desc" : "asc";
     },
+    search_data() {
+      let params = pickBy(this.params);
+      this.$inertia.get(this.route("documents"), params, {
+        replace: true,
+        preserveState: true,
+      });
+    },
   },
   watch: {
     params: {
-      //   handler() {
-      //     // let params = this.params;
-      //     // Object.keys(params).forEach((key) => {
-      //     //   if (params[key] == "") {
-      //     //     delete params[key];
-      //     //   }
-      //     // });
-
-      //     this.$inertia.get(this.route("companies"), params, {
-      //       replace: true,
-      //       preserveState: true,
-      //     });
-      //   },
-      //   deep: true,
-      // },
       handler: throttle(function () {
         let params = pickBy(this.params);
-        this.$inertia.get(this.route("documents"), params, {
-          replace: true,
-          preserveState: true,
-        });
+        if (params.search == null) {
+          this.$inertia.get(this.route("documents"), params, {
+            replace: true,
+            preserveState: true,
+          });
+        }
       }, 150),
       deep: true,
     },
