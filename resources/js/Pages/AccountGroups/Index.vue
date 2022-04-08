@@ -73,10 +73,18 @@
       />
       <button
         @click="search_data"
-        class="border-2 pb-2.5 pt-1 border-gray-800 px-1"
+        class="
+          border-2
+          pb-2.5
+          pt-1
+          bg-gray-800
+          border-gray-800
+          px-1
+          hover:bg-gray-700
+        "
       >
         <svg
-          class="w-8 h-4 text-gray-600"
+          class="w-8 h-4 text-white"
           fill="currentColor"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 25 20"
@@ -234,17 +242,11 @@ export default {
     // }
 
     search_data() {
-      // params: {
-      //     handler: throttle(function () {
-      console.log("chl rha");
       let params = pickBy(this.params);
       this.$inertia.get(this.route("accountgroups"), params, {
         replace: true,
         preserveState: true,
       });
-      // }, 150),
-      //     deep: true,
-      // },
     },
   },
   watch: {
