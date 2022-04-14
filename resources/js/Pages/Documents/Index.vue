@@ -65,6 +65,7 @@
           ring-gray-800 ring-1
           outline-none
         "
+        @change="search_data"
         v-model="params.search"
         aria-label="Search"
         placeholder="Search..."

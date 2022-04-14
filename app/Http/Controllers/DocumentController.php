@@ -138,18 +138,31 @@ class DocumentController extends Controller
 
     public function create()
     {
-        $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
-        $doc_type_first = \App\Models\DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+        $account_first = Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+        $doc_type_first = DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
         // $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
-        $accounts = \App\Models\Account::where('company_id', session('company_id'))
+        $accounts = Account::all()->where('company_id', session('company_id'))
             // ->map('id', 'name')
-            ->get();
+            ->map(function ($acc) {
+                return [
+                    "id" => $acc->id,
+                    "number" => $acc->number,
+                    "name" => $acc->name,
+                    "company_id" => $acc->company_id,
+                    "group_id" => $acc->group_id,
+                    "nameNum" => $acc->number . ' - ' . $acc->name . ' - ' . $acc->accountGroup->name,
+                    // "credit" => $acc->credit,
+                ];
+            });
+            // ->get();
 
 
         if ($account_first && $doc_type_first) {
+            $date_range = Year::where('id', session('year_id'))->first();
 
             return Inertia::render('Documents/Create', [
-
+                'min_start' => $date_range->begin,
+                'max_end' => $date_range->end,
                 'accounts' => $accounts,
                 'account_first' => $account_first,
                 'doc_type_first' => $doc_type_first,
@@ -177,6 +190,7 @@ class DocumentController extends Controller
             'entries.*.credit' => ['required'],
         ]);
 
+
         DB::transaction(function () use ($request) {
             $date = new Carbon($request->date);
             try {
@@ -184,7 +198,21 @@ class DocumentController extends Controller
                 $prefix = \App\Models\DocumentType::where('id', $request->type_id)->first()->prefix;
                 $date = $date->format('Y-m-d');
                 $ref_date_parts = explode("-", $date);
-                $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2];
+
+                //serial number
+                $latest_doc = Document::where('year_id', session('year_id'))->latest()->first();
+                if($latest_doc)
+                {
+                    $pre_refe = $latest_doc->ref;
+                    $pre_ref_serial = explode("/", $pre_refe);
+                    $serial = (int)$pre_ref_serial[4] + (int)1;
+                } else {
+                    $serial = 1001;
+                }
+                //serial number
+
+                // $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2];
+                $reference = $prefix . "/" . $ref_date_parts[0] . "/" . $ref_date_parts[1] . "/" . $ref_date_parts[2] . "/" . $serial;
 
                 $doc = Document::create([
                     'type_id' => Request::input('type_id')['id'],
@@ -206,6 +234,7 @@ class DocumentController extends Controller
                     ]);
                 }
             } catch (Exception $e) {
+                return back()->with('error', $e);
                 return $e;
             }
         });
@@ -216,14 +245,24 @@ class DocumentController extends Controller
     public function edit(Document $document)
     {
         // dd($document->id);
-        $accounts = \App\Models\Account::all()->map->only('id', 'name');
+        $accounts = Account::all()->map(function ($acc) {
+                return [
+                    "id" => $acc->id,
+                    "number" => $acc->number,
+                    "name" => $acc->number . ' - ' . $acc->name . ' - ' . $acc->accountGroup->name,
+                    "company_id" => $acc->company_id,
+                    "group_id" => $acc->group_id,
+                    "nameNum" => $acc->name,
+                    // "credit" => $acc->credit,
+                ];
+            });
 
-        $doc_types = \App\Models\DocumentType::all()->map->only('id', 'name');
+        $doc_types = DocumentType::all()->map->only('id', 'name');
         // $doc_types = \App\Models\DocumentType::all()->map->only('id', 'name')->first();
-        $doc = \App\Models\Document::all()->where('id', $document->id)->map->only('id', 'ref')->first();
+        $doc = Document::all()->where('id', $document->id)->map->only('id', 'ref')->first();
 
         $ref = Entry::all()->where('document_id', $document->id);
-        $entrie = \App\Models\Entry::all()->where('document_id', $document->id)
+        $entrie = Entry::all()->where('document_id', $document->id)
             // ->toArray();
             ->map(function ($entry) {
                 return [
@@ -267,6 +306,8 @@ class DocumentController extends Controller
         // dd($document);
         // $document = Document::all()->where('document_id', $document->id);
         // dd($entries);
+        $date_range = Year::where('id', session('year_id'))->first();
+
         return Inertia::render(
             'Documents/Edit',
             [
@@ -284,6 +325,8 @@ class DocumentController extends Controller
                 'accounts' => $accounts,
                 'doc_types' => $doc_types,
                 'entriess' => $entries,
+                'min_start' => $date_range->begin,
+                'max_end' => $date_range->end,
                 // 'entries' => $entries,
             ]
         );

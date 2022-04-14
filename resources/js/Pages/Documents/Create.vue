@@ -82,6 +82,8 @@
               label="date"
               placeholder="Enter Date:"
               name="date"
+              :min="form.start"
+              :max="form.end"
             />
             <div v-if="errors.date">{{ errors.date }}</div>
           </div>
@@ -107,13 +109,13 @@
               </thead>
               <tbody>
                 <tr v-for="(entry, index) in form.entries" :key="entry.id">
-                  <td>
+                  <td class="w-96">
                     <multiselect
                       class="rounded-md border border-black"
                       v-model="entry.account_id"
                       :options="option"
                       placeholder="Select account"
-                      label="name"
+                      label="nameNum"
                       track-by="id"
                     ></multiselect>
                     <!-- style="width: 25%" -->
@@ -160,7 +162,7 @@
                       Delete
                     </button>
                     <button
-                      v-else-if="index == 0"
+                      v-else-if="index == 1"
                       class="
                         border
                         bg-indigo-300
@@ -170,6 +172,7 @@
                         m-1
                         hover:text-white hover:bg-indigo-400
                       "
+                      type="button"
                       @click.prevent="addRow"
                     >
                       Add Row
@@ -191,7 +194,7 @@
                       type="number"
                       v-model="difference"
                       readonly
-                      class="rounded-md w-72"
+                      class="rounded-md w-full"
                     />
                   </td>
                   <td>
@@ -295,6 +298,8 @@ export default {
     // accounts: Object,
     accounts: Array,
     account_first: Object,
+    min_start: Object,
+    max_end: Object,
   },
 
   data() {
@@ -348,6 +353,12 @@ export default {
           credit: 0,
         },
       ],
+      start: props.min_start
+        ? props.min_start
+        : new Date().toISOString().substr(0, 10),
+      end: props.max_end
+        ? props.max_end
+        : new Date().toISOString().substr(0, 10),
     });
 
     return { form };
