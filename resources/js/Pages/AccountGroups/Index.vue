@@ -68,6 +68,7 @@
           outline-none
         "
         v-model="params.search"
+        @change="search_data"
         aria-label="Search"
         placeholder="Search..."
       />
