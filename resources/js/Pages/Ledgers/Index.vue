@@ -25,6 +25,7 @@
       </div>
 
       <form
+        target="_blank"
         @submit.prevent="submit_range"
         v-bind:action="'range/' + form.account_id['id']"
         ref="form_range"
@@ -50,6 +51,8 @@
 
         <input
           v-model="form.date_start"
+          :min="form.start"
+          :max="form.end"
           type="date"
           label="date"
           placeholder="Enter Begin date:"
@@ -61,6 +64,8 @@
 
         <input
           v-model="form.date_end"
+          :min="form.start"
+          :max="form.end"
           type="date"
           class="pr-2 ml-2 pb-2 rounded-md"
           label="date"
@@ -187,15 +192,15 @@ export default {
     company: Object,
     accounts: Array,
     account_first: Object,
-
     entries: Object,
     debits: Object,
     credits: Object,
     balance: Object,
     prebal: Object,
-
     date_start: Object,
     date_end: Object,
+    min_start: Object,
+    max_end: Object,
   },
 
   data() {
@@ -225,6 +230,13 @@ export default {
         date_end: this.date_end
           ? this.date_end
           : new Date().toISOString().substr(0, 10),
+        start: this.min_start
+          ? this.min_start
+          : new Date().toISOString().substr(0, 10),
+        end: this.max_end
+          ? this.max_end
+          : new Date().toISOString().substr(0, 10),
+        // end: new Date().toISOString().substr(0, 10),
       },
     };
   },

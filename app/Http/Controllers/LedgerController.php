@@ -37,8 +37,7 @@ class LedgerController extends Controller
     {
 
         $acc_exists = Account::where('company_id', session('company_id'))->first();
-        if($acc_exists)
-    {
+        if ($acc_exists) {
 
             $account_first = ['id' => 0];
             $account_first = Account::where('company_id', session('company_id'))->first();
@@ -122,7 +121,7 @@ class LedgerController extends Controller
                 $data['debits'] = $data['debits'] + $entry->debit;
                 $data['credits'] = $data['credits'] + $entry->credit;
             }
-
+            $date_range = Year::where('id', session('year_id'))->first();
             return Inertia::render('Ledgers/Index', [
                 'company' => Company::where('id', session("company_id"))->first(),
                 'companies' => Auth::user()->companies,
@@ -135,10 +134,12 @@ class LedgerController extends Controller
                 'credits' => $data['credits'],
                 'balance' => $balance,
                 'prebal' => $prebal,
+                'min_start' => $date_range->begin,
+                'max_end' => $date_range->end,
             ]);
-    }else{
-        return Redirect::route('accounts')->with('warning', 'Transaction NOT FOUND, Please create an transaction first.');
-    }
+        } else {
+            return Redirect::route('accounts')->with('warning', 'Transaction NOT FOUND, Please create an transaction first.');
+        }
     }
 
 
@@ -176,6 +177,8 @@ class LedgerController extends Controller
 
         // $data['start'] = $start;
         $data['start'] = $start;
+
+
 
         $data['entries'] = DB::table('documents')
             ->join('entries', 'documents.id', '=', 'entries.document_id')

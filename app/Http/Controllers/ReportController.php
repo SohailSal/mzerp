@@ -268,7 +268,9 @@ class ReportController extends Controller
     {
         // $data['accounts'] = Account::where('company_id', session('company_id'))->get();
         $data['account_groups'] = AccountGroup::where('company_id', session('company_id'))->get();
-        $data['entry_obj'] = Entry::where('company_id', session('company_id'))->get();
+        $data['entry_obj'] = Entry::where('company_id', session('company_id'))
+            // ->where('year_id', session('year_id'))
+            ->get();
         $tb = App::make('dompdf.wrapper');
         // $pdf->loadView('pdf', compact('a'));
         $tb->loadView('trial', $data);
