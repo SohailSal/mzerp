@@ -126,6 +126,8 @@
               label="date"
               placeholder="Date:"
               name="date"
+              :min="form.start"
+              :max="form.end"
             />
             <!-- <datepicker
             v-model="form.date"
@@ -149,7 +151,7 @@
               <tbody>
                 <tr v-for="(entry, index) in form.entries" :key="entry.id">
                   <!-- <tr v-for="(entry, index) in entries" :key="entry.id"> -->
-                  <td>
+                  <td class="w-96">
                     <multiselect
                       class="w-full rounded-md border border-black"
                       v-model="entry.account_id"
@@ -197,11 +199,12 @@
                         m-1
                         hover:text-white hover:bg-red-600
                       "
+                      type="button"
                     >
                       Delete
                     </button>
                     <button
-                      v-else-if="index == 0"
+                      v-else-if="index == 1"
                       class="
                         border
                         bg-indigo-300
@@ -234,7 +237,7 @@
                       type="number"
                       v-model="difference"
                       readonly
-                      class="rounded-md w-72"
+                      class="rounded-md w-full"
                     />
                   </td>
                   <td>
@@ -325,6 +328,9 @@ export default {
 
     accounts: Object,
     account_first: Object,
+
+    min_start: Object,
+    max_end: Object,
   },
 
   // setup(props) {
@@ -362,6 +368,12 @@ export default {
       isError: null,
       form: this.$inertia.form({
         // entries: this.entries,
+        start: this.min_start
+          ? this.min_start
+          : new Date().toISOString().substr(0, 10),
+        end: this.max_end
+          ? this.max_end
+          : new Date().toISOString().substr(0, 10),
         type_id: this.document.type_id,
         date: this.document.date,
         description: this.document.description,
