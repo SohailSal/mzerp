@@ -141,25 +141,26 @@ class DocumentController extends Controller
         $account_first = Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
         $doc_type_first = DocumentType::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
         // $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
-        $accounts = Account::all()->where('company_id', session('company_id'))
-            // ->map('id', 'name')
+        $accounts = Account::where('company_id', session('company_id'))
+            ->get()    // ->map('id', 'name')
             ->map(function ($acc) {
                 return [
                     "id" => $acc->id,
                     "number" => $acc->number,
-                    "name" => $acc->name,
+                    "name" => $acc->number . ' - ' . $acc->name . ' - ' . $acc->accountGroup->name,
                     "company_id" => $acc->company_id,
                     "group_id" => $acc->group_id,
-                    "nameNum" => $acc->number . ' - ' . $acc->name . ' - ' . $acc->accountGroup->name,
                     // "credit" => $acc->credit,
+                    // "nameNum" => $acc->number . ' - ' . $acc->name . ' - ' . $acc->accountGroup->name,
                 ];
             });
-            // ->get();
+
 
 
         if ($account_first && $doc_type_first) {
             $date_range = Year::where('id', session('year_id'))->first();
 
+            // dd($accounts);
             return Inertia::render('Documents/Create', [
                 'min_start' => $date_range->begin,
                 'max_end' => $date_range->end,
@@ -201,8 +202,7 @@ class DocumentController extends Controller
 
                 //serial number
                 $latest_doc = Document::where('year_id', session('year_id'))->latest()->first();
-                if($latest_doc)
-                {
+                if ($latest_doc) {
                     $pre_refe = $latest_doc->ref;
                     $pre_ref_serial = explode("/", $pre_refe);
                     $serial = (int)$pre_ref_serial[4] + (int)1;
@@ -246,16 +246,16 @@ class DocumentController extends Controller
     {
         // dd($document->id);
         $accounts = Account::all()->map(function ($acc) {
-                return [
-                    "id" => $acc->id,
-                    "number" => $acc->number,
-                    "name" => $acc->number . ' - ' . $acc->name . ' - ' . $acc->accountGroup->name,
-                    "company_id" => $acc->company_id,
-                    "group_id" => $acc->group_id,
-                    "nameNum" => $acc->name,
-                    // "credit" => $acc->credit,
-                ];
-            });
+            return [
+                "id" => $acc->id,
+                "number" => $acc->number,
+                "name" => $acc->number . ' - ' . $acc->name . ' - ' . $acc->accountGroup->name,
+                "company_id" => $acc->company_id,
+                "group_id" => $acc->group_id,
+                // "nameNum" => $acc->name,
+                // "credit" => $acc->credit,
+            ];
+        });
 
         $doc_types = DocumentType::all()->map->only('id', 'name');
         // $doc_types = \App\Models\DocumentType::all()->map->only('id', 'name')->first();

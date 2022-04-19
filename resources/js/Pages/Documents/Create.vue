@@ -115,7 +115,7 @@
                       v-model="entry.account_id"
                       :options="option"
                       placeholder="Select account"
-                      label="nameNum"
+                      label="name"
                       track-by="id"
                     ></multiselect>
                     <!-- style="width: 25%" -->
@@ -296,7 +296,7 @@ export default {
     doc_type_first: Object,
 
     // accounts: Object,
-    accounts: Array,
+    accounts: Object,
     account_first: Object,
     min_start: Object,
     max_end: Object,
