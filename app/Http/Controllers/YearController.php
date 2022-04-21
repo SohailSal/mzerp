@@ -171,25 +171,25 @@ class YearController extends Controller
             $year =  \App\Models\Year::where('company_id', session('company_id'))->where('id', $id)->first();
             $yearef = Carbon::parse($year->end);
             $claccount = null;
-            $clgroup = null;
-            if (!Account::where('company_id', session('company_id'))->where('name', 'Accumulated Profit')->first()) {
-                if (!AccountGroup::where('company_id', session('company_id'))->where('name', 'Reserves')->first()) {
-                    $clgroup = AccountGroup::create([
-                        'name' => 'Reserves',
-                        'type_id' => AccountType::where('name', 'Capital')->first()->id,
-                        'company_id' => session('company_id'),
-                    ]);
-                } else {
-                    $clgroup = AccountGroup::where('company_id', session('company_id'))->where('name', 'Reserves')->first();
-                }
-                $claccount = Account::create([
-                    'name' => 'Accumulated Profit',
-                    'group_id' => $clgroup->id,
-                    'company_id' => session('company_id'),
-                ]);
-            } else {
+            // $clgroup = null;
+            // if (!Account::where('company_id', session('company_id'))->where('name', 'Accumulated Profit')->first()) {
+                // if (!AccountGroup::where('company_id', session('company_id'))->where('name', 'Reserves')->first()) {
+                //     $clgroup = AccountGroup::create([
+                //         'name' => 'Reserves',
+                //         'type_id' => AccountType::where('name', 'Capital')->first()->id,
+                //         'company_id' => session('company_id'),
+                //     ]);
+                // } else {
+                //     $clgroup = AccountGroup::where('company_id', session('company_id'))->where('name', 'Reserves')->first();
+                // }
+            //     $claccount = Account::create([
+            //         'name' => 'Accumulated Profit',
+            //         'group_id' => $clgroup->id,
+            //         'company_id' => session('company_id'),
+            //     ]);
+            // } else {
                 $claccount = Account::where('company_id', session('company_id'))->where('name', 'Accumulated Profit')->first();
-            }
+            // }
 
 
 

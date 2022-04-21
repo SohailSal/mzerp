@@ -18,10 +18,13 @@
         </div>
       </div>
     </template>
+    <div
+      v-if="$page.props.flash.success"
+      class="bg-green-600 text-white text-center"
+    >
+      {{ $page.props.flash.success }}
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
-      <div v-if="$page.props.flash.success" class="bg-green-600 text-white">
-        {{ $page.props.flash.success }}
-      </div>
       <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
       <form @submit.prevent="form.get(route('years.create'))">

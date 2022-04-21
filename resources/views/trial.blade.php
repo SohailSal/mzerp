@@ -92,7 +92,9 @@
                 $isProfit = $account->name == 'Accumulated Profit' ? true : false;
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
-                    ->whereDate('documents.date', '<=', $year->end)
+                    // ->whereDate('documents.date', '<=', $year->end)
+                    //TO generate trial according to date
+                    ->whereDate('documents.date', '<=', $date)
                     ->where('documents.company_id', session('company_id'))
                     ->where('entries.account_id', '=', $account->id)
                     ->select('entries.debit', 'entries.credit')

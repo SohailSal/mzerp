@@ -75,21 +75,35 @@ Route::get('range/{id}', [LedgerController::class, 'rangeLedger'])
 Route::get('pd/{id}', [ReportController::class, 'pd'])
     ->name('pd')
     ->middleware('auth');
+// ======================================= REPORTS Start =============================
 
 //Trial Balance -------------------- ENDS ---------------------------
-Route::get('trialbalance', [ReportController::class, 'trialbalance'])
+// Route::get('trialbalance', [ReportController::class, 'trialbalance'])
+//     ->name('trialbalance')
+//     ->middleware('auth');
+//Trial balance according to date
+Route::get('trialbalance', [ReportController::class, 'trialbalance_accToDate'])
     ->name('trialbalance')
     ->middleware('auth');
 
 //Balance Sheet -------------------- Starts ---------------------------
-Route::get('bs', [ReportController::class, 'bs'])
+// Route::get('bs', [ReportController::class, 'bs'])
+//     ->name('bs')
+//     ->middleware('auth');
+//Balance Sheet according to date
+Route::get('bs', [ReportController::class, 'bs_accToDate'])
     ->name('bs')
     ->middleware('auth');
 
-Route::get('pl', [ReportController::class, 'pl'])
+// Route::get('pl', [ReportController::class, 'pl'])
+//     ->name('pl')
+//     ->middleware('auth');
+//Profit and Loss according to date
+Route::get('pl', [ReportController::class, 'pl_accToDate'])
     ->name('pl')
     ->middleware('auth');
 
+// ======================================= REPORTS End =============================
 
 //Ledger Sheet -------------------- Starts ---------------------------
 // Route::post('ledger/{id}', [ReportController::class, 'ledger'])
