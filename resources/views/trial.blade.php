@@ -71,13 +71,14 @@
     $acc_groups = [];
     $acc_count = 0;
     $debit = 0;
-            $credit = 0;
+    $credit = 0;
     foreach ($account_groups as $key => $account_group) {
         $grp = \App\Models\Account::where('company_id', session('company_id'))
             ->where('group_id', $account_group->id)
-            ->first() ? true : false;
-        if ($grp)
-        {
+            ->first()
+            ? true
+            : false;
+        if ($grp) {
             $accounts[$acc_count] = \App\Models\Account::where('company_id', session('company_id'))
                 ->where('group_id', $account_group->id)
                 ->get();
@@ -87,9 +88,9 @@
             foreach ($accounts[$acc_count] as $account) {
                 $balance = 0;
                 $lastbalance = 0;
-                $isExpense = $account->accountGroup->accountType->name == 'Expenses' ? true : false;
-                $isRevenue = $account->accountGroup->accountType->name == 'Revenue' ? true : false;
-                $isProfit = $account->name == 'Accumulated Profit' ? true : false;
+                // $isExpense = $account->accountGroup->accountType->name == 'Expenses' ? true : false;
+                // $isRevenue = $account->accountGroup->accountType->name == 'Revenue' ? true : false;
+                // $isProfit = $account->name == 'Accumulated Profit' ? true : false;
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
                     // ->whereDate('documents.date', '<=', $year->end)
@@ -101,12 +102,16 @@
                     ->get();
                 $cnt = count($entries);
                 foreach ($entries as $entry) {
-                    if (--$cnt <= 0 && $year->closed && ($isExpense || $isRevenue || $isProfit)) {
-                        break;
-                    }
+                    // if (--$cnt <= 0 && $year->closed && ($isExpense || $isRevenue || $isProfit)) {
+                    //     break;
+                    // }
                     $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
                     $lastbalance = $balance;
                 }
+
+                // $balance = $lastbalance + floatval($entry->debit) - floatval($entry->credit);
+                // $lastbalance = $balance;
+
                 $obalance[$acc_count][$oite++] = $balance;
                 $acc_groups[$acc_count] = $account_group->name;
             }
@@ -150,44 +155,45 @@
             </thead>
             <tbody>
                 @foreach ($acc_groups as $key => $acc_group)
-
                     <tr>
                         <td style="width: 15%;">
                             <strong>
-                            {{ $acc_group }}
+                                {{ $acc_group }}
 
                             </strong>
                         </td>
                         <td style="width: 10%; border-left: 1pt solid black;" align="right">
                         </td>
-                        <td style="width: 10%; border-left: 1pt solid black;border-right: 1pt solid black;" align="right">
+                        <td style="width: 10%; border-left: 1pt solid black;border-right: 1pt solid black;"
+                            align="right">
                         </td>
                     </tr>
-                    @if(count($accounts) > $key)
-                    @foreach ($accounts[$key] as $key2 => $account)
-                        @if ($obalance[$key][$key2] == 0)
-                            @continue
-                        @endif
-                        <tr>
-                            <td style="width: 15%;padding-left:10px;">
-                                <span style="padding: 0 5 0 5">{{ $account->number }}</span> {{ $account->name }}
-                            </td>
-                            <td style="width: 10%; border-left: 1pt solid black;" align="right">
-                                @if ($obalance[$key][$key2] > 0)
-                                    {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($obalance[$key][$key2], 'Rs.')) }}
-                                @endif
-                            </td>
-                            <td style="width: 10%; border-left: 1pt solid black; border-right: 1pt solid black;"
-                                align="right">
-                                @if ($obalance[$key][$key2] < 0)
-                                    {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(abs($obalance[$key][$key2]), 'Rs.')) }}
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                        @endif
-
-                    @endforeach
+                    @if (count($accounts) > $key)
+                        @foreach ($accounts[$key] as $key2 => $account)
+                            @if ($obalance[$key][$key2] == 0)
+                                @continue
+                            @endif
+                            <tr>
+                                <td style="width: 15%;padding-left:10px;">
+                                    <span style="padding: 0 5 0 5">{{ $account->number }}</span>
+                                    {{ $account->name }}
+                                </td>
+                                <td style="width: 10%; border-left: 1pt solid black;" align="right">
+                                    {{-- @dd($obalance[$key][$key2]) --}}
+                                    @if ($obalance[$key][$key2] > 0)
+                                        {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($obalance[$key][$key2], 'Rs.')) }}
+                                    @endif
+                                </td>
+                                <td style="width: 10%; border-left: 1pt solid black; border-right: 1pt solid black;"
+                                    align="right">
+                                    @if ($obalance[$key][$key2] < 0)
+                                        {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(abs($obalance[$key][$key2]), 'Rs.')) }}
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                @endforeach
                 <tr>
                     <td>
                         <strong>Total</strong>
@@ -207,17 +213,17 @@
     <br />
     <script type="text/php">
         if (isset($pdf)) {
-            $x = 500;
-            $y = 820;
-            $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
-            $font = null;
-            $size = 10;
-            $word_space = 0.0;  //  default
-            $char_space = 0.0;  //  default
-            $angle = 0.0;   //  default
-            $pdf->page_text($x, $y, $text, $font, $size, $word_space, $char_space, $angle);
-        }
-    </script>
+                                                                        $x = 500;
+                                                                        $y = 820;
+                                                                        $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
+                                                                        $font = null;
+                                                                        $size = 10;
+                                                                        $word_space = 0.0;  //  default
+                                                                        $char_space = 0.0;  //  default
+                                                                        $angle = 0.0;   //  default
+                                                                        $pdf->page_text($x, $y, $text, $font, $size, $word_space, $char_space, $angle);
+                                                                    }
+                                                                </script>
 </body>
 
 </html>
