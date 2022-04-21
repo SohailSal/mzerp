@@ -87,7 +87,9 @@
         foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
-                ->whereDate('documents.date', '<=', $year->end)
+                // ->whereDate('documents.date', '<=', $year->end)
+                //According to selected date
+                ->whereDate('documents.date', '<=', $date)
                 ->where('documents.company_id', session('company_id'))
                 ->where('entries.account_id', '=', $account->id)
                 ->select('entries.debit', 'entries.credit')
@@ -107,7 +109,9 @@
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
-                    ->whereDate('documents.date', '<=', $year->end)
+                    // ->whereDate('documents.date', '<=', $year->end)
+                    //According to selected date
+                    ->whereDate('documents.date', '<=', $date)
                     ->where('documents.company_id', session('company_id'))
                     ->where('entries.account_id', '=', $account->id)
                     ->select('entries.debit', 'entries.credit')
@@ -136,7 +140,9 @@
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
-                    ->whereDate('documents.date', '<=', $year->end)
+                    // ->whereDate('documents.date', '<=', $year->end)
+                    //According to selected date
+                    ->whereDate('documents.date', '<=', $date)
                     ->where('documents.company_id', session('company_id'))
                     ->where('entries.account_id', '=', $account->id)
                     ->select('entries.debit', 'entries.credit')
@@ -179,7 +185,9 @@
         foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
-                ->whereDate('documents.date', '<=', $year->end)
+                // ->whereDate('documents.date', '<=', $year->end)
+                //According to selected date
+                ->whereDate('documents.date', '<=', $date)
                 ->where('documents.company_id', session('company_id'))
                 ->where('entries.account_id', '=', $account->id)
                 ->select('entries.debit', 'entries.credit')
@@ -200,7 +208,9 @@
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
-                    ->whereDate('documents.date', '<=', $year->end)
+                    // ->whereDate('documents.date', '<=', $year->end)
+                    //According to selected date
+                    ->whereDate('documents.date', '<=', $date)
                     ->where('documents.company_id', session('company_id'))
                     ->where('entries.account_id', '=', $account->id)
                     ->select('entries.debit', 'entries.credit')
@@ -237,7 +247,9 @@
         foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
-                ->whereDate('documents.date', '<=', $year->end)
+                // ->whereDate('documents.date', '<=', $year->end)
+                //According to selected date
+                ->whereDate('documents.date', '<=', $date)
                 ->where('documents.company_id', session('company_id'))
                 ->where('entries.account_id', '=', $account->id)
                 ->select('entries.debit', 'entries.credit')
@@ -257,7 +269,9 @@
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
-                    ->whereDate('documents.date', '<=', $year->end)
+                    // ->whereDate('documents.date', '<=', $year->end)
+                    //According to selected date
+                    ->whereDate('documents.date', '<=', $date)
                     ->where('documents.company_id', session('company_id'))
                     ->where('entries.account_id', '=', $account->id)
                     ->select('entries.debit', 'entries.credit')
@@ -295,7 +309,9 @@
         foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
-                ->whereDate('documents.date', '<=', $year->end)
+                // ->whereDate('documents.date', '<=', $year->end)
+                //According to selected date
+                ->whereDate('documents.date', '<=', $date)
                 ->where('documents.company_id', session('company_id'))
                 ->where('entries.account_id', '=', $account->id)
                 ->select('entries.debit', 'entries.credit')
@@ -318,7 +334,9 @@
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
-                    ->whereDate('documents.date', '<=', $year->end)
+                    // ->whereDate('documents.date', '<=', $year->end)
+                    //According to selected date
+                    ->whereDate('documents.date', '<=', $date)
                     ->where('documents.company_id', session('company_id'))
                     ->where('entries.account_id', '=', $account->id)
                     ->select('entries.debit', 'entries.credit')
@@ -359,7 +377,9 @@
         foreach ($gr->accounts as $account) {
             $entries = Illuminate\Support\Facades\DB::table('documents')
                 ->join('entries', 'documents.id', '=', 'entries.document_id')
-                ->whereDate('documents.date', '<=', $year->end)
+                // ->whereDate('documents.date', '<=', $year->end)
+                //According to selected date
+                ->whereDate('documents.date', '<=', $date)
                 ->where('documents.company_id', session('company_id'))
                 ->where('entries.account_id', '=', $account->id)
                 ->select('entries.debit', 'entries.credit')
@@ -380,7 +400,9 @@
             foreach ($group->accounts as $account) {
                 $entries = Illuminate\Support\Facades\DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
-                    ->whereDate('documents.date', '<=', $year->end)
+                    // ->whereDate('documents.date', '<=', $year->end)
+                    //According to selected date
+                    ->whereDate('documents.date', '<=', $date)
                     ->where('documents.company_id', session('company_id'))
                     ->where('entries.account_id', '=', $account->id)
                     ->select('entries.debit', 'entries.credit')

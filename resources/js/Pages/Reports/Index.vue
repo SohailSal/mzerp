@@ -44,7 +44,24 @@
       <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
-      <div
+      <form
+        target="_blank"
+        @submit.prevent="submit_trial_range"
+        v-bind:action="'trialbalance'"
+        ref="form_trial_range"
+        class="inline-block"
+      >
+        <input
+          :min="form.start"
+          :max="form.end"
+          v-model="form.date"
+          type="date"
+          label="date"
+          placeholder="Enter Begin date:"
+          class="pr-2 ml-2 pb-2 rounded-md"
+          name="date"
+        />
+        <!-- <div
         class="
           border
           rounded-lg
@@ -59,9 +76,45 @@
         "
       >
         <a href="trialbalance" target="_blank">Trial Balance</a>
-      </div>
+      </div> -->
+        <div
+          class="
+            border
+            rounded-lg
+            shadow-md
+            p-1
+            px-4
+            mt-1
+            bg-gray-800
+            text-white
+            ml-2
+            inline-block
+            hover:bg-gray-700 hover:text-white
+          "
+        >
+          <button type="submit">Trial Balance</button>
+        </div>
+      </form>
 
-      <div
+      <form
+        target="_blank"
+        @submit.prevent="submit_bs_range"
+        v-bind:action="'bs'"
+        ref="form_bs_range"
+        class="inline-block"
+      >
+        <input
+          :min="form.start"
+          :max="form.end"
+          v-model="form.date"
+          type="date"
+          label="date"
+          placeholder="Enter Begin date:"
+          class="pr-2 ml-2 pb-2 rounded-md"
+          name="date"
+          hidden
+        />
+        <!-- <div
         class="
           border
           rounded-lg
@@ -76,9 +129,45 @@
         "
       >
         <a href="bs" target="_blank">Balance Sheet</a>
-      </div>
+      </div> -->
+        <div
+          class="
+            border
+            rounded-lg
+            shadow-md
+            p-1
+            px-4
+            mt-1
+            bg-gray-800
+            text-white
+            ml-2
+            inline-block
+            hover:bg-gray-700 hover:text-white
+          "
+        >
+          <button type="submit">Balance Sheet</button>
+        </div>
+      </form>
 
-      <div
+      <form
+        target="_blank"
+        @submit.prevent="submit_pl_range"
+        v-bind:action="'pl'"
+        ref="form_pl_range"
+        class="inline-block"
+      >
+        <input
+          :min="form.start"
+          :max="form.end"
+          v-model="form.date"
+          type="date"
+          label="date"
+          placeholder="Enter Begin date:"
+          class="pr-2 ml-2 pb-2 rounded-md"
+          name="date"
+          hidden
+        />
+        <!-- <div
         class="
           border
           rounded-lg
@@ -93,7 +182,25 @@
         "
       >
         <a href="pl" target="_blank">Profit or Loss A/C</a>
-      </div>
+      </div> -->
+        <div
+          class="
+            border
+            rounded-lg
+            shadow-md
+            p-1
+            px-4
+            mt-1
+            bg-gray-800
+            text-white
+            ml-2
+            inline-block
+            hover:bg-gray-700 hover:text-white
+          "
+        >
+          <button type="submit">Profit or Loss A/C</button>
+        </div>
+      </form>
     </div>
   </app-layout>
 </template>
@@ -119,6 +226,8 @@ export default {
     accounts: Object,
     account_first: Object,
     years: Object,
+    min_start: Object,
+    max_end: Object,
   },
 
   data() {
@@ -126,6 +235,15 @@ export default {
       co_id: this.company,
       yr_id: this.$page.props.yr_id,
       options: this.companies,
+      form: {
+        date: this.date ? this.date : new Date().toISOString().substr(0, 10),
+        start: this.min_start
+          ? this.min_start
+          : new Date().toISOString().substr(0, 10),
+        end: this.max_end
+          ? this.max_end
+          : new Date().toISOString().substr(0, 10),
+      },
       //   form: this.$inertia.form({
       //     account_id: this.account_first.id,
       //     date_start: null,
@@ -157,6 +275,15 @@ export default {
   //   },
 
   methods: {
+    submit_trial_range: function () {
+      this.$refs.form_trial_range.submit();
+    },
+    submit_bs_range: function () {
+      this.$refs.form_bs_range.submit();
+    },
+    submit_pl_range: function () {
+      this.$refs.form_pl_range.submit();
+    },
     meth() {
       this.form.get(route("range"));
     },

@@ -32,7 +32,10 @@ class ReportController extends Controller
     {
         $accounts = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name');
         $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+        $date_range = Year::where('id', session('year_id'))->first();
         return Inertia::render('Reports/Index', [
+            'min_start' => $date_range->begin,
+            'max_end' => $date_range->end,
             'account_first' => $account_first,
             'accounts' => $accounts,
             'company' => Company::where('id', session('company_id'))->first(),
@@ -263,20 +266,34 @@ class ReportController extends Controller
     }
 
 
-    // FOR trialbalance GENERATION -------------------------- --------
-    public function trialbalance()
+    // ----------------------- FOR trialbalance GENERATION -------------------------- --------
+    // public function trialbalance()
+    // {
+    //     // $data['accounts'] = Account::where('company_id', session('company_id'))->get();
+    //     $data['account_groups'] = AccountGroup::where('company_id', session('company_id'))->get();
+    //     $data['entry_obj'] = Entry::where('company_id', session('company_id'))
+    //         // ->where('year_id', session('year_id'))
+    //         ->get();
+    //     $tb = App::make('dompdf.wrapper');
+    //     // $pdf->loadView('pdf', compact('a'));
+    //     $tb->loadView('trial', $data);
+    //     // $tb->loadView('trialbalance', $data);
+    //     return $tb->stream('v.pdf');
+    // }
+    //Accordign to date
+    public function trialbalance_accToDate(Req $request)
     {
-        // $data['accounts'] = Account::where('company_id', session('company_id'))->get();
+        $data['date'] = $request->date;
         $data['account_groups'] = AccountGroup::where('company_id', session('company_id'))->get();
+        // dd($data['account_groups']);
         $data['entry_obj'] = Entry::where('company_id', session('company_id'))
-            // ->where('year_id', session('year_id'))
             ->get();
         $tb = App::make('dompdf.wrapper');
-        // $pdf->loadView('pdf', compact('a'));
         $tb->loadView('trial', $data);
-        // $tb->loadView('trialbalance', $data);
         return $tb->stream('v.pdf');
     }
+    // ----------------------- Trialbalance GENERATION ends -------------------------- --------
+
 
     public function bs()
     {
@@ -292,11 +309,28 @@ class ReportController extends Controller
         $bs->loadView('balanceSheet');
         return $bs->stream('bs.pdf');
     }
+    //Accordign to date
+    public function bs_accToDate(Req $request)
+    {
+        $data['date'] = $request->date;
+        $bs = App::make('dompdf.wrapper');
+        $bs->loadView('balanceSheet', $data);
+        return $bs->stream('bs.pdf');
+    }
 
     public function pl()
     {
         $pl = App::make('dompdf.wrapper');
         $pl->loadView('profitOrLoss');
+        return $pl->stream('pl.pdf');
+    }
+    //Accordign to date
+    public function pl_accToDate(Req $request)
+    {
+        $data['date'] = $request->date;
+        // dd($data);
+        $pl = App::make('dompdf.wrapper');
+        $pl->loadView('profitOrLoss', $data);
         return $pl->stream('pl.pdf');
     }
 
