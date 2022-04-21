@@ -285,13 +285,14 @@ class ReportController extends Controller
     {
         $data['date'] = $request->date;
         $data['account_groups'] = AccountGroup::where('company_id', session('company_id'))->get();
+        // dd($data['account_groups']);
         $data['entry_obj'] = Entry::where('company_id', session('company_id'))
             ->get();
         $tb = App::make('dompdf.wrapper');
         $tb->loadView('trial', $data);
         return $tb->stream('v.pdf');
     }
-// ----------------------- Trialbalance GENERATION ends -------------------------- --------
+    // ----------------------- Trialbalance GENERATION ends -------------------------- --------
 
 
     public function bs()
@@ -328,8 +329,8 @@ class ReportController extends Controller
     {
         $data['date'] = $request->date;
         // dd($data);
-       $pl = App::make('dompdf.wrapper');
-        $pl->loadView('profitOrLoss',$data);
+        $pl = App::make('dompdf.wrapper');
+        $pl->loadView('profitOrLoss', $data);
         return $pl->stream('pl.pdf');
     }
 
