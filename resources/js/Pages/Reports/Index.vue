@@ -60,6 +60,7 @@
           placeholder="Enter Begin date:"
           class="pr-2 ml-2 pb-2 rounded-md"
           name="date"
+          required
         />
         <!-- <div
         class="
@@ -113,6 +114,7 @@
           class="pr-2 ml-2 pb-2 rounded-md"
           name="date"
           hidden
+          required
         />
         <!-- <div
         class="
@@ -166,6 +168,7 @@
           class="pr-2 ml-2 pb-2 rounded-md"
           name="date"
           hidden
+          required
         />
         <!-- <div
         class="
@@ -236,7 +239,7 @@ export default {
       yr_id: this.$page.props.yr_id,
       options: this.companies,
       form: {
-        date: this.date ? this.date : new Date().toISOString().substr(0, 10),
+        date: this.date ? this.date : this.min_start,
         start: this.min_start
           ? this.min_start
           : new Date().toISOString().substr(0, 10),

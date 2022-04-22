@@ -84,6 +84,7 @@
               name="date"
               :min="form.start"
               :max="form.end"
+              required
             />
             <div v-if="errors.date">{{ errors.date }}</div>
           </div>
@@ -337,7 +338,7 @@ export default {
     const form = useForm({
       // type_id: props.doc_types[0].id,
       type_id: props.doc_types[0],
-      date: new Date().toISOString().substr(0, 10),
+      date: null,
       description: null,
 
       entries: [
