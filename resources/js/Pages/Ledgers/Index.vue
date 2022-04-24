@@ -224,12 +224,8 @@ export default {
 
       form: {
         account_id: this.account_first ? this.account_first : this.accounts[0],
-        date_start: this.date_start
-          ? this.date_start
-          : new Date().toISOString().substr(0, 10),
-        date_end: this.date_end
-          ? this.date_end
-          : new Date().toISOString().substr(0, 10),
+        date_start: this.date_start ? this.date_start : this.min_start,
+        date_end: this.date_end ? this.date_end : this.min_start,
         start: this.min_start
           ? this.min_start
           : new Date().toISOString().substr(0, 10),

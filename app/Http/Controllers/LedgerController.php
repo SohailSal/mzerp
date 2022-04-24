@@ -42,18 +42,22 @@ class LedgerController extends Controller
             $account_first = ['id' => 0];
             $account_first = Account::where('company_id', session('company_id'))->first();
             $accounts = Account::where('company_id', session('company_id'))->get();
-            // ->map->only('id', 'name');
             if ($request->account_id) {
                 $account_first = Account::all()->where('company_id', session('company_id'))->where('id', $request->account_id)->map->only('id', 'name')->first();
             }
-            //  else {
-            //     $account_first = \App\Models\Account::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
-            // }
-
-            if ($request) {
+            //------------------------ date acc to date -----------
+            if (count($request->all()) > 0) {
                 $start = new Carbon($request->input('date_start'));
                 $end = new Carbon($request->input('date_end'));
                 $account = $request->input('account_id');
+            }else{
+                $year = Year::find(session("year_id"));
+                $start = new Carbon($year->begin);
+                $end = new Carbon($year->begin);
+                $account = $request->input('account_id');
+            }
+            //------------------------ date acc to date -----------
+            if ($request) {
 
                 $start = $start->format('Y-m-d');
                 $end = $end->format('Y-m-d');
