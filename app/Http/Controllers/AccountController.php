@@ -80,14 +80,11 @@ class AccountController extends Controller
 
     public function create()
     {
-        $groups = AccountGroup::where('company_id', session('company_id'))->tree()->get()->toTree();
-
         // $groups = \App\Models\AccountGroup::where('company_id', session('company_id'))->map->only('id', 'name')->get();
-        // $group_first = \App\Models\AccountGroup::all('id', 'name')->first();
-        $group_first = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
+        $groups = AccountGroup::where('company_id', session('company_id'))->tree()->get()->toTree();
+        $group_first = AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name')->first();
 
         if ($group_first) {
-
             return Inertia::render('Accounts/Create', [
                 'groups' => $groups,
                 'group_first' => $group_first,
@@ -116,14 +113,9 @@ class AccountController extends Controller
         return Redirect::route('accounts')->with('success', 'Account created.');
     }
 
-    // public function show(AccountGroup $accountgroup)
-    // {
-    // }
-
     public function edit(Account $account)
     {
-        $groups = \App\Models\AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name');
-
+        $groups = AccountGroup::all()->where('company_id', session('company_id'))->map->only('id', 'name');
         $group_first = AccountGroup::where('id', $account->group_id)->first();
 
         return Inertia::render('Accounts/Edit', [
@@ -141,9 +133,7 @@ class AccountController extends Controller
 
     public function update(Account $account)
     {
-
         Request::validate([
-
             'name' => ['required'],
         ]);
         // $account->group_id = Request::input('group_id');
