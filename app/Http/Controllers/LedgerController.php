@@ -68,7 +68,7 @@ class LedgerController extends Controller
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
                     ->whereDate('documents.date', '>=', $start)
                     ->whereDate('documents.date', '<=', $end)
-                    ->orderBy('documents.ref', 'Asc')
+                    ->orderBy('documents.date', 'Asc')
                     ->where('documents.company_id', session('company_id'))
 
                     ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
@@ -78,8 +78,9 @@ class LedgerController extends Controller
                 $data['previous'] = DB::table('documents')
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
                     ->whereDate('documents.date', '<', $start)
+
                     ->where('documents.company_id', session('company_id'))
-                    ->orderBy('documents.ref', 'Asc')
+                    ->orderBy('documents.date', 'Asc')
                     ->select('entries.debit', 'entries.credit')
                     ->where('entries.account_id', '=', $account)
                     ->get();
@@ -166,7 +167,7 @@ class LedgerController extends Controller
             ->whereDate('documents.date', '>=', $start)
             ->whereDate('documents.date', '<=', $end)
             ->where('documents.company_id', session('company_id'))
-            ->orderBy('documents.ref', 'Asc')
+            ->orderBy('documents.date', 'Asc')
             ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
             ->where('entries.account_id', '=', $account)
             ->get();
@@ -175,7 +176,7 @@ class LedgerController extends Controller
             ->join('entries', 'documents.id', '=', 'entries.document_id')
             ->whereDate('documents.date', '<', $start)
             ->where('documents.company_id', session('company_id'))
-            ->orderBy('documents.ref', 'Asc')
+            ->orderBy('documents.date', 'Asc')
             ->select('entries.debit', 'entries.credit')
             ->where('entries.account_id', '=', $account)
             ->get();
@@ -194,7 +195,7 @@ class LedgerController extends Controller
             ->whereDate('documents.date', '>=', $start)
             ->whereDate('documents.date', '<=', $end)
             ->where('documents.company_id', session('company_id'))
-            ->orderBy('documents.ref', 'Asc')
+            ->orderBy('documents.date', 'Asc')
             ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
             ->where('entries.account_id', '=', $account)
             ->get();
@@ -203,7 +204,7 @@ class LedgerController extends Controller
             ->join('entries', 'documents.id', '=', 'entries.document_id')
             ->whereDate('documents.date', '<', $start)
             ->where('documents.company_id', session('company_id'))
-            ->orderBy('documents.ref', 'Asc')
+            ->orderBy('documents.date', 'Asc')
             ->select('entries.debit', 'entries.credit')
             ->where('entries.account_id', '=', $account)
             ->get();
