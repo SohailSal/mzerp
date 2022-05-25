@@ -50,7 +50,7 @@ class LedgerController extends Controller
                 $start = new Carbon($request->input('date_start'));
                 $end = new Carbon($request->input('date_end'));
                 $account = $request->input('account_id');
-            }else{
+            } else {
                 $year = Year::find(session("year_id"));
                 $start = new Carbon($year->begin);
                 $end = new Carbon($year->begin);
@@ -68,7 +68,9 @@ class LedgerController extends Controller
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
                     ->whereDate('documents.date', '>=', $start)
                     ->whereDate('documents.date', '<=', $end)
+                    ->orderBy('documents.ref', 'Asc')
                     ->where('documents.company_id', session('company_id'))
+
                     ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
                     ->where('entries.account_id', '=', $account)
                     ->get();
@@ -77,6 +79,7 @@ class LedgerController extends Controller
                     ->join('entries', 'documents.id', '=', 'entries.document_id')
                     ->whereDate('documents.date', '<', $start)
                     ->where('documents.company_id', session('company_id'))
+                    ->orderBy('documents.ref', 'Asc')
                     ->select('entries.debit', 'entries.credit')
                     ->where('entries.account_id', '=', $account)
                     ->get();
@@ -163,6 +166,7 @@ class LedgerController extends Controller
             ->whereDate('documents.date', '>=', $start)
             ->whereDate('documents.date', '<=', $end)
             ->where('documents.company_id', session('company_id'))
+            ->orderBy('documents.ref', 'Asc')
             ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
             ->where('entries.account_id', '=', $account)
             ->get();
@@ -171,6 +175,7 @@ class LedgerController extends Controller
             ->join('entries', 'documents.id', '=', 'entries.document_id')
             ->whereDate('documents.date', '<', $start)
             ->where('documents.company_id', session('company_id'))
+            ->orderBy('documents.ref', 'Asc')
             ->select('entries.debit', 'entries.credit')
             ->where('entries.account_id', '=', $account)
             ->get();
@@ -189,6 +194,7 @@ class LedgerController extends Controller
             ->whereDate('documents.date', '>=', $start)
             ->whereDate('documents.date', '<=', $end)
             ->where('documents.company_id', session('company_id'))
+            ->orderBy('documents.ref', 'Asc')
             ->select('entries.account_id', 'entries.debit', 'entries.credit', 'documents.ref', 'documents.date', 'documents.description')
             ->where('entries.account_id', '=', $account)
             ->get();
@@ -197,6 +203,7 @@ class LedgerController extends Controller
             ->join('entries', 'documents.id', '=', 'entries.document_id')
             ->whereDate('documents.date', '<', $start)
             ->where('documents.company_id', session('company_id'))
+            ->orderBy('documents.ref', 'Asc')
             ->select('entries.debit', 'entries.credit')
             ->where('entries.account_id', '=', $account)
             ->get();
@@ -225,7 +232,7 @@ class LedgerController extends Controller
 
 
         return $pdf->stream($acc->name . ' - ' . $acc->accountGroup->name . '.pdf');
-        return $pdf->stream('hi.pdf');
+        return $pdf->stream('ledger.pdf');
     }
 
 
