@@ -241,7 +241,7 @@
                 </td>
               </tr>
               <tr v-if="balances.data.length === 0">
-                <td class="border-t px-6 py-4 bg-gray-100" colspan="4">
+                <td class="border-t px-6 py-4 bg-gray-100" colspan="6">
                   No Record found.
                 </td>
               </tr>

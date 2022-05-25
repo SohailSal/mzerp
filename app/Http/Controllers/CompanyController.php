@@ -65,7 +65,6 @@ class CompanyController extends Controller
 
 
         return Inertia::render('Company/Index', [
-            // 'companies' => Company::all(),
             // 'can' => [
             //     'edit' => auth()->user()->can('edit'),
             //     'create' => auth()->user()->can('create'),
@@ -74,20 +73,6 @@ class CompanyController extends Controller
             // ],
             'balances' => $query,
             'filters' => request()->all(['search', 'field', 'direction'])
-            // 'data' => Company::all()
-            //     ->map(function ($comp) {
-            //         return [
-            //             'id' => $comp->id,
-            //             'name' => $comp->name,
-            //             'address' => $comp->address,
-            //             'email' => $comp->email,
-            //             'web' => $comp->web,
-            //             'phone' => $comp->phone,
-            //             'fiscal' => $comp->fiscal,
-            //             'incorp' => $comp->incorp,
-            //             'delete' => Year::where('company_id', $comp->id)->first() ? false : true,
-            //         ];
-            //     }),
         ]);
     }
 
@@ -119,7 +104,6 @@ class CompanyController extends Controller
             ]);
             $company->users()->attach(auth()->user()->id);
 
-
             //Start Month & End Month
             $startMonth = Carbon::parse($company->fiscal)->month + 1;
             $endMonth = Carbon::parse($company->fiscal)->month;
@@ -143,10 +127,8 @@ class CompanyController extends Controller
                 $startYear = $endYear - 1;
             }
 
-
             $startDate = $startYear . '-' . '0' . $startMonth . '-' . $startMonthDays;
             $endDate = $endYear . '-' . '0' . $endMonth . '-' . $endMonthDays;
-
 
             $year = Year::create([
                 'begin' => $startDate,
@@ -167,7 +149,6 @@ class CompanyController extends Controller
 
             session(['company_id' => $company->id]);
             session(['year_id' => $year->id]);
-
 
             // Storage::makeDirectory('/public/' . $company->id);
             // Storage::makeDirectory('/public/' . $company->id . '/' . $year->id);

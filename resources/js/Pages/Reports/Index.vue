@@ -239,7 +239,7 @@ export default {
       yr_id: this.$page.props.yr_id,
       options: this.companies,
       form: {
-        date: this.date ? this.date : this.min_start,
+        date: this.date ? this.date : this.max_end,
         start: this.min_start
           ? this.min_start
           : new Date().toISOString().substr(0, 10),

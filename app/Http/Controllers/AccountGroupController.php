@@ -56,25 +56,9 @@ class AccountGroupController extends Controller
             );
 
         return Inertia::render('AccountGroups/Index', [
-            // 'data' => AccountGroup::all()
-            //     ->where('company_id', session('company_id'))
-            //     ->map(function ($accountgroup) {
-            //         return [
-            //             'id' => $accountgroup->id,
-            //             'name' => $accountgroup->name,
-            //             'type_id' => $accountgroup->type_id,
-            //             'type_name' => $accountgroup->accountType->name,
-            //             'company_id' => $accountgroup->company_id,
-            //             'company_name' => $accountgroup->company->name,
-            //             'delete' => Account::where('group_id', $accountgroup->id)->first() ? false : true,
-            //         ];
-            //     }),
             'filters' => request()->all(['search', 'field', 'direction']),
             'balances' => $balances,
-
-            // 'exists' => Account::where('company_id', session('company_id'))->first() ? false : true,
             'exists' => AccountGroup::where('company_id', session('company_id'))->first() ? false : true,
-
             'company' => Company::where('id', session('company_id'))->first(),
             'companies' => Auth::user()->companies,
         ]);
@@ -101,13 +85,13 @@ class AccountGroupController extends Controller
     public function create(Req $request)
     {
         if ($request->type_id) {
-            $first = \App\Models\AccountType::where('id', $request->type_id)->first();
+            $first = AccountType::where('id', $request->type_id)->first();
             $name = $request->name;
         } else {
             $name = null;
-            $first = \App\Models\AccountType::all('id', 'name')->first();
+            $first = AccountType::all('id', 'name')->first();
         }
-        $types = \App\Models\AccountType::all()->map->only('id', 'name');
+        $types = AccountType::all()->map->only('id', 'name');
         $data = AccountGroup::where('company_id', session('company_id'))->where('type_id', $first->id)->tree()->get()->toTree();
 
         return Inertia::render('AccountGroups/Create', [
@@ -135,15 +119,10 @@ class AccountGroupController extends Controller
         return Redirect::route('accountgroups')->with('success', 'Account Group created.');
     }
 
-    // public function show(AccountGroup $accountgroup)
-    // {
-    // }
-
     public function edit(AccountGroup $accountgroup)
     {
         $accountgroup = AccountGroup::where('id', $accountgroup->id)->get()
-            ->map(
-                function ($accountgroup) {
+            ->map(function ($accountgroup) {
                     return
                         [
                             'id' => $accountgroup->id,
