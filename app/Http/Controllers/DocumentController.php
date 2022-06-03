@@ -80,7 +80,23 @@ class DocumentController extends Controller
                 );
 
             if (request('search')) {
-                $query->where('description', 'LIKE', '%' . request('search') . '%');
+                // $query->where('description', 'LIKE', '%' . request('search') . '%');
+                $query->where(function ($query) {
+                    $query
+                        ->where('company_id', session('company_id'))
+                        ->where('year_id', session('year_id'))
+                        ->where('description', 'LIKE', '%' . request('search') . '%');
+                })->orWhere(function($query) {
+                    $query
+                        ->where('company_id', session('company_id'))
+                        ->where('year_id', session('year_id'))
+                        ->where('ref', 'LIKE', '%' . request('search') . '%');
+                })->orWhere(function($query) {
+                    $query
+                        ->where('company_id', session('company_id'))
+                        ->where('year_id', session('year_id'))
+                        ->where('date', 'LIKE', '%' . request('search') . '%');
+                });
             }
             //Ordering request
             if (request()->has(['field', 'direction'])) {
