@@ -93,6 +93,21 @@
           />
         </svg>
       </button>
+      <div class="inline-block bg-green-700">
+        <form @submit.prevent="submit">
+          <input
+            class="ml-4 border-gray-800 ring-gray-800 ring-1 outline-none"
+            type="file"
+            v-on:change="onFileChange"
+          />
+          <button
+            class="border bg-indigo-300 rounded-xl px-2 py-1m-4"
+            type="submit"
+          >
+            Upload Sales Transaction File
+          </button>
+        </form>
+      </div>
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
@@ -191,6 +206,7 @@ import moment from "moment";
 import { pickBy } from "lodash";
 import { throttle } from "lodash";
 import Multiselect from "@suadelabs/vue3-multiselect";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 export default {
   components: {
@@ -201,6 +217,7 @@ export default {
     pickBy,
     moment,
     Multiselect,
+    useForm,
   },
 
   props: {
@@ -212,6 +229,12 @@ export default {
     yearclosed: Object,
   },
 
+  setup() {
+    const form = useForm({
+      avatar: null,
+    });
+    return { form };
+  },
   data() {
     return {
       // co_id: this.$page.props.co_id,
@@ -228,6 +251,17 @@ export default {
   },
 
   methods: {
+    //   for file upload
+    submit() {
+      this.form.post(route("sales.trial.read"));
+    },
+
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.form.avatar = files[0];
+    },
+    // file upload end
     create() {
       this.$inertia.get(route("documents.create"));
     },

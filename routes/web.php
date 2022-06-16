@@ -14,8 +14,8 @@ use App\Http\Controllers\YearController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Excel;
 use Database\Seeders\GroupSeeder;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -283,6 +283,10 @@ Route::put('documents/{document}', [DocumentController::class, 'update'])
 Route::delete('documents/{document}', [DocumentController::class, 'destroy'])
     ->name('documents.destroy')
     ->middleware('auth');
+
+// Entry through sales excel report
+Route::post('salestrial/read', Excel::class)->name('sales.trial.read')->middleware('auth');
+
 //DOCUMENT ....TRANSACTION + ENTRIES--------------------- END ----------------------
 
 
