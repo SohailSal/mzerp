@@ -31,6 +31,12 @@ class DocumentTypeController extends Controller
                 }),
             'company' => Company::where('id', session('company_id'))->first(),
             'companies' => auth()->user()->companies,
+            'can' => [
+                'edit' => auth()->user()->can('edit'),
+                'create' => auth()->user()->can('create'),
+                'delete' => auth()->user()->can('delete'),
+                'read' => auth()->user()->can('read'),
+            ],
         ]);
     }
 

@@ -10,7 +10,9 @@
       {{ $page.props.flash.success }}
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
-      <jet-button @click="create" class="ml-2">Create</jet-button>
+      <jet-button v-if="can['create']" @click="create" class="ml-2"
+        >Create</jet-button
+      >
 
       <!-- <jet-button v-if="can['create']" @click="create" class="mt-4 ml-8" -->
       <!-- <input
@@ -187,7 +189,12 @@
                 <th class="py-1 px-4 border">Website</th>
                 <th class="py-1 px-4 border">Phone</th>
                 <!-- <th v-if="can['edit'] || can['delete']" class="py-2 px-4 border"> -->
-                <th class="py-1 px-4 border">Action</th>
+                <th
+                  v-if="can['edit'] || can['delete']"
+                  class="py-1 px-4 border"
+                >
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -206,7 +213,11 @@
                 <td style="width: 15%" class="px-4 border">{{ item.web }}</td>
                 <td style="width: 15%" class="px-4 border">{{ item.phone }}</td>
                 <!-- <td class="py-1 px-4 border" v-if="can['edit'] || can['delete']"> -->
-                <td style="width: 15%" class="px-4 border text-center">
+                <td
+                  v-if="can['edit'] || can['delete']"
+                  style="width: 15%"
+                  class="px-4 border text-center"
+                >
                   <!-- class="border bg-indigo-300 rounded-xl px-4 py-1 m-1" -->
                   <button
                     class="
@@ -218,26 +229,27 @@
                       m-1
                     "
                     @click="edit(item.id)"
+                    v-if="can['edit']"
                   >
                     <!-- v-if="can['edit']" -->
                     <!-- v-if="can.edit" -->
                     <span>Edit</span>
                   </button>
-                  <!-- <button
-                  class="
-                    border
-                    bg-red-400
-                    rounded-xl
-                    px-4
-                    py-1
-                    m-1
-                    hover:text-white hover:bg-red-500
-                  "
-                  @click="destroy(item.id)"
-                  :v-if="item.delete"
-                >
-                  <span>Delete</span>
-                </button> -->
+                  <button
+                    class="
+                      border
+                      bg-red-400
+                      rounded-xl
+                      px-4
+                      py-1
+                      m-1
+                      hover:text-white hover:bg-red-500
+                    "
+                    @click="destroy(item.id)"
+                    v-if="item.delete && can['delete']"
+                  >
+                    <span>Delete</span>
+                  </button>
                 </td>
               </tr>
               <tr v-if="balances.data.length === 0">
@@ -319,6 +331,7 @@ export default {
       this.params.direction = this.params.direction === "asc" ? "desc" : "asc";
     },
   },
+
   watch: {
     params: {
       //   handler() {

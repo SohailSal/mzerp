@@ -51,7 +51,10 @@
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" v-if="yearclosed" class="ml-2 float-left"
+      <jet-button
+        v-if="yearclosed && can['create']"
+        @click="create"
+        class="ml-2 float-left"
         >Create</jet-button
       >
       <input
@@ -93,7 +96,7 @@
           />
         </svg>
       </button>
-      <div class="inline-block bg-green-700">
+      <div v-if="can['create']" class="inline-block bg-green-700">
         <form @submit.prevent="submit">
           <input
             class="ml-4 border-gray-800 ring-gray-800 ring-1 outline-none"
@@ -139,6 +142,7 @@
               <td style="width: 40%" class="px-4 border w-2/5">
                 {{ item.description }}
               </td>
+              <!-- v-if="can['edit'] || can['delete']" -->
               <td style="width: 30%" class="px-4 border text-center">
                 <button
                   class="
@@ -150,9 +154,23 @@
                     hover:text-white hover:bg-indigo-400
                   "
                   @click="edit(item.id)"
-                  v-if="yearclosed"
+                  v-if="yearclosed && can['edit']"
                 >
                   <span>Edit</span>
+                </button>
+                <button
+                  class="
+                    border
+                    bg-indigo-300
+                    rounded-xl
+                    px-4
+                    m-1
+                    hover:text-white hover:bg-indigo-400
+                  "
+                  @click="edit(item.id)"
+                  v-else
+                >
+                  <span>Show</span>
                 </button>
                 <button
                   class="
@@ -164,7 +182,7 @@
                     hover:text-white hover:bg-red-600
                   "
                   @click="destroy(item.id)"
-                  v-if="item.delete"
+                  v-if="item.delete && can['delete']"
                 >
                   <span>Delete</span>
                 </button>
@@ -227,6 +245,7 @@ export default {
     company: Object,
     years: Object,
     yearclosed: Object,
+    can: Object,
   },
 
   setup() {

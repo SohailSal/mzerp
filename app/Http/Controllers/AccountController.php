@@ -59,6 +59,12 @@ class AccountController extends Controller
                 'balances' => $balances,
                 'company' => Company::where('id', session('company_id'))->first(),
                 'companies' => auth()->user()->companies,
+                'can' => [
+                    'edit' => auth()->user()->can('edit'),
+                    'create' => auth()->user()->can('create'),
+                    'delete' => auth()->user()->can('delete'),
+                    'read' => auth()->user()->can('read'),
+                ],
 
                 // 'data' => Account::all()
                 //     ->where('company_id', session('company_id'))

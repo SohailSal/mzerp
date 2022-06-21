@@ -48,10 +48,9 @@ class CompanyController extends Controller
                     'phone' => $comp->phone,
                     'fiscal' => $comp->fiscal,
                     'incorp' => $comp->incorp,
-                    'delete' => Year::where('company_id', $comp->id)->first() != null ? true : false,
+                    'delete' => Year::where('company_id', $comp->id)->first() != null ? false : true,
                 ],
             );
-
         if (request('search')) {
             $query->where('name', 'LIKE', '%' . request('search') . '%');
         }
@@ -62,15 +61,15 @@ class CompanyController extends Controller
                 request('direction')
             );
         }
-
+// dd(auth()->user()->can('delete'));
 
         return Inertia::render('Company/Index', [
-            // 'can' => [
-            //     'edit' => auth()->user()->can('edit'),
-            //     'create' => auth()->user()->can('create'),
-            //     'delete' => auth()->user()->can('delete'),
-            //     'read' => auth()->user()->can('read'),
-            // ],
+            'can' => [
+                'edit' => auth()->user()->can('edit'),
+                'create' => auth()->user()->can('create'),
+                'delete' => auth()->user()->can('delete'),
+                'read' => auth()->user()->can('read'),
+            ],
             'balances' => $query,
             'filters' => request()->all(['search', 'field', 'direction'])
         ]);

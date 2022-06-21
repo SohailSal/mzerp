@@ -31,8 +31,10 @@
       {{ $page.props.flash.warning }}
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
-      <jet-button @click="create" class="ml-2">Create</jet-button>
-      <jet-button @click="generate" v-if="exists" class="ml-2"
+      <jet-button v-if="can['create']" @click="create" class="ml-2"
+        >Create</jet-button
+      >
+      <jet-button v-if="exists && can['create']" @click="generate" class="ml-2"
         >Auto Generate Groups</jet-button
       >
 
@@ -102,7 +104,12 @@
               <tr class="bg-gray-800 text-white">
                 <th class="py-1 px-4 border w-2/5">Group Name</th>
                 <th class="py-1 px-4 border">Group Type</th>
-                <th class="py-1 px-4 border">Actions</th>
+                <th
+                  v-if="can['edit'] || can['delete']"
+                  class="py-1 px-4 border"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -115,7 +122,11 @@
                 <td style="width: 30%" class="px-4 border text-center">
                   {{ item.type_name }}
                 </td>
-                <td style="width: 40%" class="px-4 border text-center">
+                <td
+                  v-if="can['edit'] || can['delete']"
+                  style="width: 40%"
+                  class="px-4 border text-center"
+                >
                   <button
                     class="
                       border
@@ -126,6 +137,7 @@
                       hover:text-white hover:bg-indigo-400
                     "
                     @click="edit(item.id)"
+                    v-if="can['edit']"
                   >
                     <span>Edit</span>
                   </button>
@@ -139,7 +151,7 @@
                       hover:text-white hover:bg-red-600
                     "
                     @click="destroy(item.id)"
-                    v-if="item.delete"
+                    v-if="item.delete && can['delete']"
                   >
                     <span>Delete</span>
                   </button>
@@ -184,6 +196,7 @@ export default {
     companies: Object,
     company: Object,
     exists: Object,
+    can: Object,
   },
 
   data() {

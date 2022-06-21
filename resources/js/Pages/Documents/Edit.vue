@@ -88,6 +88,7 @@
               type="text"
               v-model="form.description"
               class="
+                disabled:opacity-50
                 pr-2
                 pb-2
                 w-full
@@ -97,6 +98,7 @@
               "
               label="description"
               placeholder="Enter Description"
+              :disabled="can['edit'] ? disabled : ''"
             />
             <div
               class="
@@ -128,6 +130,7 @@
               name="date"
               :min="form.start"
               :max="form.end"
+              :disabled="can['edit'] ? disabled : ''"
             />
             <!-- <datepicker
             v-model="form.date"
@@ -159,6 +162,7 @@
                       placeholder="Select account"
                       label="name"
                       track-by="id"
+                      :disabled="can['edit'] ? disabled : ''"
                     ></multiselect>
                     <!-- <select v-model="entry.account_id" class="rounded-md w-36">
                       <option
@@ -176,6 +180,7 @@
                       type="number"
                       @change="debitchange(index)"
                       class="rounded-md w-36"
+                      :disabled="can['edit'] ? disabled : ''"
                     />
                   </td>
                   <td>
@@ -184,12 +189,13 @@
                       type="number"
                       @change="creditchange(index)"
                       class="rounded-md w-36"
+                      :disabled="can['edit'] ? disabled : ''"
                     />
                   </td>
                   <td>
                     <button
                       @click.prevent="deleteRow(index)"
-                      v-if="index > 1"
+                      v-if="index > 1 && can['edit']"
                       class="
                         border
                         bg-red-500
@@ -204,7 +210,7 @@
                       Delete
                     </button>
                     <button
-                      v-else-if="index == 1"
+                      v-else-if="index == 1 && can['edit']"
                       class="
                         border
                         bg-indigo-300
@@ -224,14 +230,14 @@
                   </td>
                 </tr>
 
-                <tr>
+                <tr v-if="can['edit']">
                   <th>Difference:</th>
                   <th>Debit:</th>
                   <th>Credit:</th>
                   <th></th>
                 </tr>
 
-                <tr>
+                <tr v-if="can['edit']">
                   <td>
                     <input
                       type="number"
@@ -265,6 +271,7 @@
           <!-- TABLE FOR ENTRIES ---- END ------------- -->
 
           <div
+            v-if="can['edit']"
             class="
               px-4
               py-2
@@ -331,6 +338,8 @@ export default {
 
     min_start: Object,
     max_end: Object,
+
+    can: Object,
   },
 
   // setup(props) {

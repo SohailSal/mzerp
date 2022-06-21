@@ -32,7 +32,9 @@
     </div>
     <!-- <div class=""> -->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
-      <jet-button @click="create" class="ml-2">Create</jet-button>
+      <jet-button v-if="can['create']" @click="create" class="ml-2"
+        >Create</jet-button
+      >
 
       <!-- </div> -->
       <!-- <div v-if="errors.type">{{ errors.type }}</div> -->
@@ -43,7 +45,12 @@
               <tr class="text-white bg-gray-800">
                 <th class="py-1 px-4 border">Voucher Name</th>
                 <th class="py-1 px-4 border w-2/5">Prefix</th>
-                <th class="py-1 px-4 border">Actions</th>
+                <th
+                  v-if="can['edit'] || can['delete']"
+                  class="py-1 px-4 border"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -58,7 +65,11 @@
                 <td style="widht: 30%" class="px-4 border text-center">
                   {{ item.prefix }}
                 </td>
-                <td style="widht: 40%" class="px-4 border text-center">
+                <td
+                  v-if="can['edit'] || can['delete']"
+                  style="widht: 40%"
+                  class="px-4 border text-center"
+                >
                   <button
                     class="
                       border
@@ -69,6 +80,7 @@
                       hover:text-white hover:bg-indigo-400
                     "
                     @click="edit(item.id)"
+                    v-if="can['edit']"
                   >
                     <span>Edit</span>
                   </button>
@@ -82,7 +94,7 @@
                       hover:text-white hover:bg-red-600
                     "
                     @click="destroy(item.id)"
-                    v-if="item.delete"
+                    v-if="item.delete && can['delete']"
                   >
                     <span>Delete</span>
                   </button>
@@ -116,7 +128,7 @@ export default {
     Multiselect,
   },
 
-  props: ["balances", "companies", "company"],
+  props: ["balances", "companies", "company", "can"],
 
   data() {
     return {

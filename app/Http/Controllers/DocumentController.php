@@ -109,6 +109,12 @@ class DocumentController extends Controller
             return Inertia::render(
                 'Documents/Index',
                 [
+                    'can' => [
+                        'edit' => auth()->user()->can('edit'),
+                        'create' => auth()->user()->can('create'),
+                        'delete' => auth()->user()->can('delete'),
+                        'read' => auth()->user()->can('read'),
+                    ],
                     'data' => $query->paginate(10),
                     'yearclosed' => $yearclosed,
                     'filters' => request()->all(['search', 'field', 'direction']),
@@ -299,6 +305,12 @@ class DocumentController extends Controller
                 'entriess' => $entries,
                 'min_start' => $date_range->begin,
                 'max_end' => $date_range->end,
+                'can' => [
+                        'edit' => auth()->user()->can('edit'),
+                        'create' => auth()->user()->can('create'),
+                        'delete' => auth()->user()->can('delete'),
+                        'read' => auth()->user()->can('read'),
+                    ],
             ]
         );
     }
