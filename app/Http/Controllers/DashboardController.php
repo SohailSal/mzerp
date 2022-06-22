@@ -33,7 +33,8 @@ class DashboardController extends Controller
         // $roles = Role::all();
 
         return Inertia::render('Dashboard', [
-            'companies' => auth()->user()->companies,
+            // 'companies' => auth()->user()->companies,
+            'companies' => Company::all(),
             // 'roles' => $roles,
             'can' => [
                 'edit' => auth()->user()->can('edit'),
@@ -51,7 +52,7 @@ class DashboardController extends Controller
         $data['company'] = Request::input('company_id')['id'];
         // $company = Request::input('company_id')['id'];
         $company = Company::where('id', $data['company'])->first();
-        
+
         Request::validate([
             'email' => ['required'],
             'role' => ['required'],
@@ -66,13 +67,13 @@ class DashboardController extends Controller
         if($userexist){
             $userexist->roles()->detach();
             $userexist->assignRole($data['role']);
-        
+
             $company->users()->attach($userexist->id);
         }else{
             return Redirect::back()->with('warning', 'User email doesn\'t exists');
         }
 
-        return Redirect::back()->with('success', 'Role assigned.'); 
+        return Redirect::back()->with('success', 'Role assigned.');
     }
 
     public function create()
@@ -87,7 +88,7 @@ class DashboardController extends Controller
             'company_id' => ['required'],
             'role' => ['required'],
         ]);
-       
+
         return Redirect::route('companies')->with('success', 'Company created');
     }
 
