@@ -13,6 +13,7 @@ use App\Models\Setting;
 use Egulias\EmailValidator\Warning\Warning;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
 
 
 use App;
@@ -40,7 +41,7 @@ class CompanyController extends Controller
             ->through(
                 fn ($comp) =>
                 [
-                    'id' => $comp->id,
+                    'id' => $comp->company_id,
                     'name' => $comp->name,
                     'address' => $comp->address,
                     'email' => $comp->email,
@@ -48,7 +49,7 @@ class CompanyController extends Controller
                     'phone' => $comp->phone,
                     'fiscal' => $comp->fiscal,
                     'incorp' => $comp->incorp,
-                    'delete' => Year::where('company_id', $comp->id)->first() != null ? false : true,
+                    'delete' => Year::where('company_id', $comp->company_id)->first() != null ? false : true,
                 ],
             );
         if (request('search')) {
@@ -148,6 +149,8 @@ class CompanyController extends Controller
 
             session(['company_id' => $company->id]);
             session(['year_id' => $year->id]);
+
+            return Redirect::route("accountgroups.generate");
 
             // Storage::makeDirectory('/public/' . $company->id);
             // Storage::makeDirectory('/public/' . $company->id . '/' . $year->id);

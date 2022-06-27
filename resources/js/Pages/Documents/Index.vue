@@ -272,7 +272,11 @@ export default {
   methods: {
     //   for file upload
     submit() {
-      this.form.post(route("sales.trial.read"));
+      if (this.form.avatar) {
+        this.form.post(route("sales.trial.read"));
+      } else {
+        alert("Please select file first");
+      }
     },
 
     onFileChange(e) {

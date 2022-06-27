@@ -11,10 +11,12 @@ use App\Models\AccountGroup;
 use App\Models\Account;
 use App\Models\DocumentType;
 use App\Models\Document;
+use App\Models\Entry;
 // use App\Models\Trial;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class Excel extends Controller
 {
@@ -46,7 +48,6 @@ class Excel extends Controller
                     $col2 = $row->getCellAtIndex(1)->getValue();
                     $col3 = $row->getCellAtIndex(2)->getValue();
                     $col4 = $row->getCellAtIndex(3)->getValue();
-
                     if($col1 && $col2 && $col4)
                     {
                         $xl_date = $row->getCellAtIndex(0)->getValue();
@@ -115,8 +116,8 @@ class Excel extends Controller
                     //     'medical' => $col7,
                     //     'conveyance' => $col8,
                     // ]);
+                    $array_count++;
                 }
-                $array_count++;
                 break; // no need to read more sheets
             }
             $reader->close();
@@ -129,7 +130,7 @@ class Excel extends Controller
         )
         {
                 // DB::transaction(function () use ($acc_id, $type_id, $xl_date, $description, $amount) {
-                DB::transaction(function () use ($acc_id_array, $type_id, $xl_date_array, $description_array, $amount_array) {
+                DB::transaction(function () use ($acc_id_array, $type_id, $xl_date_array, $description_array, $amount_array, $array_count) {
                 // DB::transaction(function () use ($acc_id_array[$i], $type_id, $xl_date_array[$i], $description_array[$i], $amount_array[$i]) {
                     for($i = 0; $i < $array_count; $i++)
                     {
@@ -174,7 +175,7 @@ class Excel extends Controller
                                     'year_id' => $doc->year_id,
                                     'document_id' => $doc->id,
                                     'debit' => $amount,
-                                    // 'credit' => $entry['credit'],
+                                    'credit' => 0,
                                 ]);
                                 $sales_acc = Account::where('name', 'Sales - Local')
                                     ->where('company_id', session('company_id'))
@@ -185,7 +186,7 @@ class Excel extends Controller
                                     'account_id' => $sales_acc_id,
                                     'year_id' => $doc->year_id,
                                     'document_id' => $doc->id,
-                                    // 'debit' => $entry['debit'],
+                                    'debit' => 0,
                                     'credit' => $amount,
                                 ]);
 
