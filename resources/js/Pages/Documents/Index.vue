@@ -96,18 +96,106 @@
           />
         </svg>
       </button>
-      <div v-if="can['create']" class="inline-block bg-green-700">
+      <div v-if="can['create']" class="mt-2">
         <form @submit.prevent="submit">
           <input
-            class="ml-4 border-gray-800 ring-gray-800 ring-1 outline-none"
+            class="ml-4 border-gray-800 w-1/4 ring-gray-800 ring-1 outline-none"
             type="file"
+            placeholder="Upload Excel Sheet"
+            title="Upload Excel Sheet"
             v-on:change="onFileChange"
+            accept=".xlsx"
           />
+          <div
+            class="
+              ml-2
+              bg-red-100
+              border border-red-400
+              text-red-700
+              px-4
+              py-1
+              rounded
+              inline-block
+            "
+            role="alert"
+            v-if="errors.file"
+          >
+            {{ errors.file }}
+          </div>
           <button
-            class="border bg-indigo-300 rounded-xl px-2 py-1m-4"
+            class="
+              inline-flex
+              items-center
+              px-4
+              py-2
+              bg-gray-800
+              border border-transparent
+              rounded-md
+              font-bold
+              text-xs text-white
+              uppercase
+              tracking-widest
+              hover:bg-gray-700
+              active:bg-gray-900
+              focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
+              transition
+              ease-in-out
+              duration-150
+              ml-2
+            "
             type="submit"
           >
-            Upload Sales Transaction File
+            Upload Sales Sheet
+          </button>
+          <button
+            class="
+              inline-flex
+              items-center
+              px-4
+              py-2
+              bg-gray-800
+              border border-transparent
+              rounded-md
+              font-bold
+              text-xs text-white
+              uppercase
+              tracking-widest
+              hover:bg-gray-700
+              active:bg-gray-900
+              focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
+              transition
+              ease-in-out
+              duration-150
+              ml-2
+            "
+            type="submit"
+          >
+            Upload Sales Sheet
+          </button>
+          <button
+            class="
+              inline-flex
+              items-center
+              px-4
+              py-2
+              bg-gray-800
+              border border-transparent
+              rounded-md
+              font-bold
+              text-xs text-white
+              uppercase
+              tracking-widest
+              hover:bg-gray-700
+              active:bg-gray-900
+              focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
+              transition
+              ease-in-out
+              duration-150
+              ml-2
+            "
+            type="submit"
+          >
+            Upload Sales Sheet
           </button>
         </form>
       </div>
@@ -239,6 +327,7 @@ export default {
   },
 
   props: {
+    errors: Object,
     data: Object,
     filters: Object,
     companies: Object,

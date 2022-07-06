@@ -28,6 +28,9 @@ class Excel extends Controller
      */
     public function __invoke(Request $request)
     {
+        $request->validate([
+            'file'=> 'required|mimes:xlsx, xls'
+        ]);
         // dd($request);
         $reader = ReaderEntityFactory::createXLSXReader();
         $reader->open($request->file('avatar'));

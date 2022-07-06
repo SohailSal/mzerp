@@ -12,6 +12,7 @@ use App\Models\Year;
 use App\Models\Setting;
 use Egulias\EmailValidator\Warning\Warning;
 use Inertia\Inertia;
+use Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
@@ -150,7 +151,7 @@ class CompanyController extends Controller
             session(['company_id' => $company->id]);
             session(['year_id' => $year->id]);
 
-            return Redirect::route("accountgroups.generate");
+            Artisan::call('db:seed', array('--class' => "GroupSeeder"));
 
             // Storage::makeDirectory('/public/' . $company->id);
             // Storage::makeDirectory('/public/' . $company->id . '/' . $year->id);
