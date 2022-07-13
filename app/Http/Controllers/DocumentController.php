@@ -407,4 +407,10 @@ class DocumentController extends Controller
         $document->delete();
         return Redirect::back()->with('success', 'Transaction deleted.');
     }
+
+    public function downloadFile()
+    {
+        // dd(public_path() . "/sales_trial.xlsx");
+        return response()->download(public_path() . "/sales_trial.xlsx");
+    }
 }

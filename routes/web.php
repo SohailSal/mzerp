@@ -286,6 +286,10 @@ Route::delete('documents/{document}', [DocumentController::class, 'destroy'])
 
 // Entry through sales excel report
 Route::post('salestrial/read', Excel::class)->name('sales.trial.read')->middleware('auth');
+// Download format file
+Route::get('documents/downloadFile', [DocumentController::class, 'downloadFile'])
+    ->name('documents.downloadFile')
+    ->middleware('auth');
 
 //DOCUMENT ....TRANSACTION + ENTRIES--------------------- END ----------------------
 
