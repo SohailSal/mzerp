@@ -29,7 +29,7 @@ class Excel extends Controller
     public function __invoke(Request $request)
     {
         $request->validate([
-            'file'=> 'required|mimes:xlsx, xls'
+            'avatar'=> 'required|mimes:xlsx, xls'
         ]);
         // dd($request);
         $reader = ReaderEntityFactory::createXLSXReader();
@@ -62,7 +62,7 @@ class Excel extends Controller
                         $amount = $row->getCellAtIndex(3)->getValue();
                         $amount_array[$array_count] = $amount;
 
-                        $type = DocumentType::where('name', 'Journall Voucher')->first();
+                        $type = DocumentType::where('name', 'Journal Voucher')->first();
                         $type_id = $type->id;
                         // $type_id_array[$array_count] = $type_id;
 

@@ -22,10 +22,19 @@ class DatabaseSeeder extends Seeder
         // }
 
         $this->call([
-            TypeSeeder::class,
-        ]);
-        $this->call([
             PermissionsDemoSeeder::class,
         ]);
+        $this->call([
+            TypeSeeder::class,
+        ]);
+        // $this->call([
+        //     GroupSeeder::class,
+        // ]);
+        // $this->call([
+        //     AccountSeeder::class,
+        // ]);
+        // $this->call([
+        //     DocumentTypeSeeder::class,
+        // ]);
     }
 }
