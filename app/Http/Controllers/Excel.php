@@ -36,7 +36,7 @@ class Excel extends Controller
         $reader->open($request->file('avatar'));
 
         $array_count = 0;
-        $xl_date_array;
+        $xl_date_array = [];
         $description_array;
         $amount_array;
         $acc_id_array;
@@ -51,6 +51,22 @@ class Excel extends Controller
                     $col2 = $row->getCellAtIndex(1)->getValue();
                     $col3 = $row->getCellAtIndex(2)->getValue();
                     $col4 = $row->getCellAtIndex(3)->getValue();
+                    if($col1 || $col2 || $col3 || $col4)
+                    {
+                        if(!$col1)
+                        {
+                            return back()->with('error', 'Enter date of transaction in column A of the sheet. Column A is empty at some point, or you submitted the wrong format');
+                        }
+                        if(!$col2)
+                        {
+                            return back()->with('error', 'Enter description of transaction in column B of the sheet. Column B is empty at some point, or you submitted the wrong format');
+                        }
+                        if(!$col4)
+                        {
+                            return back()->with('error', 'Enter amount of transaction in column D of the sheet. Column D is empty at some point, or you submitted the wrong format');
+                        }
+                        // return back()->with('error', 'Enter data in right format');
+                    }
                     if($col1 && $col2 && $col4)
                     {
                         $xl_date = $row->getCellAtIndex(0)->getValue();
@@ -62,28 +78,42 @@ class Excel extends Controller
                         $amount = $row->getCellAtIndex(3)->getValue();
                         $amount_array[$array_count] = $amount;
 
-                        $type = DocumentType::where('name', 'Journal Voucher')->first();
-                        $type_id = $type->id;
+                        $type = DocumentType::where('name', 'Journal Voucher')->
+                            where('company_id', session('company_id'))->
+                            first();
+                        if($type)
+                        {
+                            $type_id = $type->id;
+                        }else {
+                            return back()->with('error', 'Voucher with name \'Journal Voucher\' doesn\'t exists or having a spelling mistake');
+                        }
                         // $type_id_array[$array_count] = $type_id;
 
                         //Accounts
                         $acc_id = $row->getCellAtIndex(2)->getValue();
                         if($acc_id)
                         {
-                            $acc_exist = Account::find($acc_id);
+                            $acc_exist = Account::
+                                where('company_id', session('company_id'))->
+                                find($acc_id);
                             if(!$acc_exist)
                             {
-                                return back()->with('error', 'Account does not exists');
+                                return back()->with('error', 'Account Id on Row '. $rowIndex . ' is invalid or incorrect.');
                             } else {
                                 $acc_id = $acc_exist->id;
                                 $acc_id_array[$array_count] = $acc_id;
                             }
                         } else {
                             $default_acc = Account::where('name', 'Cash at Bank')->
-                            where('company_id', session('company_id'))->
-                            first();
-                            $acc_id = $default_acc->id;
-                            $acc_id_array[$array_count] = $acc_id;
+                                where('company_id', session('company_id'))->
+                                first();
+                            if($default_acc)
+                            {
+                                $acc_id = $default_acc->id;
+                                $acc_id_array[$array_count] = $acc_id;
+                            }else {
+                                return back()->with('error', 'Account with name \'Cash at Bank\' account doesn\'t exists or having a spelling mistake.');
+                            }
                         }
 
                         if($acc_id && $type_id && $xl_date && $description && $amount)
@@ -91,9 +121,11 @@ class Excel extends Controller
                             // here we have to create transactions
 
                         } else {
-                                return back()->with('error', 'Check excel you may enter some wrong data');
+                            return back()->with('error', 'Check excel you may enter some wrong data');
                             //return with error in xl sheet
                         }
+                    } else {
+                        return back()->with('error', 'You may enter some data in wrong format');
                     }
 
 
@@ -126,7 +158,7 @@ class Excel extends Controller
             $reader->close();
         }
 
-        if($array_count >> 1 && count($xl_date_array) >> 0
+        if($array_count >> 0 && count($xl_date_array) >> 0
             && count($description_array) >> 0
             && count($amount_array) >> 0
             && count($acc_id_array) >> 0
@@ -199,7 +231,10 @@ class Excel extends Controller
                         }
                     }
                 });
+        }else {
+            return back()->with('error', 'You may upload an empty file');
         }
-        return Redirect::route('companies');
+        return Redirect::route('documents')->with('success', 'Transactions created.');
+        // return Redirect::route('companies');
     }
 }

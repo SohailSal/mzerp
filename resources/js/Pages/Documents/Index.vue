@@ -49,6 +49,12 @@
     >
       {{ $page.props.flash.warning }}
     </div>
+    <div
+      v-if="$page.props.flash.error"
+      class="bg-red-600 text-white text-center"
+    >
+      {{ $page.props.flash.error }}
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
       <jet-button
@@ -173,6 +179,34 @@
           >
             <!-- @click="downloadFormat" -->
             Download Sales Format
+          </a>
+          <a
+            class="
+              inline-flex
+              items-center
+              px-4
+              py-2
+              bg-gray-800
+              border border-transparent
+              rounded-md
+              font-bold
+              text-xs text-white
+              uppercase
+              tracking-widest
+              hover:bg-gray-700
+              active:bg-gray-900
+              focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
+              transition
+              ease-in-out
+              duration-150
+              ml-2
+            "
+            type="button"
+            target="_blank"
+            :href="'documents/Accountpdf'"
+          >
+            <!-- @click="downloadFormat" -->
+            Download Accounts
           </a>
         </form>
       </div>

@@ -291,6 +291,12 @@ Route::get('documents/downloadFile', [DocumentController::class, 'downloadFile']
     ->name('documents.downloadFile')
     ->middleware('auth');
 
+
+    Route::get('documents/Accountpdf', [DocumentController::class, 'Accountpdf'])
+->name('Accountpdf')
+->middleware('auth');
+
+
 //DOCUMENT ....TRANSACTION + ENTRIES--------------------- END ----------------------
 
 
