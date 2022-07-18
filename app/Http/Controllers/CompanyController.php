@@ -205,6 +205,7 @@ class CompanyController extends Controller
 
     public function destroy(Company $company)
     {
+        $company->users()->detach(auth()->user()->id);
         $company->delete();
         return Redirect::back()->with('success', 'Company deleted.');
     }

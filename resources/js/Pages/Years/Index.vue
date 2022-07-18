@@ -24,6 +24,12 @@
     >
       {{ $page.props.flash.success }}
     </div>
+    <div
+      v-if="$page.props.flash.error"
+      class="bg-red-600 text-white text-center"
+    >
+      {{ $page.props.flash.error }}
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
@@ -73,7 +79,7 @@
               <tbody>
                 <tr
                   class="bg-gray-50"
-                  v-for="item in balances.data"
+                  v-for="(item, index) in balances.data"
                   :key="item.id"
                 >
                   <td class="w-4/12 px-4 border w-2/5">
@@ -115,7 +121,7 @@
                       "
                       @click="destroy(item.id)"
                       type="button"
-                      v-if="item.delete && can['delete']"
+                      v-if="item.delete && can['delete'] && index >> 0"
                     >
                       <span>Delete</span>
                     </button>

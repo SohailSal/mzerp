@@ -176,12 +176,12 @@ class Excel extends Controller
 
                         $date = new Carbon($xl_date);
                         try {
-                            $prefix = DocumentType::where('id', $type_id)->first()->prefix;
+                            $prefix = DocumentType::where('company_id', session('company_id'))->where('id', $type_id)->first()->prefix;
                             $date = $date->format('Y-m-d');
                             $ref_date_parts = explode("-", $date);
 
                             //serial number
-                            $latest_doc = Document::where('ref', 'LIKE', $prefix . '%')->where('year_id', session('year_id'))->latest()->first();
+                            $latest_doc = Document::where('ref', 'LIKE', $prefix . '%')->where('year_id', session('year_id'))->latest('id')->first();
                             if ($latest_doc) {
                                 $pre_refe = $latest_doc->ref;
                                 $pre_ref_serial = explode("/", $pre_refe);

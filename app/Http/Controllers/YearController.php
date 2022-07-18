@@ -155,14 +155,20 @@ class YearController extends Controller
         // if (Document::where('year_id', $year->id)->first()) {
         //     return Redirect::back()->with('success', 'Can\'t DELETE this Year.');
         // } else {
-        $year->delete();
-        if (Year::where('company_id', session('company_id'))->first()) {
-            return Redirect::back()->with('success', 'Year deleted.');
+        $comp_year = Year::where('company_id', session('company_id'))->get();
+        if(count($comp_year) >> 1)
+        {
+            $year->delete();
+            if (Year::where('company_id', session('company_id'))->first()) {
+                return Redirect::back()->with('success', 'Year deleted.');
+            }
+            // else {
+            //     session(['year_id' => null]);
+            //     return Redirect::route('years.create')->with('success', 'YEAR NOT FOUND. Please create an Year for selected Company.');
+            // }
         } else {
-            session(['year_id' => null]);
-            return Redirect::route('years.create')->with('success', 'YEAR NOT FOUND. Please create an Year for selected Company.');
+            return Redirect::back()->with('error', 'Can\'t delete! Company have only Year.');
         }
-        // }
     }
 
     public function yrch($id)

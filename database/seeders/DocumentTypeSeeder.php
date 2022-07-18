@@ -16,7 +16,7 @@ class DocumentTypeSeeder extends Seeder
     public function run()
     {
         DB::transaction(function () {
-            if(count(DocumentType::all()) == 0)
+            if(count(DocumentType::where('company_id', session('company_id'))->get()) == 0)
             {
                 DocumentType::create([
                     'name' => 'Journal Voucher',
