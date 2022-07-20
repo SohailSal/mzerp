@@ -19,7 +19,7 @@ class GroupSeeder extends Seeder
     {
         DB::transaction(function () {
 
-// ==============================================================================================================================
+            // ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Assets')->first()->id;
             $ass_fix = AccountGroup::create([
                 'name' => 'Fixed Assets',
@@ -66,7 +66,7 @@ class GroupSeeder extends Seeder
                 'company_id' => session('company_id'),
             ]);
 
-// ==============================================================================================================================
+            // ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Capital')->first()->id;
             $equity = AccountGroup::create([
                 'name' => 'Equity',
@@ -81,7 +81,7 @@ class GroupSeeder extends Seeder
                 'company_id' => session('company_id'),
             ]);
 
-// ==============================================================================================================================
+            // ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Liabilities')->first()->id;
             $acc_l_t_liab = AccountGroup::create([
                 'name' => 'Long Term Liabilities',
@@ -115,7 +115,7 @@ class GroupSeeder extends Seeder
                 'company_id' => session('company_id'),
             ]);
 
-// ==============================================================================================================================
+            // ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Revenue')->first()->id;
             AccountGroup::create([
                 'name' => 'Sales & Service',
@@ -130,7 +130,7 @@ class GroupSeeder extends Seeder
                 'company_id' => session('company_id'),
             ]);
 
-// ==============================================================================================================================
+            // ==============================================================================================================================
             $type_id = \App\Models\AccountType::where('name', 'Expenses')->first()->id;
             AccountGroup::create([
                 'name' => 'Operating Expenses',

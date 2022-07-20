@@ -109,6 +109,12 @@ class DocumentController extends Controller
             return Inertia::render(
                 'Documents/Index',
                 [
+                    'can' => [
+                        'edit' => auth()->user()->can('edit'),
+                        'create' => auth()->user()->can('create'),
+                        'delete' => auth()->user()->can('delete'),
+                        'read' => auth()->user()->can('read'),
+                    ],
                     'data' => $query->paginate(10),
                     'yearclosed' => $yearclosed,
                     'filters' => request()->all(['search', 'field', 'direction']),
@@ -189,12 +195,12 @@ class DocumentController extends Controller
             $date = new Carbon($request->date);
             try {
 
-                $prefix = DocumentType::where('id', $request->type_id)->first()->prefix;
+                $prefix = DocumentType::where('company_id', session('company_id'))->where('id', $request->type_id)->first()->prefix;
                 $date = $date->format('Y-m-d');
                 $ref_date_parts = explode("-", $date);
 
                 //serial number
-                $latest_doc = Document::where('ref', 'LIKE', $prefix . '%')->where('year_id', session('year_id'))->latest()->first();
+                $latest_doc = Document::where('ref', 'LIKE', $prefix . '%')->where('year_id', session('year_id'))->latest('id')->first();
                 if ($latest_doc) {
                     $pre_refe = $latest_doc->ref;
                     $pre_ref_serial = explode("/", $pre_refe);
@@ -299,6 +305,12 @@ class DocumentController extends Controller
                 'entriess' => $entries,
                 'min_start' => $date_range->begin,
                 'max_end' => $date_range->end,
+                'can' => [
+                        'edit' => auth()->user()->can('edit'),
+                        'create' => auth()->user()->can('create'),
+                        'delete' => auth()->user()->can('delete'),
+                        'read' => auth()->user()->can('read'),
+                    ],
             ]
         );
     }
@@ -394,5 +406,53 @@ class DocumentController extends Controller
     {
         $document->delete();
         return Redirect::back()->with('success', 'Transaction deleted.');
+    }
+
+    public function downloadFile()
+    {
+        // dd(public_path() . "/sales_trial.xlsx");
+        return response()->download(public_path() . "/sales_trial.xlsx");
+    }
+
+      public function Accountpdf()
+    {
+        $accounts = Account::where('company_id', session('company_id'))->get()
+        ->map(function ($account){
+            return[
+                'id' => $account->id,
+                'number' => $account->number,
+                'name' => $account->name . " - " . $account->accountGroup->name,
+                // 'acc_grp' => $account->accountGroup->name,
+            ];
+        });
+        // dd($accounts);
+        if ($accounts) {
+
+            $year = Year::where('company_id', session('company_id'))
+            ->where('id', session('year_id'))->first();
+            $end = $year->end ? new Carbon($year->end) : null;
+
+            $names = str_replace(["&"], "&amp;", $year->company->name);
+            $endDate = $end->format("F j Y");
+        //     //   $a = "hello world";
+
+        //     $confirmation = BankConfirmation::where('company_id', session('company_id'))->get()
+        //     ->map(function ($confirm){
+        //         return[
+        //             'id' => $confirm->id,
+        //             'branch' => $confirm->bankBranch->bank->name . " - " . $confirm->bankBranch->address,
+        //         ];
+        //     });
+        //     // dd($confirmation);
+
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('accountpdf', compact('names', 'endDate' ,'accounts'));
+        return $pdf->stream($names ." ".'Account.pdf');
+        }else{
+            return Redirect::route('accounts.create')->with('success', 'Create Account first.');
+
+        }
     }
 }

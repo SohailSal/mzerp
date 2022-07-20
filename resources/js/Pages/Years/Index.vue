@@ -24,11 +24,21 @@
     >
       {{ $page.props.flash.success }}
     </div>
+    <div
+      v-if="$page.props.flash.error"
+      class="bg-red-600 text-white text-center"
+    >
+      {{ $page.props.flash.error }}
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <!-- <jet-button @click="create" class="mt-4 ml-8">Create</jet-button> -->
 
       <form @submit.prevent="form.get(route('years.create'))">
-        <jet-button type="submit" @click="create" class="ml-2"
+        <jet-button
+          v-if="can['create']"
+          type="submit"
+          @click="create"
+          class="ml-2"
           >Add Year</jet-button
         >
 
@@ -58,13 +68,18 @@
                   <th class="py-1 px-4 border">Company</th>
                   <th class="py-1 px-4 border">Begin</th>
                   <th class="py-1 px-4 border">End</th>
-                  <th class="py-1 px-4 border">Action</th>
+                  <th
+                    v-if="can['edit'] || can['delete']"
+                    class="py-1 px-4 border"
+                  >
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr
                   class="bg-gray-50"
-                  v-for="item in balances.data"
+                  v-for="(item, index) in balances.data"
                   :key="item.id"
                 >
                   <td class="w-4/12 px-4 border w-2/5">
@@ -76,7 +91,10 @@
                   <td class="w-2/12 px-4 border w-2/6 text-center">
                     {{ item.end }}
                   </td>
-                  <td class="w-4/12px-4 border w-2/6 text-center">
+                  <td
+                    v-if="can['edit'] || can['delete']"
+                    class="w-4/12px-4 border w-2/6 text-center"
+                  >
                     <button
                       class="
                         border
@@ -87,6 +105,7 @@
                         hover:text-white hover:bg-indigo-400
                       "
                       @click="edit(item.id)"
+                      v-if="can['edit']"
                       type="button"
                     >
                       <span>Edit</span>
@@ -102,7 +121,7 @@
                       "
                       @click="destroy(item.id)"
                       type="button"
-                      v-if="item.delete"
+                      v-if="item.delete && can['delete'] && index >> 0"
                     >
                       <span>Delete</span>
                     </button>
@@ -162,6 +181,7 @@ export default {
     balances: Object,
     companies: Object,
     company: Object,
+    can: Object,
   },
 
   data() {

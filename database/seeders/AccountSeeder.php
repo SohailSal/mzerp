@@ -105,6 +105,10 @@ class AccountSeeder extends Seeder
             ]);
             $account->update(['number' => $this->snum($account)]);
         });
+
+        $this->call([
+            DocumentTypeSeeder::class,
+        ]);
     }
 
     function snum($account)

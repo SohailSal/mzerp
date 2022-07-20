@@ -33,7 +33,8 @@ class DashboardController extends Controller
         // $roles = Role::all();
 
         return Inertia::render('Dashboard', [
-            'companies' => auth()->user()->companies,
+            // 'companies' => auth()->user()->companies,
+            'companies' => Company::all(),
             // 'roles' => $roles,
             'can' => [
                 'edit' => auth()->user()->can('edit'),
@@ -49,30 +50,42 @@ class DashboardController extends Controller
         $data['email'] = Request::input('email');
         $data['role'] = Request::input('role');
         $data['company'] = Request::input('company_id')['id'];
-        // $company = Request::input('company_id')['id'];
-        $company = Company::where('id', $data['company'])->first();
-        
+
         Request::validate([
             'email' => ['required'],
             'role' => ['required'],
             'company_id' => ['required'],
         ]);
 
-        // dd(Request::input('email'). '-------' . Request::input('role') . '-------' . Request::input('company_id')['id']);
-
         $userexist = User::where('email',$data['email'])->first('id');
+        if(auth()->user()->email != $data['email'])
+        {
+            if($userexist){
+                $userexist->roles()->detach();
+                $userexist->assignRole($data['role']);
 
-        // dd($userexist->id);
-        if($userexist){
-            $userexist->roles()->detach();
-            $userexist->assignRole($data['role']);
-        
-            $company->users()->attach($userexist->id);
-        }else{
-            return Redirect::back()->with('warning', 'User email doesn\'t exists');
+                $company = Company::where('id', $data['company'])->with('users')->first();
+                $check = true;
+                foreach($company->users as $comp_user)
+                {
+                    if($comp_user->email == $data['email'])
+                    {
+                        $check = false;
+                        break;
+                    }
+                }
+                if($check)
+                {
+                    $company->users()->attach($userexist->id);
+                }
+            } else {
+                return Redirect::back()->with('warning', 'User email doesn\'t exists');
+            }
+        } else {
+                return Redirect::back()->with('warning', 'You can\'t change your own role');
         }
 
-        return Redirect::back()->with('success', 'Role assigned.'); 
+        return Redirect::back()->with('success', 'Role assigned.');
     }
 
     public function create()
@@ -87,7 +100,7 @@ class DashboardController extends Controller
             'company_id' => ['required'],
             'role' => ['required'],
         ]);
-       
+
         return Redirect::route('companies')->with('success', 'Company created');
     }
 

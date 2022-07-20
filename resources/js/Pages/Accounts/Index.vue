@@ -31,7 +31,9 @@
       {{ $page.props.flash.warning }}
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
-      <jet-button @click="create" class="ml-2">Create Account</jet-button>
+      <jet-button v-if="can['create']" @click="create" class="ml-2"
+        >Create Account</jet-button
+      >
 
       <input
         type="text"
@@ -80,7 +82,12 @@
                 <!-- <th class="py-2 px-4 border">ID</th> -->
                 <th class="py-1 px-4 border">Name of Account</th>
                 <th class="py-1 px-4 border">Group of Account</th>
-                <th class="py-1 px-4 border">Action</th>
+                <th
+                  v-if="can['edit'] || can['delete']"
+                  class="py-1 px-4 border"
+                >
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -93,7 +100,10 @@
                 <td class="px-4 border">{{ item.name }}</td>
                 <td class="px-4 border">{{ item.group_name }}</td>
                 <!-- <td class=" px-4 border">{{ item.accountGroup.name }}</td> -->
-                <td class="px-4 border text-center">
+                <td
+                  v-if="can['edit'] || can['delete']"
+                  class="px-4 border text-center"
+                >
                   <button
                     class="
                       border
@@ -104,6 +114,7 @@
                       hover:text-white hover:bg-indigo-400
                     "
                     @click="edit(item.id)"
+                    v-if="can['edit']"
                   >
                     <span>Edit</span>
                   </button>
@@ -117,7 +128,7 @@
                       hover:text-white hover:bg-red-600
                     "
                     @click="destroy(item.id)"
-                    v-if="item.delete"
+                    v-if="item.delete && can['delete']"
                   >
                     <span>Delete</span>
                   </button>

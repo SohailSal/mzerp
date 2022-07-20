@@ -49,9 +49,18 @@
     >
       {{ $page.props.flash.warning }}
     </div>
+    <div
+      v-if="$page.props.flash.error"
+      class="bg-red-600 text-white text-center"
+    >
+      {{ $page.props.flash.error }}
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
       <!-- <div class="p-2 mr-2 mb-2 ml-2 flex flex-wrap"> -->
-      <jet-button @click="create" v-if="yearclosed" class="ml-2 float-left"
+      <jet-button
+        v-if="yearclosed && can['create']"
+        @click="create"
+        class="ml-2 float-left"
         >Create</jet-button
       >
       <input
@@ -93,6 +102,114 @@
           />
         </svg>
       </button>
+      <div v-if="can['create']" class="mt-2">
+        <form @submit.prevent="submit">
+          <input
+            class="ml-4 border-gray-800 w-1/4 ring-gray-800 ring-1 outline-none"
+            type="file"
+            placeholder="Upload Excel Sheet"
+            title="Upload Excel Sheet"
+            v-on:change="onFileChange"
+            accept=".xlsx"
+          />
+          <div
+            class="
+              ml-2
+              bg-red-100
+              border border-red-400
+              text-red-700
+              px-4
+              py-1
+              rounded
+              inline-block
+            "
+            role="alert"
+            v-if="errors.file"
+          >
+            {{ errors.file }}
+          </div>
+          <button
+            class="
+              inline-flex
+              items-center
+              px-4
+              py-2
+              bg-gray-800
+              border border-transparent
+              rounded-md
+              font-bold
+              text-xs text-white
+              uppercase
+              tracking-widest
+              hover:bg-gray-700
+              active:bg-gray-900
+              focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
+              transition
+              ease-in-out
+              duration-150
+              ml-2
+            "
+            type="submit"
+          >
+            Upload Sales Sheet
+          </button>
+          <a
+            class="
+              inline-flex
+              items-center
+              px-4
+              py-2
+              bg-gray-800
+              border border-transparent
+              rounded-md
+              font-bold
+              text-xs text-white
+              uppercase
+              tracking-widest
+              hover:bg-gray-700
+              active:bg-gray-900
+              focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
+              transition
+              ease-in-out
+              duration-150
+              ml-2
+            "
+            type="button"
+            :href="'documents/downloadFile'"
+          >
+            <!-- @click="downloadFormat" -->
+            Download Sales Format
+          </a>
+          <a
+            class="
+              inline-flex
+              items-center
+              px-4
+              py-2
+              bg-gray-800
+              border border-transparent
+              rounded-md
+              font-bold
+              text-xs text-white
+              uppercase
+              tracking-widest
+              hover:bg-gray-700
+              active:bg-gray-900
+              focus:outline-none focus:border-gray-900 focus:shadow-outline-gray
+              transition
+              ease-in-out
+              duration-150
+              ml-2
+            "
+            type="button"
+            target="_blank"
+            :href="'documents/Accountpdf'"
+          >
+            <!-- @click="downloadFormat" -->
+            Download Accounts
+          </a>
+        </form>
+      </div>
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md float-right" -->
 
       <!-- class="pr-2 ml-2 pb-2 w-full lg:w-1/4 rounded-md" -->
@@ -124,6 +241,7 @@
               <td style="width: 40%" class="px-4 border w-2/5">
                 {{ item.description }}
               </td>
+              <!-- v-if="can['edit'] || can['delete']" -->
               <td style="width: 30%" class="px-4 border text-center">
                 <button
                   class="
@@ -135,9 +253,23 @@
                     hover:text-white hover:bg-indigo-400
                   "
                   @click="edit(item.id)"
-                  v-if="yearclosed"
+                  v-if="yearclosed && can['edit']"
                 >
                   <span>Edit</span>
+                </button>
+                <button
+                  class="
+                    border
+                    bg-indigo-300
+                    rounded-xl
+                    px-4
+                    m-1
+                    hover:text-white hover:bg-indigo-400
+                  "
+                  @click="edit(item.id)"
+                  v-else
+                >
+                  <span>Show</span>
                 </button>
                 <button
                   class="
@@ -149,7 +281,7 @@
                     hover:text-white hover:bg-red-600
                   "
                   @click="destroy(item.id)"
-                  v-if="item.delete"
+                  v-if="item.delete && can['delete']"
                 >
                   <span>Delete</span>
                 </button>
@@ -191,6 +323,7 @@ import moment from "moment";
 import { pickBy } from "lodash";
 import { throttle } from "lodash";
 import Multiselect from "@suadelabs/vue3-multiselect";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 export default {
   components: {
@@ -201,17 +334,26 @@ export default {
     pickBy,
     moment,
     Multiselect,
+    useForm,
   },
 
   props: {
+    errors: Object,
     data: Object,
     filters: Object,
     companies: Object,
     company: Object,
     years: Object,
     yearclosed: Object,
+    can: Object,
   },
 
+  setup() {
+    const form = useForm({
+      avatar: null,
+    });
+    return { form };
+  },
   data() {
     return {
       // co_id: this.$page.props.co_id,
@@ -228,6 +370,24 @@ export default {
   },
 
   methods: {
+    //   for file upload
+    submit() {
+      if (this.form.avatar) {
+        this.form.post(route("sales.trial.read"));
+      } else {
+        alert("Please select file first");
+      }
+    },
+    downloadFormat() {
+      this.$inertia.get(route("documents.downloadFile"));
+    },
+
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.form.avatar = files[0];
+    },
+    // file upload end
     create() {
       this.$inertia.get(route("documents.create"));
     },

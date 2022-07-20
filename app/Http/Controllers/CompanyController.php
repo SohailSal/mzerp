@@ -12,7 +12,9 @@ use App\Models\Year;
 use App\Models\Setting;
 use Egulias\EmailValidator\Warning\Warning;
 use Inertia\Inertia;
+use Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
 
 
 use App;
@@ -40,7 +42,7 @@ class CompanyController extends Controller
             ->through(
                 fn ($comp) =>
                 [
-                    'id' => $comp->id,
+                    'id' => $comp->company_id,
                     'name' => $comp->name,
                     'address' => $comp->address,
                     'email' => $comp->email,
@@ -48,10 +50,9 @@ class CompanyController extends Controller
                     'phone' => $comp->phone,
                     'fiscal' => $comp->fiscal,
                     'incorp' => $comp->incorp,
-                    'delete' => Year::where('company_id', $comp->id)->first() != null ? true : false,
+                    'delete' => Year::where('company_id', $comp->company_id)->first() != null ? false : true,
                 ],
             );
-
         if (request('search')) {
             $query->where('name', 'LIKE', '%' . request('search') . '%');
         }
@@ -62,15 +63,15 @@ class CompanyController extends Controller
                 request('direction')
             );
         }
-
+// dd(auth()->user()->can('delete'));
 
         return Inertia::render('Company/Index', [
-            // 'can' => [
-            //     'edit' => auth()->user()->can('edit'),
-            //     'create' => auth()->user()->can('create'),
-            //     'delete' => auth()->user()->can('delete'),
-            //     'read' => auth()->user()->can('read'),
-            // ],
+            'can' => [
+                'edit' => auth()->user()->can('edit'),
+                'create' => auth()->user()->can('create'),
+                'delete' => auth()->user()->can('delete'),
+                'read' => auth()->user()->can('read'),
+            ],
             'balances' => $query,
             'filters' => request()->all(['search', 'field', 'direction'])
         ]);
@@ -150,6 +151,9 @@ class CompanyController extends Controller
             session(['company_id' => $company->id]);
             session(['year_id' => $year->id]);
 
+            //TO run the seeders class
+            Artisan::call('db:seed', array('--class' => "GroupSeeder"));
+
             // Storage::makeDirectory('/public/' . $company->id);
             // Storage::makeDirectory('/public/' . $company->id . '/' . $year->id);
         });
@@ -201,6 +205,7 @@ class CompanyController extends Controller
 
     public function destroy(Company $company)
     {
+        $company->users()->detach(auth()->user()->id);
         $company->delete();
         return Redirect::back()->with('success', 'Company deleted.');
     }

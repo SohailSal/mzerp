@@ -58,6 +58,12 @@ class AccountGroupController extends Controller
         return Inertia::render('AccountGroups/Index', [
             'filters' => request()->all(['search', 'field', 'direction']),
             'balances' => $balances,
+            'can' => [
+                'edit' => auth()->user()->can('edit'),
+                'create' => auth()->user()->can('create'),
+                'delete' => auth()->user()->can('delete'),
+                'read' => auth()->user()->can('read'),
+            ],
             'exists' => AccountGroup::where('company_id', session('company_id'))->first() ? false : true,
             'company' => Company::where('id', session('company_id'))->first(),
             'companies' => Auth::user()->companies,

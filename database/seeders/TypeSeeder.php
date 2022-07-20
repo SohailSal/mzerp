@@ -34,5 +34,11 @@ class TypeSeeder extends Seeder
                 ]);
             }
         });
+
+        // $this->call([
+        //     GroupSeeder::class,
+        // ]);
+
+        // return Redirect::back();
     }
 }
