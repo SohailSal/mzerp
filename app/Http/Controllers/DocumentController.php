@@ -244,7 +244,7 @@ class DocumentController extends Controller
 
     public function edit(Document $document)
     {
-        $accounts = Account::all()->where('company_id', session('company_id'))->map(function ($acc) {
+        $accounts = Account::where('company_id', session('company_id'))->get()->map(function ($acc) {
             return [
                 "id" => $acc->id,
                 "number" => $acc->number,
