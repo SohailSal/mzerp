@@ -56,7 +56,6 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-
     </style>
 </head>
 
@@ -124,7 +123,7 @@
             }
             $gbalance1[$gi][$gite1] = $balance;
             if (count($group->children) > 0) {
-                $gbalance1[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance, 1);
+                $gbalance1[$gi][$gite1++] = recurse($date, $group, $year, $balance, $lastbalance, 1);
             } else {
                 $gite1++;
             }
@@ -133,8 +132,9 @@
     }
 
     // dd($gbalance1);
+    // @dd($date);
     // =================== Recursive function ============================
-    function recurse($gr, $year, $balance, $lastbalance, $for_total)
+    function recurse($date, $gr, $year, $balance, $lastbalance, $for_total)
     {
         foreach ($gr->children as $group) {
             foreach ($group->accounts as $account) {
@@ -162,7 +162,7 @@
                 }
             }
             if (count($group->children) > 0) {
-                recurse($group, $year, $balance, $lastbalance);
+                recurse($date, $group, $year, $balance, $lastbalance);
             }
         }
         return $balance;
@@ -223,7 +223,7 @@
             }
             $gbalance2[$gi][$gite1] = $balance;
             if (count($group->children) > 0) {
-                $gbalance2[$gi][$gite1++] = recurse($group, $year, $balance, $lastbalance, 0);
+                $gbalance2[$gi][$gite1++] = recurse($date, $group, $year, $balance, $lastbalance, 0);
             } else {
                 $gite1++;
             }
@@ -284,7 +284,7 @@
             }
             $gbalance3[$gi][$gite3] = $balance;
             if (count($group->children) > 0) {
-                $gbalance3[$gi][$gite3++] = recurse($group, $year, $balance, $lastbalance, 0);
+                $gbalance3[$gi][$gite3++] = recurse($date, $group, $year, $balance, $lastbalance, 0);
             } else {
                 $gite3++;
             }
@@ -351,7 +351,7 @@
             $balance_total4[$balance4_inc++] = $balance;
 
             if (count($group->children) > 0) {
-                $gbalance4[$gi][$gite4++] = recurse($group, $year, $balance, $lastbalance, 0);
+                $gbalance4[$gi][$gite4++] = recurse($date, $group, $year, $balance, $lastbalance, 0);
             } else {
                 $gite4++;
             }
@@ -417,7 +417,7 @@
             $balance_total5[$balance5_inc++] = $balance;
 
             if (count($group->children) > 0) {
-                $gbalance5[$gi][$gite5++] = recurse($group, $year, $balance, $lastbalance, 1);
+                $gbalance5[$gi][$gite5++] = recurse($date, $group, $year, $balance, $lastbalance, 1);
             } else {
                 $gite5++;
             }
@@ -490,7 +490,8 @@
                     <td style="width: 15%;">
                         <strong> Assets - Total</strong>
                     </td>
-                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
+                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;"
+                        align="right">
                         <strong>
                             {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total), 'Rs.')) }}</strong>
                     </td>
@@ -537,7 +538,8 @@
                     <td style="width: 15%;">
                         Liabilities - Total
                     </td>
-                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
+                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;"
+                        align="right">
                         {{-- {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance1), 'Rs.')) }} --}}
                         {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total2), 'Rs.')) }}
                     </td>
@@ -587,7 +589,8 @@
                     <td style="width: 15%;">
                         Capital - Total
                     </td>
-                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
+                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;"
+                        align="right">
                         {{-- {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance1), 'Rs.')) }} --}}
                         {{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency(array_sum($gbalance_total3), 'Rs.')) }}
                     </td>
@@ -614,7 +617,8 @@
                     <td style="width: 15%;">
                         <strong> Equity - Total</strong>
                     </td>
-                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;" align="right">
+                    <td style="width: 10%; border-top: 1pt solid black; border-bottom: 3pt double black;"
+                        align="right">
                         <strong>{{ str_replace(['Rs.', '.00'], '', $fmt->formatCurrency($equity, 'Rs.')) }}</strong>
                     </td>
                 </tr>
