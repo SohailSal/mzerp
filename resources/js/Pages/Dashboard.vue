@@ -43,7 +43,7 @@
 
         <!-- <welcome /> -->
         <div
-          v-if="can['edit']"
+          v-if="can['edit'] && user.email == 'haris@gmail.com'"
           class="
             inline-flex
             py-2
@@ -308,6 +308,7 @@ export default {
     companies: Object,
     // roles: Object,
     can: Object,
+    user: Object,
   },
   data() {
     return {

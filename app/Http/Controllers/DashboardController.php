@@ -42,6 +42,8 @@ class DashboardController extends Controller
                 'delete' => auth()->user()->can('delete'),
                 'read' => auth()->user()->can('read'),
             ],
+            //To make the role assigning part visible only for haris@gmail.com
+            'user' => auth()->user(),
         ]);
     }
 
