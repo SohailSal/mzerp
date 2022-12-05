@@ -40,7 +40,8 @@ class AccountController extends Controller
 
             $balances = $query
                 ->where('company_id', session('company_id'))
-                ->paginate(10)
+                ->paginate(2)
+                ->withQueryString()
                 ->through(
                     function ($account) {
                         return
@@ -65,19 +66,6 @@ class AccountController extends Controller
                     'delete' => auth()->user()->can('delete'),
                     'read' => auth()->user()->can('read'),
                 ],
-
-                // 'data' => Account::all()
-                //     ->where('company_id', session('company_id'))
-                //     ->map(function ($account) {
-                //         return [
-                //             'id' => $account->id,
-                //             'name' => $account->name,
-                //             'group_id' => $account->group_id,
-                //             'group_name' => $account->accountGroup->name,
-                //             'delete' => Entry::where('account_id', $account->id)->first() ? false : true,
-
-                //         ];
-                //     }),
             ]);
         } else {
             return Redirect::route('accountgroups')->with('warning', 'ACCOUNTGROUP NOT FOUND, Please create account group first.');

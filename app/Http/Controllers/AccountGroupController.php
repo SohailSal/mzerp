@@ -39,7 +39,8 @@ class AccountGroupController extends Controller
 
         $balances = $query
             ->where('company_id', session('company_id'))
-            ->paginate(10)
+            ->paginate(2)
+            ->withQueryString()
             ->through(
                 function ($accountgroup) {
                     return
