@@ -21,7 +21,6 @@ class DocumentController extends Controller
 {
     public function index()
     {
-
         //Validating request
         request()->validate([
             'direction' => ['in:asc,desc'],
@@ -35,49 +34,7 @@ class DocumentController extends Controller
 
         if ($acc && $doc_ty) {
 
-            //Searching request
             $query = Document::query();
-            $query = Document::all()
-                ->where('company_id', session('company_id'))
-                // ->where('year_id', session('year_id'))
-                ->map(function ($document) {
-
-                    $date = new Carbon($document->date);
-
-                    return [
-                        'id' => $document->id,
-                        'ref' => $document->ref,
-                        'date' => $date->format('M d, Y'),
-                        'description' => $document->description,
-                        'type_id' => $document->type_id,
-                        'company_id' => session('company_id'),
-                        // 'year_id' => session('year_id'),
-                        'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
-                    ];
-                });
-
-            $query = Document::query();
-
-            $query
-                ->where('company_id', session('company_id'))
-                ->where('year_id', session('year_id'))
-                ->paginate(10)
-                ->withQueryString()
-                ->through(
-                    fn ($document) =>
-                    [
-                        'id' => $document->id,
-                        'ref' => $document->ref,
-
-                        $date = new Carbon($document->date),
-                        'date' => $date->format('M d, Y'),
-                        'description' => $document->description,
-                        'type_id' => $document->type_id,
-                        'company_id' => session('company_id'),
-                        'year_id' => session('year_id'),
-                        'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
-                    ]
-                );
 
             if (request('search')) {
                 // $query->where('description', 'LIKE', '%' . request('search') . '%');
@@ -106,6 +63,28 @@ class DocumentController extends Controller
                 );
             }
 
+            $docs = $query
+                ->where('company_id', session('company_id'))
+                ->where('year_id', session('year_id'))
+                ->paginate(10)
+                ->withQueryString()
+                ->through(
+                    fn ($document) =>
+                    [
+                        'id' => $document->id,
+                        'ref' => $document->ref,
+
+                        $date = new Carbon($document->date),
+                        'date' => $date->format('M d, Y'),
+                        'description' => $document->description,
+                        'type_id' => $document->type_id,
+                        'company_id' => session('company_id'),
+                        'year_id' => session('year_id'),
+                        'delete' => Entry::where('document_id', $document->id)->first() ? false : true,
+                    ]
+                );
+
+
             return Inertia::render(
                 'Documents/Index',
                 [
@@ -115,7 +94,7 @@ class DocumentController extends Controller
                         'delete' => auth()->user()->can('delete'),
                         'read' => auth()->user()->can('read'),
                     ],
-                    'data' => $query->paginate(10),
+                    'data' => $docs,
                     'yearclosed' => $yearclosed,
                     'filters' => request()->all(['search', 'field', 'direction']),
                     'company' => Company::where('id', session('company_id'))->first(),
@@ -130,7 +109,8 @@ class DocumentController extends Controller
                                 'id' => $year->id,
                                 'name' => $begin->format('M d, Y') . ' - ' . $end->format('M d, Y'),
                             ];
-                        }),
+                        },
+                    ),
                 ]
             );
         } elseif ($acc) {
